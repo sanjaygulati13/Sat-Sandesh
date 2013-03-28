@@ -663,24 +663,20 @@ public class modify extends JFrame implements ActionListener, ItemListener
 				lang=langt1.getSelectedItem();
 				status=statust1.getText();
 					
-				*/
+				
 				//payment details
 				
-				//int chno, amt, dat1, dat2, dat3, startm, starty, endm, endy;
-				//String payt;
-                                  
-                                int dat1, dat2, dat3;
+				int chno, amt, dat1, dat2, dat3, startm, starty, endm, endy;
+				String payt;
 				
-                                
-                                /*
 				chno=Integer.parseInt(chddt1.getText());
 				amt=Integer.parseInt(amt1.getText());
-				*/
-				//payt=paytt1.getSelectedItem();
+				
+				payt=paytt1.getSelectedItem();
 				dat1=Integer.parseInt(datt1.getText());
 				dat2=Integer.parseInt(datt2.getText());
 				dat3=Integer.parseInt(datt3.getText());
-				/*
+				
 				startm=Integer.parseInt(startm1.getText());
 				starty=Integer.parseInt(starty1.getText());
 				
@@ -794,17 +790,16 @@ public class modify extends JFrame implements ActionListener, ItemListener
 				c14.st.close();
 				c14.con.close();
 				
-				
+				/*
 				//database query for payment fragment
 				
-				connect paymentConn=new connect();
-				//c5.a=c5.st.executeUpdate("update payment set payt='"+payt+"', chno="+chno+", datd="+dat1+", datm="+dat2+", daty="+dat3+", amt="+amt+", startm="+startm+", starty="+starty+", endm="+endm+", endy="+endy+" where asn="+asn);
-                                paymentConn.a=paymentConn.st.executeUpdate("update payment set datd="+dat1+", datm="+dat2+", daty="+dat3+" where asn="+asn);
-				if(paymentConn.a==1)
+				connect c5=new connect();
+				c5.a=c5.st.executeUpdate("update payment set payt='"+payt+"', chno="+chno+", datd="+dat1+", datm="+dat2+", daty="+dat3+", amt="+amt+", startm="+startm+", starty="+starty+", endm="+endm+", endy="+endy+" where asn="+asn);
+				if(c5.a==1)
 					flag=flag+1;
-				paymentConn.st.close();
-				paymentConn.con.close();
-				
+				c5.st.close();
+				c5.con.close();
+				*/
 				
 				//database query for subscription details fragment
 				
@@ -829,7 +824,7 @@ public class modify extends JFrame implements ActionListener, ItemListener
 				c5.st.close();
 				c5.con.close();
 			
-				if(flag==4)
+				if(flag==3)
 				{
 					JOptionPane.showMessageDialog(this, "RECORD MODIFIED SUCCESSFULLY", "SUCCESS", JOptionPane.INFORMATION_MESSAGE);
 					flag=0;

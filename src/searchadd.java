@@ -120,7 +120,7 @@ public class searchadd extends JFrame implements ActionListener
 			
 					connect c2=new connect();
 			
-					c2.rs=c2.st.executeQuery("select b.asn, s.fname, s.lname, s.dist, s.state from basic b, subdetails s where b.asn=s.asn and (s.add1 like '%"+t1.getText()+"%' or s.add2 like '%"+t1.getText()+"%' or s.add3 like '%"+t1.getText()+"%')");	
+					c2.rs=c2.st.executeQuery("select b.asn, s.fname, s.lname, s.dist, s.state from basic b, subdetails s where b.asn=s.asn and (s.add1 like '"+t1.getText()+"%' or s.add2 like '%"+t1.getText()+"%' or s.add3 like '%"+t1.getText()+"%')");	
 					Object data[][]= new Object[i][5];
 					int z=0;
 					int j=0;

@@ -156,10 +156,10 @@ public class searchcombo extends JFrame implements ActionListener
 				String s="select s.asn , s.fname , s.lname , s.dist , s.state from subdetails s, basic b where b.asn=s.asn ";
 				
 				if(s1.length()>0)
-					s+="and s.fname like '%"+s1+"%' ";
+					s+="and s.fname like '"+s1+"%' ";
 				
 				if(s2.length()>0)
-					s+="and s.lname like '%"+s2+"%' ";
+					s+="and s.lname like '"+s2+"%' ";
 				
 				
 				if(s3.length()>0)
