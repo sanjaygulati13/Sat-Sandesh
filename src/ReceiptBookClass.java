@@ -24,8 +24,8 @@ import javax.swing.UIManager;
 public class ReceiptBookClass implements ActionListener {
     
     Object[] numReceiptValues = { "20", "25", "40", "50", "60" };
-    JLabel seriesLabel, receiptNumLabel, bookletNumLabel, startingReceiptNumLabel;
-    TextFieldWithLimit seriesText, bookletNumText, startingReceiptNumText;
+    JLabel seriesLabel, receiptNumLabel, bookletNumLabel, startingReceiptNumLabel, startingBookNumberLabel;
+    TextFieldWithLimit seriesText, bookletNumText, startingReceiptNumText, startingBookNumberText;
     JComboBox receiptNumComboBox;
     JButton okButton, cancelButton;
     JFrame receiptWindow;
@@ -44,7 +44,7 @@ public class ReceiptBookClass implements ActionListener {
                 }
             }
         );
-        receiptWindow.setSize(500,250);
+        receiptWindow.setSize(500,300);
         //Getting the size of the screen, so that the window can 
         // adjust itself at the center of the screen
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -72,11 +72,14 @@ public class ReceiptBookClass implements ActionListener {
         bookletNumLabel = new JLabel("<HTML>No of Booklets</HTML>");
         startingReceiptNumLabel = new JLabel();
         startingReceiptNumLabel.setText("<HTML>Starting Receipt No.</HTML>");
+        startingBookNumberLabel = new JLabel();
+        startingBookNumberLabel.setText("<HTML>Starting Book No.</HTML>");
         
         seriesText = new TextFieldWithLimit(25, 25);
         receiptNumComboBox = new JComboBox(numReceiptValues);
         bookletNumText = new TextFieldWithLimit(4, 4);
         startingReceiptNumText = new TextFieldWithLimit(5, 5);
+        startingBookNumberText = new TextFieldWithLimit(5, 5);
         
         okButton = new JButton("OK");
         okButton.addActionListener(this);
@@ -101,10 +104,13 @@ public class ReceiptBookClass implements ActionListener {
         startingReceiptNumLabel.setBounds(300,80,90,30);
         startingReceiptNumText.setBounds(400,80,50,30);
         
-        okButton.setBounds(frameSize.width/4, 130, frameSize.width/4 - 10 , 30);
+        startingBookNumberLabel.setBounds(frameSize.width/4, 130, frameSize.width/4 - 10 , 30);
+        startingBookNumberText.setBounds(frameSize.width/2, 130, frameSize.width/4 -10 , 30);
+        
+        okButton.setBounds(frameSize.width/4, 180, frameSize.width/4 - 10 , 30);
         okButton.setMnemonic('o');
         
-        cancelButton.setBounds(frameSize.width/2, 130, frameSize.width/4 -10 , 30);
+        cancelButton.setBounds(frameSize.width/2, 180, frameSize.width/4 -10 , 30);
         cancelButton.setMnemonic('c');
         
         //adding the GUI elements to frame
@@ -116,6 +122,8 @@ public class ReceiptBookClass implements ActionListener {
         receiptWindow.add(bookletNumText);
         receiptWindow.add(startingReceiptNumLabel);
         receiptWindow.add(startingReceiptNumText);
+        receiptWindow.add(startingBookNumberLabel);
+        receiptWindow.add(startingBookNumberText);
         receiptWindow.add(okButton);
         receiptWindow.add(cancelButton);
               
@@ -138,17 +146,44 @@ public class ReceiptBookClass implements ActionListener {
             String receiptString = (String)(receiptNumComboBox.getSelectedItem());
             String bookletString = bookletNumText.getText();
             String startingString = startingReceiptNumText.getText();
-            if(!seriesName.isEmpty() && !receiptString.isEmpty() && !bookletString.isEmpty() && !startingString.isEmpty())
+            String startingBookNum = startingBookNumberText.getText();
+            int startingNum = 0, numReceipts = 0, numBooklets = 0;
+            int bookNum = 0;
+            if(!seriesName.isEmpty() && !receiptString.isEmpty() && !bookletString.isEmpty() && !startingString.isEmpty() && !startingBookNum.isEmpty())
             {
                 
-                int numReceipts = Integer.parseInt(receiptString);
-                int numBooklets = Integer.parseInt(bookletString);
-                int startingNum = Integer.parseInt(startingString);
-                JOptionPane.showConfirmDialog(receiptWindow, "S::"+seriesName+" N::"+numReceipts+" B::"+numBooklets+" s::"+startingNum);
+                numReceipts = Integer.parseInt(receiptString);
+                numBooklets = Integer.parseInt(bookletString);
+                startingNum = Integer.parseInt(startingString);
+                bookNum = Integer.parseInt(startingBookNum);
+                JOptionPane.showConfirmDialog(receiptWindow, "Are you sure ?");
             }
             else
                 JOptionPane.showMessageDialog(receiptWindow, "Please fill all the fields");
+            //int startingRcptNum = startingNum;
             
+            for(int currRcpt  = 0; currRcpt < numBooklets ; currRcpt++)
+            {
+                
+                //ending number for current receipt book
+                int endingNum = startingNum + numReceipts - 1;
+                connect seriesConnection = new connect();
+                String sqlQuery = "insert into receipt_book_inventory values ( '"+seriesName+"', "+(bookNum++)+", "+numReceipts+" , "+startingNum+", "+endingNum+", '' , '' , '0000-00-00' , '"+SamsAddons.getCurrentSqlDate()+"' ) ";
+                try
+                {
+                    
+                    seriesConnection.a = seriesConnection.st.executeUpdate(sqlQuery);
+                    //System.out.println("status :: " + seriesConnection.a + " " +sqlQuery) ;
+                }
+                catch(Exception e)
+                {
+                    JOptionPane.showMessageDialog(null, "Data Already Exists");
+                    //e.printStackTrace();
+                    //System.exit(0);
+                }
+                startingNum += numReceipts;
+                seriesConnection.closeAll();
+            }
             
         }
         else if(event.getSource() == cancelButton)

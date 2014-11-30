@@ -24,5 +24,19 @@ public class connect
 			e.printStackTrace();
 		}
 	}
+        public void closeAll()
+        {
+            try
+            {
+                con.close();
+            }
+            catch(Exception exp)
+            {
+                //Except.except(exp, "connect.java--Error in close()");
+                //exp.printStackTrace();
+                
+            }
+
+        }
 	
 }

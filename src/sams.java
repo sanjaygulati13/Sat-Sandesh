@@ -26,9 +26,9 @@ public class sams extends JFrame implements ActionListener {
 
     //ImageIcon img;
     JMenuBar mbar;
-    JMenu sub, dis, mis, search, lab, month, rem, mem;
+    JMenu sub, dis, mis, search, lab, month, rem, mem, inventory_management_menu;
     JMenuItem new1, renew, des, rembulk, remsub, cross, memd, mems, bulk, subno, all, dno, remstatus, dstatus, left;
-
+    
     //miscellaneous
     JMenu recdel, oth, despatch, freeze, inactive, deactive, accdet, petty_menu;
     JMenuItem rcptdet, accnt, accntsum,accnt_monthly, accnt_yearly, despdet, moddesp, retb,retl, freezed, freezes, deactived, deactives, inactived, inactives, state, district,subl, dnol, pet,petty_month, petty_year, dup;
@@ -38,7 +38,17 @@ public class sams extends JFrame implements ActionListener {
     JButton newb, renewb, memstatusb, reminderb, labelsubb, labeldistb, indexb, backupb;
     Font f = new Font("ARIAL", Font.BOLD, 14);
     JLabel l1, l2;
-
+    //inventory management
+    JMenu receipt_book_menu, sat_sandesh_menu, receipt_issue_details_menu;
+    JMenuItem receipt_add_new_series_menu_item, issue_new_receipt_book_menu_item, issue_reissue_menu_item;
+    JMenuItem issue_receipt_book_status, issue_series_issue_details;
+    
+    JMenu add_inventory_menu, issue_inventory_menu, report_inventory_menu;
+    JMenuItem new_inventory_menu_item, edit_inventory_menu_item;
+    JMenuItem distribute_inventory_menu_item, bind_inventory_menu_item;
+    JMenuItem summary_inventory_report_menu_item, detailed_inventory_report_menu_item;
+    
+    
     public sams() {
 
 
@@ -71,6 +81,10 @@ public class sams extends JFrame implements ActionListener {
         dis.setMnemonic('d');
         mis = new JMenu("Miscellaneous");								//miscellaneous
         mis.setMnemonic('m');
+        
+        inventory_management_menu = new JMenu("Inventory Management");
+        inventory_management_menu.setMnemonic('i');
+        
         search = new JMenu("Search");									//search
         search.setMnemonic('e');
         lab = new JMenu("Labels");									//labels--d/p
@@ -233,8 +247,71 @@ public class sams extends JFrame implements ActionListener {
         inactives = new JMenuItem("Summary");
         inactives.setMnemonic('S');
 
-
-
+        /* Receipt Book Menu under Inventory Management Menu*/
+        receipt_book_menu = new JMenu("Receipt Book");
+        receipt_book_menu.setMnemonic('r');
+        
+        receipt_add_new_series_menu_item = new JMenuItem("Add New Series");
+        receipt_add_new_series_menu_item.setMnemonic('a');
+        receipt_add_new_series_menu_item.addActionListener(this);
+        
+        receipt_issue_details_menu = new JMenu("Issue Details");
+        receipt_issue_details_menu.setMnemonic('i');
+        
+        issue_new_receipt_book_menu_item = new JMenuItem("New Receipt Book");
+        issue_new_receipt_book_menu_item.setMnemonic('n');
+        issue_new_receipt_book_menu_item.addActionListener(this);
+        
+        issue_receipt_book_status = new JMenuItem("Receipt Book Status");
+        issue_receipt_book_status.setMnemonic('r');
+        issue_receipt_book_status.addActionListener(this);
+        
+        issue_reissue_menu_item = new JMenuItem("Re-Issue/Revert Back");
+        issue_reissue_menu_item.setMnemonic('b');
+        issue_reissue_menu_item.addActionListener(this);
+        
+        issue_series_issue_details = new JMenuItem("Series Issue Details");
+        issue_series_issue_details.setMnemonic('s');
+        issue_series_issue_details.addActionListener(this);
+        
+        /*Sat Sandesh Menu under Inventory management Menu*/
+        sat_sandesh_menu = new JMenu("Sat Sandesh");
+        sat_sandesh_menu.setMnemonic('s');
+        
+        
+        add_inventory_menu  = new JMenu("Add Inventory");
+        add_inventory_menu.setMnemonic('a');
+        
+        issue_inventory_menu = new JMenu("Issue Inventory");
+        issue_inventory_menu.setMnemonic('i');
+        
+        report_inventory_menu = new JMenu("Report");
+        report_inventory_menu.setMnemonic('r');
+        
+        new_inventory_menu_item = new JMenuItem("New");
+        new_inventory_menu_item.setMnemonic('S');
+        new_inventory_menu_item.addActionListener(this);
+        
+        edit_inventory_menu_item = new JMenuItem("Edit");
+        edit_inventory_menu_item.setMnemonic('S');
+        edit_inventory_menu_item.addActionListener(this);
+        
+        distribute_inventory_menu_item = new JMenuItem("Distribution");
+        distribute_inventory_menu_item.setMnemonic('S');
+        distribute_inventory_menu_item.addActionListener(this);
+        
+        bind_inventory_menu_item = new JMenuItem("Binding");
+        bind_inventory_menu_item.setMnemonic('S');
+        bind_inventory_menu_item.addActionListener(this);
+        
+        summary_inventory_report_menu_item = new JMenuItem("Summary");
+        summary_inventory_report_menu_item.setMnemonic('S');
+        summary_inventory_report_menu_item.addActionListener(this);
+        
+        detailed_inventory_report_menu_item = new JMenuItem("Detailed");
+        detailed_inventory_report_menu_item.setMnemonic('S');
+        detailed_inventory_report_menu_item.addActionListener(this);
+        
 
         searchsubno = new JMenuItem("Search By Sub No");				// search options
         searchsubno.setMnemonic('S');
@@ -393,6 +470,30 @@ public class sams extends JFrame implements ActionListener {
         oth.add(subl);
         oth.add(dnol);
 
+        //=============Inventory Management Menu----------------------//
+        inventory_management_menu.add(receipt_book_menu);
+        inventory_management_menu.add(sat_sandesh_menu);
+        
+        sat_sandesh_menu.add(add_inventory_menu);
+        sat_sandesh_menu.add(issue_inventory_menu);
+        sat_sandesh_menu.add(report_inventory_menu);
+        
+        add_inventory_menu.add(new_inventory_menu_item);
+        add_inventory_menu.add(edit_inventory_menu_item);
+        
+        issue_inventory_menu.add(distribute_inventory_menu_item);
+        issue_inventory_menu.add(bind_inventory_menu_item);
+        
+        report_inventory_menu.add(summary_inventory_report_menu_item);
+        report_inventory_menu.add(detailed_inventory_report_menu_item);
+        
+        receipt_book_menu.add(receipt_add_new_series_menu_item);
+        receipt_book_menu.add(receipt_issue_details_menu);
+        
+        receipt_issue_details_menu.add(issue_new_receipt_book_menu_item);
+        receipt_issue_details_menu.add(issue_reissue_menu_item);
+        receipt_issue_details_menu.add(issue_receipt_book_status);
+        receipt_issue_details_menu.add(issue_series_issue_details);
 
         //----------------search menu --------------------------------//
         search.add(searchsubno);
@@ -461,6 +562,7 @@ public class sams extends JFrame implements ActionListener {
         mbar.add(sub);
         mbar.add(dis);
         mbar.add(mis);
+        mbar.add(inventory_management_menu);
         mbar.add(search);
 
 
@@ -469,6 +571,7 @@ public class sams extends JFrame implements ActionListener {
 
     }
 
+    @Override
     public void actionPerformed(ActionEvent ae) {
         if (ae.getSource() == newb) {
             new entry();
@@ -745,6 +848,53 @@ public class sams extends JFrame implements ActionListener {
 
         if (ae.getSource() == moddesp) {
             new moddesp();
+            this.dispose();
+        }
+        
+        if(ae.getSource() == receipt_add_new_series_menu_item)
+        {
+            new ReceiptBookClass();
+            this.dispose();
+        }
+        
+        if(ae.getSource() == issue_new_receipt_book_menu_item)
+        {
+            new IssueReceiptBookClass();
+            this.dispose();
+        }
+        
+        if(ae.getSource() == issue_reissue_menu_item)
+        {
+            this.setVisible(false);
+            new InventorySubIssueDetailsClass();
+            this.dispose();
+        }
+        
+        if(ae.getSource() == new_inventory_menu_item)
+        {
+            this.setVisible(false);
+            new SatSandeshInventory();
+            this.dispose();
+        }
+        
+        if(ae.getSource() == distribute_inventory_menu_item)
+        {
+            this.setVisible(false);
+            new SatSandeshInventoryIssue();
+            this.dispose();
+        }
+        
+        if(ae.getSource() == summary_inventory_report_menu_item)
+        {
+            this.setVisible(false);
+            new SatSandeshInventorySummaryReport();
+            this.dispose();
+        }
+        
+        if(ae.getSource() == detailed_inventory_report_menu_item)
+        {
+            this.setVisible(false);
+            new SatSandeshInventoryReport();
             this.dispose();
         }
 

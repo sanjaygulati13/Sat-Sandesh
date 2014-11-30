@@ -3,6 +3,8 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JButton;
@@ -18,7 +20,7 @@ import net.miginfocom.swing.MigLayout;
  *
  * @author Sanjay
  */
-public class IssueReceiptBookClass implements ActionListener {
+public class IssueReceiptBookClass implements ActionListener, ItemListener {
     
     //Data Type declarations
     JFrame issueReceiptBookWindow;
@@ -77,9 +79,15 @@ public class IssueReceiptBookClass implements ActionListener {
         issuedByLabel = new JLabel("<HTML>Issued By</HTML>");
         
         //DropDowns
-        seriesDropDown = new JComboBox();
+        //fill the information from the database while initialization
+        seriesDropDown = new JComboBox(fillSeriesNameInformation());
+        
+        
         bookNumDropDown = new JComboBox();
         stallDropDown = new JComboBox(stalls);
+        
+        seriesDropDown.addItemListener(this);
+        bookNumDropDown.addItemListener(this);
         
         //TextFields
         issueDatetext = new TextFieldWithLimit( 2 , 2 );
@@ -126,6 +134,8 @@ public class IssueReceiptBookClass implements ActionListener {
         issueReceiptBookWindow.add(okButton, "gapleft 80, w :90:, span 2");
         issueReceiptBookWindow.add(cancelButton, "gapleft 60, w :90: ,span 3");
         
+        //populate information from datatbase
+        //fillSeriesNameInformation();
     
         //this is the last statement in the constructor, to make the frame visible
         // all the population of data structures has to be done before showing the frame
@@ -138,25 +148,50 @@ public class IssueReceiptBookClass implements ActionListener {
         if(event.getSource() == okButton)
         {
             //gather the info from user input into the frame
-            /*
-            String seriesName = seriesText.getText();
-            String receiptString = (String)(receiptNumComboBox.getSelectedItem());
-            String bookletString = bookletNumText.getText();
-            String startingString = startingReceiptNumText.getText();
-            if(!seriesName.isEmpty() && !receiptString.isEmpty() && !bookletString.isEmpty() && !startingString.isEmpty())
+            
+            String seriesName = (String)seriesDropDown.getSelectedItem();
+            String bookNumString = (String)(bookNumDropDown.getSelectedItem());
+            //String fromNum = fromText.getText();
+            //String toNum = toText.getText();
+            String issuedTo = (String)stallDropDown.getSelectedItem();
+            String issueDate = issueDateYearText.getText()+"-"+issueDateMonthtext.getText()+"-"+issueDatetext.getText();
+            String issuedBy = issuedByText.getText();
+            if(!seriesName.isEmpty() 
+                    && !bookNumString.isEmpty() 
+                    //&& !fromNum.isEmpty() 
+                    //&& !toNum.isEmpty()
+                    && !issuedTo.isEmpty()
+                    && !issueDate.isEmpty()
+                    )
             {
                 
-                int numReceipts = Integer.parseInt(receiptString);
-                int numBooklets = Integer.parseInt(bookletString);
-                int startingNum = Integer.parseInt(startingString);*/
-                JOptionPane.showConfirmDialog(issueReceiptBookWindow, "Are you sure ?");
-                /*
+                int bookNum = Integer.parseInt(bookNumString);
+                //int from = Integer.parseInt(fromNum);
+                //int to = Integer.parseInt(toNum);
+                String sqlQuery = "update receipt_book_inventory set issued_to = '"+issuedTo+"' , issued_date = '"+issueDate+"', issued_by = '"+issuedBy+"' where series_name = '"+seriesName+"' and book_num = "+bookNum;
+                int option = JOptionPane.showConfirmDialog(issueReceiptBookWindow, "Are you sure ?");
+                System.out.println("option :: "+option);
+                if(option == 0)
+                {
+                    connect updateconnection = new connect();
+                    try
+                    {
+                        System.out.println(sqlQuery);
+                        updateconnection.a = updateconnection.st.executeUpdate(sqlQuery);
+                    }
+                    catch(Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                    updateconnection.closeAll();
+                    
+                }
             }
              
              
               else 
                 JOptionPane.showMessageDialog(issueReceiptBookWindow, "Please fill all the fields");
-             */
+             
             
             
         }
@@ -170,9 +205,108 @@ public class IssueReceiptBookClass implements ActionListener {
         
     }
     
+    public void itemStateChanged(ItemEvent ie)
+    {
+        if(ie.getSource() == seriesDropDown)
+        {
+            fillRecptNumInformation(bookNumDropDown, (String)seriesDropDown.getSelectedItem());
+        }
+        else if(ie.getSource() == bookNumDropDown)
+        {
+            String rcptNum =  (String)bookNumDropDown.getSelectedItem();
+            String seriesName = (String)seriesDropDown.getSelectedItem();
+            String sqlQuery = "select start_rcpt_num, end_rcpt_num from receipt_book_inventory where series_name = '"+seriesName+"' and book_num= "+rcptNum ;
+            connect fillInfo = new connect();
+            try
+            {
+                fillInfo.rs = fillInfo.st.executeQuery(sqlQuery);
+                fillInfo.rs.next();
+                int startNum = fillInfo.rs.getInt(1);
+                fromText.setText(""+startNum);
+                
+                
+                
+                int endNum = fillInfo.rs.getInt(2);
+                toText.setText(""+endNum);
+            }
+            catch(Exception e)
+            {
+                        
+            }
+            fillInfo.closeAll();
+        }
+    }
+    
     public static void main(String args[])
     {
         new IssueReceiptBookClass();
     }
     
+    static public Object[] fillSeriesNameInformation()
+    {
+        connect fillSerieConnection = new connect();
+        Object[] seriesNameArray = null;
+        try 
+        {
+            String query = "select distinct series_name from receipt_book_inventory";
+            String countQuery = "select count(distinct series_name) from receipt_book_inventory";
+
+            fillSerieConnection.rs = fillSerieConnection.st.executeQuery(countQuery);
+            fillSerieConnection.rs.next();
+            int ArrayCount = fillSerieConnection.rs.getInt(1);
+            //System.out.println(ArrayCount+1);
+            seriesNameArray = new Object[ArrayCount + 1];
+            seriesNameArray[0] = "";
+            fillSerieConnection.rs = fillSerieConnection.st.executeQuery(query);
+            //CodeChooser.addItem("");
+            int i = 1;
+            while (fillSerieConnection.rs.next()) {
+                seriesNameArray[i] = fillSerieConnection.rs.getString(1);
+                i++;
+            }
+
+            fillSerieConnection.closeAll();
+        } catch (Exception exc) {
+            //exc.printStackTrace();
+            //Except.except(exc, "ADD JOB CARD--Raw Material Thread Error");
+            fillSerieConnection.closeAll();
+        }
+        return seriesNameArray;
+    }
+    
+    public static void fillRecptNumInformation(JComboBox bookNumDropDown, String series_name)
+    {
+        connect fillRcptNumConnection = new connect();
+        //Object[] bookNumArray = null;
+        try 
+        {
+            String query = "select book_num from receipt_book_inventory where series_name = '"+series_name+"'";
+            String countQuery = "select count(book_num) from receipt_book_inventory where series_name = '"+series_name+"'";
+
+            fillRcptNumConnection.rs = fillRcptNumConnection.st.executeQuery(countQuery);
+            fillRcptNumConnection.rs.next();
+            int ArrayCount = fillRcptNumConnection.rs.getInt(1);
+            //System.out.println(query);
+            //bookNumArray = new Object[ArrayCount + 1];
+            //bookNumArray[0] = "";
+            fillRcptNumConnection.rs = fillRcptNumConnection.st.executeQuery(query);
+            //CodeChooser.addItem("");
+            int i = 1;
+            bookNumDropDown.removeAllItems();
+            while (fillRcptNumConnection.rs.next()) {
+                //bookNumArray[i] = fillRcptNumConnection.rs.getString(1);
+                //System.out.println("Adding Item " + fillRcptNumConnection.rs.getString(1));
+                bookNumDropDown.addItem(fillRcptNumConnection.rs.getString(1));
+                //i++;
+            }
+            System.out.println(bookNumDropDown.getSelectedObjects().length);
+
+            fillRcptNumConnection.closeAll();
+        } catch (Exception exc) {
+            //exc.printStackTrace();
+            //Except.except(exc, "ADD JOB CARD--Raw Material Thread Error");
+            fillRcptNumConnection.closeAll();
+        }
+        //return bookNumArray;
+    }
 }

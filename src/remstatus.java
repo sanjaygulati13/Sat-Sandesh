@@ -403,61 +403,61 @@ public class remstatus extends JFrame implements ActionListener, Printable
 		
 		if(e.getSource()==print1)
 		{
-			
-			
-			
-			PrinterJob job = PrinterJob.getPrinterJob();
-         	job.setPrintable(this);
-         	
-         	int res = JOptionPane.showConfirmDialog(null,"You want to configure your print ","** PRINTING **", JOptionPane.YES_NO_OPTION); 
-			if( res == JOptionPane.YES_OPTION ) { 
-			//if (res == JOptionPane.YES_OPTION) ( 
-			//	PageFormat format = job.pageDialog(job.defaultPage()); 
-				PageFormat format = job.pageDialog (job.defaultPage ()); 
-				} //) 
-
-         	
-         	boolean ok = job.printDialog();
-         	if (ok) 
-         	{
-            	try 
-            	{
-                  	job.print();
-             	}
-             	catch (PrinterException ex) 
-             	{
-              		/* The job did not successfully complete */
-             	}
+                    
+                    
+                    
+                    PrinterJob job = PrinterJob.getPrinterJob();
+                    job.setPrintable(this);
+                    
+                    int res = JOptionPane.showConfirmDialog(null,"You want to configure your print ","** PRINTING **", JOptionPane.YES_NO_OPTION);
+                    if( res == JOptionPane.YES_OPTION ) {
+                        //if (res == JOptionPane.YES_OPTION) (
+                        //	PageFormat format = job.pageDialog(job.defaultPage());
+                        PageFormat format = job.pageDialog (job.defaultPage ());
+                    } //)
+                    
+                    
+                    boolean ok = job.printDialog();
+                    if (ok)
+                    {
+                        try
+                        {
+                            job.print();
+                        }
+                        catch (PrinterException ex)
+                        {
+                            /* The job did not successfully complete */
+                        }
          	}
 			
-		}
-		
-		
-	}
-	
-	 public int print(Graphics g, PageFormat pf, int page) throws
-                                                        PrinterException {
-
-		pf.setOrientation(PageFormat.LANDSCAPE);
-        if (page > 0) { /* We have only one page, and 'page' is zero-based */
-            return NO_SUCH_PAGE;
+                }
+                
+                
         }
-
-        /* User (0,0) is typically outside the imageable area, so we must
-         * translate by the X and Y values in the PageFormat to avoid clipping
-         */
-         
-        Graphics2D g2d = (Graphics2D)g;
-        g2d.translate(pf.getImageableX(), pf.getImageableY());
-		
-		
-		g2d.scale(pf.getImageableWidth()/frameToPrint.getWidth(), pf.getImageableHeight()/frameToPrint.getHeight());
-		
-        /* Now print the window and its visible contents */
-        frameToPrint.printAll(g);
-
-        /* tell the caller that this page is part of the printed document */
-        return PAGE_EXISTS;
+        
+        public int print(Graphics g, PageFormat pf, int page) throws
+                PrinterException {
+            
+            pf.setOrientation(PageFormat.LANDSCAPE);
+            if (page > 0) { /* We have only one page, and 'page' is zero-based */
+                return NO_SUCH_PAGE;
+            }
+            
+            /* User (0,0) is typically outside the imageable area, so we must
+             * translate by the X and Y values in the PageFormat to avoid clipping
+             */
+            
+            Graphics2D g2d = (Graphics2D)g;
+            g2d.translate(pf.getImageableX(), pf.getImageableY());
+            
+            
+            g2d.scale(pf.getImageableWidth()/frameToPrint.getWidth(), pf.getImageableHeight()/frameToPrint.getHeight());
+            
+            /* Now print the window and its visible contents */
+            frameToPrint.printAll(g);
+            
+            /* tell the caller that this page is part of the printed document */
+            return PAGE_EXISTS;
     }
 	
 	
