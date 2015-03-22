@@ -197,7 +197,7 @@ public class modify extends JFrame implements ActionListener, ItemListener
 		subt22.addItem("PB");
 		subt22.addItem("PJ");
 		subt22.addItem("RJ");
-		subt22.addItem("UA");
+		subt22.addItem("UK");
 		subt22.addItem("UP");
 		subt22.addItem("UR");
 		
@@ -1021,9 +1021,9 @@ public class modify extends JFrame implements ActionListener, ItemListener
                 dist21.setText("");
 			}
 
-			if(subt22.getSelectedItem()=="UA")
+			if(subt22.getSelectedItem()=="UK")
 			{
-				statt1.setText("UA");
+				statt1.setText("UK");
 				statt1.setEnabled(false);
 				distt1.setSelectedItem("By Post");
 				distt1.setEnabled(false);

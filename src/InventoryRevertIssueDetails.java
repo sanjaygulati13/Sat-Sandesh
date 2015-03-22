@@ -26,12 +26,12 @@ import net.miginfocom.swing.MigLayout;
  *
  * @author sanjay gulati
  */
-public class InventorySubIssueDetailsClass implements ActionListener, ItemListener
+public class InventoryRevertIssueDetails implements ActionListener, ItemListener
 {
     
     public static void main(String args[])
     {
-        InventorySubIssueDetailsClass abc = new InventorySubIssueDetailsClass();
+        InventoryRevertIssueDetails abc = new InventoryRevertIssueDetails();
     }
     
     
@@ -43,22 +43,22 @@ public class InventorySubIssueDetailsClass implements ActionListener, ItemListen
     TextFieldWithLimit fromText, toText, issuedToStallText;
     JComboBox seriesDropDown, bookNumDropDown;
     
-    JLabel issuedToLabel, issueDateLabel, descriptionLabel, subgroupLabel, receiptFromLabel, receiptToLabel;
-    //JLabel revertBackFromLabel, revertBackToLabel;
+    JLabel issuedToLabel, issueDateLabel, descriptionLabel, receiptFromLabel, receiptToLabel;
+    JLabel revertBackFromLabel, revertBackToLabel;
     TextFieldWithLimit issuedToText, issueDateMonthtext, issueDateYearText, issueDatetext;
-    TextFieldWithLimit receiptFromText, receiptToText , descriptionText, subgroupText;
+    TextFieldWithLimit receiptFromText, receiptToText , descriptionText;
     
-    //JComboBox revertBackFromDropDown, revertBackToDropDown;
+    JComboBox revertBackFromDropDown, revertBackToDropDown;
     
     JButton okButton, cancelButton;
     MigLayout mLayout= new MigLayout( "insets 30");
     
-    //Object [] stalls = {"Kirpal Bagh", "Kirpal Ashram"};
+    Object [] stalls = {"Kirpal Bagh", "Kirpal Ashram"};
     
-    InventorySubIssueDetailsClass()
+    InventoryRevertIssueDetails()
     {
         //setting environment for the Frame issueReceiptBookWindow
-        subIssueReceiptBookWindow = new JFrame("Re issue Receipt Book");
+        subIssueReceiptBookWindow = new JFrame("Revert Receipt Book");
         subIssueReceiptBookWindow.setLayout(mLayout);
         subIssueReceiptBookWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         subIssueReceiptBookWindow.addWindowListener(new WindowAdapter() {
@@ -99,10 +99,8 @@ public class InventorySubIssueDetailsClass implements ActionListener, ItemListen
         bookNumLabel = new JLabel("<HTML>Receipt Book No</HTML>");
         fromLabel = new JLabel("<HTML>From</HTML>");
         toLabel = new JLabel("<HTML>To</HTML>"); 
-        issuedToStallLabel = new JLabel("<HTML>Stall</HTML>");
-        //issuedToLabel = new JLabel("<HTML>Stall</HTML>");
-        issueDateLabel = new JLabel("<HTML>Issue Date</HTML>");
-        
+        issuedToStallLabel = new JLabel("<HTML>Issued To Stall</HTML>");
+        issuedToLabel = new JLabel("<HTML>Issued To</HTML>");
         
         //DropDowns
         //fill the information from the database while initialization
@@ -122,6 +120,8 @@ public class InventorySubIssueDetailsClass implements ActionListener, ItemListen
         issuedToStallText.setEnabled(false);
         
         
+        issuedToLabel = new JLabel("<HTML>Issued To</HTML>");
+        issueDateLabel = new JLabel("<HTML>Issue Date</HTML>");
         
         issueDatetext = new TextFieldWithLimit( 2 , 2 );
         issueDateMonthtext = new TextFieldWithLimit( 2 , 2 );
@@ -133,14 +133,12 @@ public class InventorySubIssueDetailsClass implements ActionListener, ItemListen
         descriptionLabel = new JLabel("<HTML>Description</HTML>");
         descriptionText = new TextFieldWithLimit( 32 , 32 );
         
-        subgroupLabel = new JLabel("<HTML>Issued to </HTML>");
-        subgroupText = new TextFieldWithLimit( 40 , 40 );
-        
-        //revertBackFromLabel = new JLabel("<HTML>Revert From</HTML>");
-        //revertBackFromDropDown = new JComboBox();
+        revertBackFromLabel = new JLabel("<HTML>Revert From</HTML>");
+        revertBackFromDropDown = new JComboBox();
+        revertBackFromDropDown.addItemListener(this);
                 
-        //revertBackToLabel = new JLabel("<HTML>Revert To</HTML>");
-        //revertBackToDropDown = new JComboBox();
+        revertBackToLabel = new JLabel("<HTML>Revert To</HTML>");
+        revertBackToDropDown = new JComboBox(stalls);
         
                 
         receiptFromLabel= new JLabel("<HTML>Receipt From</HTML>");
@@ -168,21 +166,19 @@ public class InventorySubIssueDetailsClass implements ActionListener, ItemListen
         subIssueReceiptBookWindow.add(toLabel);
         subIssueReceiptBookWindow.add(toText, "span 3, w :90:, wrap 20px");
         subIssueReceiptBookWindow.add(issuedToStallLabel);
-        subIssueReceiptBookWindow.add(issuedToStallText, "span 2, w 120!");
+        subIssueReceiptBookWindow.add(issuedToStallText, "span 2, w 130!");
         subIssueReceiptBookWindow.add(issueDateLabel);
         subIssueReceiptBookWindow.add(issueDatetext, "split 3, w 30!");
         subIssueReceiptBookWindow.add(issueDateMonthtext, " w 30!");
         subIssueReceiptBookWindow.add(issueDateYearText, "w 50! , wrap 20px");
         
         subIssueReceiptBookWindow.add(new JSeparator(SwingConstants.HORIZONTAL),"span 5,w 400!, wrap 20px");
-        subIssueReceiptBookWindow.add(descriptionLabel);
-        subIssueReceiptBookWindow.add(descriptionText,"span 2, w 100!");
-        subIssueReceiptBookWindow.add(subgroupLabel);
-        subIssueReceiptBookWindow.add(subgroupText,"span 2, w 100!, wrap 20px");
-        //subIssueReceiptBookWindow.add(revertBackFromLabel);
-        //subIssueReceiptBookWindow.add(revertBackFromDropDown,"span 2 , w 100!");
-        //subIssueReceiptBookWindow.add(revertBackToLabel);
-        //subIssueReceiptBookWindow.add(revertBackToDropDown,"span 2 , w 100!, wrap 20px");
+        //subIssueReceiptBookWindow.add(descriptionLabel);
+        //subIssueReceiptBookWindow.add(descriptionText,"span 2, w 100!, wrap 20px");
+        subIssueReceiptBookWindow.add(revertBackFromLabel);
+        subIssueReceiptBookWindow.add(revertBackFromDropDown,"span 2 , w 130!");
+        subIssueReceiptBookWindow.add(revertBackToLabel);
+        subIssueReceiptBookWindow.add(revertBackToDropDown,"span 2 , w 140!, wrap 20px");
         
         subIssueReceiptBookWindow.add(receiptFromLabel);
         subIssueReceiptBookWindow.add(receiptFromText,"span 2, w 100!");
@@ -201,108 +197,61 @@ public class InventorySubIssueDetailsClass implements ActionListener, ItemListen
     {
         if(event.getSource() == okButton)
         {
-            //gather the info from user input into the frame
-            
+            //gather the info from user input into the frame     
             String seriesName = (String)seriesDropDown.getSelectedItem();
             String bookNumString = (String)(bookNumDropDown.getSelectedItem());
             String fromNum = receiptFromText.getText();
             String toNum = receiptToText.getText();
-            String stall = issuedToStallText.getText();
-            String issuingToGroup = subgroupText.getText();
-            String description = descriptionText.getText();
-            
-            String origFrom = fromText.getText();
-            String origTo = toText.getText();
-            
-            String issueDate = issueDateYearText.getText()+"-"+issueDateMonthtext.getText()+"-"+issueDatetext.getText();
+            String issuedToGroup = (String)revertBackFromDropDown.getSelectedItem();
             
             if(!seriesName.isEmpty() 
                     && !bookNumString.isEmpty() 
                     && !fromNum.isEmpty() 
                     && !toNum.isEmpty()
-                    && !stall.isEmpty()
-                    && !issueDate.isEmpty()
-                    && !issuingToGroup.isEmpty()
-                    && !origFrom.isEmpty()
-                    && !origTo.isEmpty()
+                    && !issuedToGroup.isEmpty()
                     )
             {
-                
+            
                 int bookNum = Integer.parseInt(bookNumString);
                 int from = Integer.parseInt(fromNum);
                 int to = Integer.parseInt(toNum);
                 
-                int origFromNum = Integer.parseInt(origFrom);
-                int origToNum = Integer.parseInt(origTo);
-                
-                if( to >= from && (from >= origFromNum && from <= origToNum) && (to <= origToNum))
+                if( to >= from)// && (from >= origFromNum && from <= origToNum) && (to <= origToNum))
                 {
-                    String currDate = SamsUtilities.getCurrentYear()+"-"+SamsUtilities.getCurrentMonth()+"-"+SamsUtilities.getCurrentDate(); 
+                    
                     int option = JOptionPane.showConfirmDialog(subIssueReceiptBookWindow, "Are you sure ?");
                     //System.out.println("option :: "+option);
                     if(option == 0)
                     {
                         connect updateconnection = new connect();
                         
-                        //check if any entry exists in the table
-                        int entryStart = 0;
-                        for(int rcpt = from; rcpt <=to; rcpt++)
+                        
+                        String sqlQuery = "delete from sub_issue_details  where series_name = '"+seriesName+"' and book_num = "+bookNum+" and issued_to =  '"+issuedToGroup+"' and rcpt_num >="+from+" and rcpt_num <="+to ;
+                        
+                        try
                         {
-                            String sqlQuery = "select rcpt_num from  sub_issue_details where series_name = '"+seriesName+"' and book_num =  "+bookNum+" and rcpt_num = "+rcpt;
-                            
-                            try
-                            {
-                                //System.out.println(sqlQuery);
-                                updateconnection.rs = updateconnection.st.executeQuery(sqlQuery);
-                                while(updateconnection.rs.next())
-                                {
-                                    if(entryStart == 0)
-                                    {
-                                        entryStart = updateconnection.rs.getInt(1);
-                                        break;
-                                    }
-                                }
-                            }
-                            catch(Exception e)
-                            {
-                                e.printStackTrace();
-                            }
+                            System.out.println(sqlQuery);
+                            updateconnection.a = updateconnection.st.executeUpdate(sqlQuery);
+                        }
+                        catch(Exception e)
+                        {
+                            e.printStackTrace();
                         }
                         
-                        if(entryStart == 0)
-                        {
-                            for(int rcpt = from; rcpt <=to; rcpt++)
-                            {
-                                String sqlQuery = "insert into sub_issue_details values ('"+seriesName+"', "+bookNum+", '"+issuingToGroup+"','"+issueDate+"','"+description+"','"+currDate+"',"+rcpt+",'"+stall+"' )";
-                                
-                                try
-                                {
-                                    //System.out.println(sqlQuery);
-                                    updateconnection.a = updateconnection.st.executeUpdate(sqlQuery);
-                                }
-                                catch(Exception e)
-                                {
-                                    e.printStackTrace();
-                                }
-                                
-                                
-                            }
-                        }
-                        else
-                            JOptionPane.showMessageDialog(subIssueReceiptBookWindow, "Entry already exist for receipt from : "+entryStart);
-                            
+                        
+                        //else
+                        //    JOptionPane.showMessageDialog(subIssueReceiptBookWindow, "Entry already exist for receipt from : "+entryStart);
+                        
                         updateconnection.closeAll();
-                        seriesDropDown.setSelectedItem(1);
-                        bookNumDropDown.setSelectedItem(1);
+                        seriesDropDown.setSelectedItem(0);
+                        bookNumDropDown.setSelectedItem(0);
                         receiptFromText.setText("");
                         receiptToText.setText("");
                         issuedToStallText.setText("");
-                        subgroupText.setText("");
                         descriptionText.setText("");
-                        
                         fromText.setText("");
                         toText.setText("");
-                        
+                        revertBackFromDropDown.removeAllItems();
                         issueDateYearText.setText(""+SamsUtilities.getCurrentYear());
                         issueDateMonthtext.setText(""+SamsUtilities.getCurrentMonth());
                         issueDatetext.setText("");
@@ -314,7 +263,9 @@ public class InventorySubIssueDetailsClass implements ActionListener, ItemListen
                 
             }
             else
-                JOptionPane.showMessageDialog(subIssueReceiptBookWindow, "Please fill all the fields");            
+                JOptionPane.showMessageDialog(subIssueReceiptBookWindow, "Please fill all the fields");
+            
+            
         }
         else if(event.getSource() == cancelButton)
         {
@@ -332,12 +283,10 @@ public class InventorySubIssueDetailsClass implements ActionListener, ItemListen
         {
             IssueReceiptBookClass.fillRecptNumInformation(bookNumDropDown, (String)seriesDropDown.getSelectedItem());
         }
-        if(ie.getSource() == bookNumDropDown)
+        else if(ie.getSource() == bookNumDropDown)
         {
             String rcptNum =  (String)bookNumDropDown.getSelectedItem();
             String seriesName = (String)seriesDropDown.getSelectedItem();
-            //if(!rcptNum.isEmpty())
-            {
             //int rcptNumInt = Integer.parseInt(rcptNum);
             String sqlQuery = "select start_rcpt_num, end_rcpt_num, issued_to from receipt_book_inventory where series_name = '"+seriesName+"' and book_num= "+rcptNum ;
             //System.out.println(sqlQuery);
@@ -347,16 +296,14 @@ public class InventorySubIssueDetailsClass implements ActionListener, ItemListen
                 fillInfo.rs = fillInfo.st.executeQuery(sqlQuery);
                 fillInfo.rs.next();
                 int startNum = fillInfo.rs.getInt(1);
-                String issued_to_stall = fillInfo.rs.getString(3);
-                int endNum = fillInfo.rs.getInt(2);
-                
                 fromText.setText(""+startNum);
+                int endNum = fillInfo.rs.getInt(2);
                 toText.setText(""+endNum);
-                
-                receiptFromText.setText(""+startNum);
-                receiptToText.setText(""+endNum);
-                
+                String issued_to_stall = fillInfo.rs.getString(3);
                 issuedToStallText.setText(issued_to_stall);
+                revertBackToDropDown.setSelectedItem((Object)issued_to_stall);
+                int rcpt = Integer.parseInt(rcptNum);
+                fillSubGroupInformationForSeries(revertBackFromDropDown,seriesName,rcpt);
             }
             catch(Exception e)
             {
@@ -366,12 +313,76 @@ public class InventorySubIssueDetailsClass implements ActionListener, ItemListen
                 
                 //System.out.println("Exception Caught");
                 //e.printStackTrace();
-                        
+                
             }
             fillInfo.closeAll();
+        }
+        else if(ie.getSource() == revertBackFromDropDown)
+        {
+            String rcptNum =  (String)bookNumDropDown.getSelectedItem();
+            String seriesName = (String)seriesDropDown.getSelectedItem();
+            String subgroupName = (String)revertBackFromDropDown.getSelectedItem();
+            //int rcptNumInt = Integer.parseInt(rcptNum);
+            //System.out.println(sqlQuery);
+            connect fillInfo = new connect();
+            try
+            {
+                String minSqlQuery = "select min(rcpt_num) from sub_issue_details where series_name='"+seriesName+"' and book_num="+rcptNum+" and issued_to='"+subgroupName+"'";
+                fillInfo.rs = fillInfo.st.executeQuery(minSqlQuery);
+                fillInfo.rs.next();
+                int minNum = fillInfo.rs.getInt(1);
+                receiptFromText.setText(""+minNum);
+                
+                String maxSqlQuery = "select max(rcpt_num) from sub_issue_details where series_name='"+seriesName+"' and book_num="+rcptNum+" and issued_to='"+subgroupName+"'";
+                fillInfo.rs = fillInfo.st.executeQuery(maxSqlQuery);
+                fillInfo.rs.next();
+                int maxNum = fillInfo.rs.getInt(1);
+                receiptToText.setText(""+maxNum);
+                
             }
-                    
+            catch(Exception e)
+            {
+                e.printStackTrace();
+            }
+            fillInfo.closeAll();
+            
         }
         
+    }
+    
+    void fillSubGroupInformationForSeries(JComboBox revertBackFromDropDown,String series, int bookNum)
+    {
+        connect fillSerieConnection = new connect();
+        Object[] seriesNameArray = null;
+        if(series.isEmpty() || bookNum == 0) return;
+        try
+        {
+            String query = "select distinct issued_to from sub_issue_details where series_name='"+series+"' and book_num="+bookNum;
+            String countQuery = "select count(distinct issued_to) from sub_issue_details where series_name='"+series+"' and book_num="+bookNum;
+            
+            fillSerieConnection.rs = fillSerieConnection.st.executeQuery(countQuery);
+            fillSerieConnection.rs.next();
+            int ArrayCount = fillSerieConnection.rs.getInt(1);
+            //System.out.println(ArrayCount+1);
+            //seriesNameArray = new Object[ArrayCount + 1];
+            //seriesNameArray[0] = "";
+            revertBackFromDropDown.removeAllItems();
+            fillSerieConnection.rs = fillSerieConnection.st.executeQuery(query);
+            //CodeChooser.addItem("");
+            int i = 1;
+            while (fillSerieConnection.rs.next()) {
+                Object subgroup = fillSerieConnection.rs.getString(1);
+                revertBackFromDropDown.addItem(subgroup);
+                //seriesNameArray[i] = fillSerieConnection.rs.getString(1);
+                //i++;
+            }
+            
+            fillSerieConnection.closeAll();
+        } catch (Exception exc) {
+            //exc.printStackTrace();
+            //Except.except(exc, "ADD JOB CARD--Raw Material Thread Error");
+            fillSerieConnection.closeAll();
+        }
+        //return seriesNameArray;
     }
 }

@@ -23,7 +23,7 @@ import javax.swing.UIManager;
         
 public class ReceiptBookClass implements ActionListener {
     
-    Object[] numReceiptValues = { "20", "25", "40", "50", "60" };
+    Object[] numReceiptValues = { "","20", "25", "40", "50", "60" };
     JLabel seriesLabel, receiptNumLabel, bookletNumLabel, startingReceiptNumLabel, startingBookNumberLabel;
     TextFieldWithLimit seriesText, bookletNumText, startingReceiptNumText, startingBookNumberText;
     JComboBox receiptNumComboBox;
@@ -67,13 +67,12 @@ public class ReceiptBookClass implements ActionListener {
         }
         
         //Populating the frame with information
-        seriesLabel = new JLabel("Series");
-        receiptNumLabel = new JLabel("<HTML>No of Receipts per Booklet</HTML>");
+        seriesLabel = new JLabel("<HTML>Series</HTML>");
+        receiptNumLabel = new JLabel("<HTML>Receipts per Booklet</HTML>");
         bookletNumLabel = new JLabel("<HTML>No of Booklets</HTML>");
-        startingReceiptNumLabel = new JLabel();
-        startingReceiptNumLabel.setText("<HTML>Starting Receipt No.</HTML>");
-        startingBookNumberLabel = new JLabel();
-        startingBookNumberLabel.setText("<HTML>Starting Book No.</HTML>");
+        startingReceiptNumLabel = new JLabel("<HTML>Starting Receipt No.</HTML>");
+        startingBookNumberLabel = new JLabel("<HTML>Starting Book No.</HTML>");
+        
         
         seriesText = new TextFieldWithLimit(25, 25);
         receiptNumComboBox = new JComboBox(numReceiptValues);
@@ -96,7 +95,7 @@ public class ReceiptBookClass implements ActionListener {
         seriesText.setBounds(100, 30, 180,30);
         
         receiptNumLabel.setBounds(300 ,30, 90,30);
-        receiptNumComboBox.setBounds(400,30,50,25);
+        receiptNumComboBox.setBounds(400,30,80,25);
         
         bookletNumLabel.setBounds(30, 80, 50,30);
         bookletNumText.setBounds(100,80,80,30);
@@ -184,7 +183,11 @@ public class ReceiptBookClass implements ActionListener {
                 startingNum += numReceipts;
                 seriesConnection.closeAll();
             }
-            
+            seriesText.setText(""); 
+            bookletNumText.setText(""); 
+            startingReceiptNumText.setText(""); 
+            startingBookNumberText.setText("");
+            receiptNumComboBox.setSelectedIndex(0);
         }
         else if(event.getSource() == cancelButton)
         {

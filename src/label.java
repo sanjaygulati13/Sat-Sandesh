@@ -31,7 +31,7 @@ public class label implements Printable, ActionListener
 		y1=y;
         lang=lang1;
 
-        f= new JFrame("print labels");
+        f= new JFrame("Print Labels");
     	try 
         {
             f.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("skrm.jpg")));

@@ -57,7 +57,7 @@ public class returnback extends JFrame implements ActionListener {
         subs.addItem("PB");
         subs.addItem("PJ");
         subs.addItem("RJ");
-        subs.addItem("UA");
+        subs.addItem("UK");
         subs.addItem("UP");
         //subs.addItem("UR");
         subs.setBounds(130, 30, 50, 20);

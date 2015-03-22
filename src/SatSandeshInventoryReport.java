@@ -41,9 +41,9 @@ public class SatSandeshInventoryReport implements ActionListener{
     JButton okButton, cancelButton, printButton;
     MigLayout mLayout= new MigLayout( "insets 30");
     
-    Object [] stalls = {"Kirpal Bagh", "Kirpal Ashram","Other"};
+    Object [] stalls = {"Main Store","Kirpal Bagh", "Kirpal Ashram","Other"};
     
-    Object col[]={"Month","Kirpal Bagh", "Kirpal Ashram","Other", "Total"};
+    Object col[]={"Month","Main Store","Kirpal Bagh", "Kirpal Ashram","Other", "Total"};
     
     String month[]={"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
     
@@ -147,8 +147,8 @@ public class SatSandeshInventoryReport implements ActionListener{
         if(event.getSource() == okButton)
         {
             int idx =0;
-            int stallQuantity[][] = new int[12][3];
-            int stallQuantityIssued[][] = new int[12][3];
+            int stallQuantity[][] = new int[12][4];
+            int stallQuantityIssued[][] = new int[12][4];
             try
             {
                 String yearString = (String)yearDropDown.getSelectedItem();
@@ -161,58 +161,91 @@ public class SatSandeshInventoryReport implements ActionListener{
                 
                 for(idx = 1; idx < 13; idx++)
                 {
-                    for(int stall = 0 ; stall < 3; stall++ )
+                    connect c1=new connect();
+                    connect c2=new connect();
+                    for(int stall = 0 ; stall < 4; stall++ )
                     {
-                        connect c1=new connect();
-                        String sqlQuery = "select quantity from sat_sandesh_inventory_issue where issue_year="+year+" and issue_month ="+idx+" and counter = '"+stalls[stall]+"' and language ='"+languageString+"'";
+                        
+                        String sqlQuery = "select quantity from sat_sandesh_inventory_issue where issue_year="+year+" and issue_month ="+idx+" and counter = '"+stalls[stall]+"' and language ='"+languageString+"' and issue_type not in ('Binding') and customer_name not in ('Binding')";
                         //System.out.println(sqlQuery);
                         c1.rs=c1.st.executeQuery(sqlQuery);
                         stallQuantityIssued[idx -1][stall] = 0;
                         while(c1.rs.next())
                         {
-                            stallQuantityIssued[idx -1][stall] = c1.rs.getInt(1);
+                            stallQuantityIssued[idx -1][stall] += c1.rs.getInt(1);
                         }
-                        c1.rs.close();
+                        
+                        sqlQuery = "select quantity from sat_sandesh_inventory_issue where issue_year="+year+" and issue_month ="+idx+" and counter = '"+stalls[stall]+"' and language ='"+languageString+"' and page_no=99999";
+                        //System.out.println(sqlQuery);
+                        c1.rs=c1.st.executeQuery(sqlQuery);
+                        //stallQuantityIssued[idx -1][stall] = 0;
+                        while(c1.rs.next())
+                        {
+                            stallQuantityIssued[idx -1][stall] += c1.rs.getInt(1);
+                        }
                         
                         //============================================
                         
-                        connect c2=new connect();
+                        
                         sqlQuery = "select quantity from sat_sandesh_inventory_entry where issue_year="+year+" and issue_month ="+idx+" and counter = '"+stalls[stall]+"' and language ='"+languageString+"'";
                         //System.out.println(sqlQuery);
                         c2.rs=c2.st.executeQuery(sqlQuery);
                         stallQuantity[idx -1][stall] = 0;
                         while(c2.rs.next())
                         {
-                            stallQuantity[idx -1][stall] = c2.rs.getInt(1);
+                            stallQuantity[idx -1][stall] += c2.rs.getInt(1);
                         }
-                        c2.rs.close();
+                        
                         //System.out.println((stallQuantity[idx -1][stall] - stallQuantityIssued[idx -1][stall]));
                     }
+                    c1.rs.close();
+                    c2.rs.close();
                 }
+                
                 
                 //System.out.println(i);                
                 {
-                    Object data[][]= new Object[13][5];
+                    Object data[][]= new Object[14][6];
                     
-                    int total[] = new int[3];
+                    int total[] = new int[4];
                     for(idx = 1; idx < 13; idx++)
                     {
                         data[idx-1][0] = month[idx-1];
                         int colTotal = 0;
-                        for(int stall = 0 ; stall < 3; stall++ )
+                        for(int stall = 0 ; stall < 4; stall++ )
                         {
                             int qty = (stallQuantity[idx -1][stall] - stallQuantityIssued[idx -1][stall]);
                             data[idx -1][stall+1] = qty;
                             total[stall]+=qty;
                             colTotal+=qty;
                         }
-                        data[idx-1][4] = colTotal;
+                        data[idx-1][5] = colTotal;
                     }
                     data[12][0] = "Total";
                     data[12][1] = total[0];
                     data[12][2] = total[1];
                     data[12][3] = total[2];
-                    data[12][4] = total[0] + total[1] + total[2];
+                    data[12][4] = total[3];
+                    data[12][5] = total[0] + total[1] + total[2] + total[3];
+                    
+                    data[13][0] = "Binding";
+                    int bindingTotalQty = 0;
+                    for(int stall = 0; stall < 4 ; stall++)
+                    {
+                        connect c2=new connect();
+                        String sqlQuery = "select quantity from sat_sandesh_inventory_issue where issue_month = 1 and issue_year="+year+" and issue_type = 'binding' and language = '"+languageString+"' and counter = '"+col[stall+1]+"'";
+                        //System.out.println(sqlQuery);
+                        c2.rs=c2.st.executeQuery(sqlQuery);
+                        int bindingQty = 0;
+                        while(c2.rs.next())
+                        {
+                            bindingQty += c2.rs.getInt(1);
+                        }
+                        c2.rs.close();
+                        data[13][stall + 1] = bindingQty;
+                        bindingTotalQty += bindingQty;
+                    }
+                    data[13][5] = bindingTotalQty;
                 
                     reportTable = new JTable(data,col);
                     reportTable.setFont(new Font("Serif", Font.PLAIN, 15));
@@ -226,9 +259,10 @@ public class SatSandeshInventoryReport implements ActionListener{
                     reportTable.setShowGrid(true);
                     
                     scrollPane =new JScrollPane(reportTable);
-                    scrollPane.setBounds(40,100,500,400);
+                    scrollPane.setBounds(40,100,560,400);
                     satSandeshInventoryReportWindow.add(scrollPane,"span 5, wrap 20px");
                     printButton.setEnabled(true);
+                    satSandeshInventoryReportWindow.setTitle("Detailed Sat Sandesh Inventory Report for the year "+yearString);
                 }
             }
             catch(Exception e)
@@ -292,7 +326,7 @@ public class SatSandeshInventoryReport implements ActionListener{
         Object[] seriesNameArray = null;
         try
         {
-            String query = "select distinct issue_year from sat_sandesh_inventory_entry";
+            String query = "select distinct issue_year from sat_sandesh_inventory_entry order by issue_year DESC";
             String countQuery = "select count(distinct issue_year) from sat_sandesh_inventory_entry";
             
             fillSerieConnection.rs = fillSerieConnection.st.executeQuery(countQuery);

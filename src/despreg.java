@@ -68,7 +68,7 @@ public class despreg extends JFrame implements ActionListener, ItemListener {
         subt1.addItem("PB");
         subt1.addItem("PJ");
         subt1.addItem("RJ");
-        subt1.addItem("UA");
+        subt1.addItem("UK");
         subt1.addItem("UP");
         subt1.addItem("UR");
         subt1.addItemListener(this);
@@ -90,7 +90,7 @@ public class despreg extends JFrame implements ActionListener, ItemListener {
         subt2.addItem("PB");
         subt2.addItem("PJ");
         subt2.addItem("RJ");
-        subt2.addItem("UA");
+        subt2.addItem("UK");
         subt2.addItem("UP");
         subt2.addItem("UR");
 
@@ -310,8 +310,8 @@ public class despreg extends JFrame implements ActionListener, ItemListener {
                     st=60001;
                 }
 
-                if (s.equals("UA")) {
-                    ftrt.setText("UTTARANCHAL");
+                if (s.equals("UK")) {
+                    ftrt.setText("UTTARAKHAND");
                     subnoft.setText("70001");
                     startt.setText("70001");
                     st=70001;
@@ -353,7 +353,7 @@ public class despreg extends JFrame implements ActionListener, ItemListener {
             MS	MISCELLENEOUS STATES
             PB 	PUNJAB
             RJ	RAJASTHAN
-            UA	UTTARANCHAL
+            UK	UTTARAKHAND
             UP	UTTAR PRADESH
             UR	URDU MEMBERS
             PJ	PUNJABI MEMBERS

@@ -64,7 +64,7 @@ public class printsubno extends JFrame implements ActionListener
 		subnot.addItem("PB");
 		subnot.addItem("PJ");
 		subnot.addItem("RJ");
-		subnot.addItem("UA");
+		subnot.addItem("UK");
 		subnot.addItem("UP");
 		subnot.addItem("UR");
 

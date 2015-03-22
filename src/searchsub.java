@@ -60,7 +60,7 @@ public class searchsub extends JFrame implements ActionListener
 		subt.addItem("PB");
 		subt.addItem("PJ");
 		subt.addItem("RJ");
-		subt.addItem("UA");
+		subt.addItem("UK");
 		subt.addItem("UP");
 		subt.addItem("UR");
                 

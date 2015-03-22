@@ -15,7 +15,6 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import net.miginfocom.swing.MigLayout;
 
-
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -25,17 +24,16 @@ import net.miginfocom.swing.MigLayout;
  *
  * @author sanjay
  */
-public class SatSandeshInventory implements ActionListener, ItemListener{
+public class SatSandeshInventoryStoreIssue implements ActionListener, ItemListener{
 
     JFrame addSatSandeshInventoryWindow;
-    JLabel issueMonthLabel, issueYearLabel, issuePriceLabel, billNumberLabel, quantityLabel, entryDateLabel, nameLabel, stallLabel, languageLabel;
+    JLabel issueMonthLabel, issueYearLabel, issuePriceLabel, billNumberLabel, quantityLabel, entryDateLabel, nameLabel, stallLabel, toStallLabel, languageLabel;
     
     TextFieldWithLimit issueMonthtext, issueYearText, issuePriceText, billNumberText, quantityText, entryDateText, entryDateMonthText,entryDateYearText, issuedByNameText;
-    JComboBox languageDropDown, stallDropDown;
+    JComboBox languageDropDown, stallDropDown, toStallDropDown;
     JButton okButton, cancelButton;
     MigLayout mLayout= new MigLayout( "insets 30");
-    //Object [] stalls = {"Kirpal Bagh", "Kirpal Ashram","Other"};
-    Object [] stalls = {"Main Store"};
+    Object [] stalls = {"Main Store", "Kirpal Bagh", "Kirpal Ashram","Other"};
     String language[] = {
                         "",
                         "Hindi",
@@ -47,11 +45,11 @@ public class SatSandeshInventory implements ActionListener, ItemListener{
     //Object [] stalls = {"Kirpl Bagh", "Kirpal Ashram"};
     public static void main (String[] args)
     {
-        new SatSandeshInventory();
+        new SatSandeshInventoryStoreIssue();
         
     }
     
-    public SatSandeshInventory()
+    public SatSandeshInventoryStoreIssue()
     {
         addSatSandeshInventoryWindow = new JFrame("Add Sat Sandesh Inventory");
         addSatSandeshInventoryWindow.setLayout(mLayout);
@@ -63,7 +61,7 @@ public class SatSandeshInventory implements ActionListener, ItemListener{
                 }
             }
         );
-        addSatSandeshInventoryWindow.setSize(500,400);
+        addSatSandeshInventoryWindow.setSize(550,440);
         //Getting the size of the screen, so that the window can 
         // adjust itself at the center of the screen
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -89,14 +87,17 @@ public class SatSandeshInventory implements ActionListener, ItemListener{
         issueYearLabel = new JLabel("<HTML>Issue Year</HTML>");
         issuePriceLabel = new JLabel("<HTML>Issue Price</HTML>");
         quantityLabel = new JLabel("<HTML>Quantity</HTML>");
-        billNumberLabel = new JLabel("<HTML>Bill No.</HTML>");
         entryDateLabel = new JLabel("<HTML>Date of Entry</HTML>");
         nameLabel = new JLabel("<HTML>Your Name</HTML>");
         languageLabel = new JLabel("<HTML>Language</HTML>");
-        stallLabel = new JLabel("<HTML>Stall</HTML>");
+        stallLabel = new JLabel("<HTML>From Stall</HTML>"); 
+        toStallLabel = new JLabel("<HTML>To Stall</HTML>"); 
+        billNumberLabel = new JLabel("<HTML>Bill No.</HTML>");
         
         languageDropDown = new JComboBox(language);
         stallDropDown = new JComboBox(stalls);
+        toStallDropDown = new JComboBox(stalls);
+        toStallDropDown.setSelectedIndex(1);
         
         issueMonthtext = new TextFieldWithLimit( 2 , 2 );
         issueYearText = new TextFieldWithLimit( 4 , 4 );
@@ -120,7 +121,10 @@ public class SatSandeshInventory implements ActionListener, ItemListener{
         cancelButton.addActionListener(this);
         
         addSatSandeshInventoryWindow.add(stallLabel);
-        addSatSandeshInventoryWindow.add(stallDropDown,"split 2");
+        addSatSandeshInventoryWindow.add(stallDropDown);
+        
+        addSatSandeshInventoryWindow.add(toStallLabel);
+        addSatSandeshInventoryWindow.add(toStallDropDown,"wrap 20px");
         
         addSatSandeshInventoryWindow.add(issueMonthLabel);
         addSatSandeshInventoryWindow.add(issueMonthtext); 
@@ -132,8 +136,10 @@ public class SatSandeshInventory implements ActionListener, ItemListener{
         addSatSandeshInventoryWindow.add(languageDropDown);
         addSatSandeshInventoryWindow.add(issuePriceLabel);
         addSatSandeshInventoryWindow.add(issuePriceText, "wrap 20px");
+        
         addSatSandeshInventoryWindow.add(billNumberLabel);
         addSatSandeshInventoryWindow.add(billNumberText);
+        
         addSatSandeshInventoryWindow.add(quantityLabel);
         addSatSandeshInventoryWindow.add(quantityText, "wrap 20px");
         
@@ -161,6 +167,7 @@ public class SatSandeshInventory implements ActionListener, ItemListener{
         {
             //gather the info from user input into the frame
             String counter = (String)stallDropDown.getSelectedItem();
+            String toCounter = (String)toStallDropDown.getSelectedItem();
             String issueMonth = issueMonthtext.getText();
             String issueYear = issueYearText.getText();
             String issuePriceString = issuePriceText.getText();
@@ -174,10 +181,10 @@ public class SatSandeshInventory implements ActionListener, ItemListener{
                     && !issuePriceString.isEmpty()
                     //&& !fromNum.isEmpty() 
                     //&& !toNum.isEmpty()
-                    && !issuedBy.isEmpty()
                     && !quantity.isEmpty()
                     && !language.isEmpty()
                     && !counter.isEmpty()
+                    && !toCounter.isEmpty()
                     && !billNumber.isEmpty()
                     )
             {
@@ -186,13 +193,14 @@ public class SatSandeshInventory implements ActionListener, ItemListener{
                 int qty = Integer.parseInt(quantity);
                 int bill = Integer.parseInt(billNumber);
                 
-                if(month < 1 || month > 12 || qty == 0 || year < 1980 || bill < 1)
+                if(month < 1 || month > 12 || qty == 0 || year < 1980 || counter.equals(toCounter) || bill < 1)
                 {
                     JOptionPane.showMessageDialog(addSatSandeshInventoryWindow, "Please verify the details entered");
                 }
                 else
                 {
-                    String query = "insert into sat_sandesh_inventory_entry values ("+month+","+year+","+qty+",'"+entryDate+"','"+issuedBy+"','"+counter+"','"+language+"', "+issuePriceString+", "+bill+")";
+                    String query = "insert into sat_sandesh_inventory_entry values ("+month+","+year+","+qty+",'"+entryDate+"','"+issuedBy+"','"+toCounter+"','"+language+"', "+issuePriceString+", "+bill+")";
+                    String reduceQuery = "insert into sat_sandesh_inventory_entry values ("+month+","+year+",-"+qty+",'"+entryDate+"','"+issuedBy+"','"+counter+"','"+language+"', "+issuePriceString+", "+bill+")";
                     int option = JOptionPane.showConfirmDialog(addSatSandeshInventoryWindow, "Are you sure ?");
                     //System.out.println("option :: "+option);
                     if(option == 0)
@@ -202,12 +210,16 @@ public class SatSandeshInventory implements ActionListener, ItemListener{
                         {
                             System.out.println(query);
                             updateconnection.a = updateconnection.st.executeUpdate(query);
+                            
+                            System.out.println(reduceQuery);
+                            updateconnection.a = updateconnection.st.executeUpdate(reduceQuery);
                         }
                         catch(Exception e)
                         {
                             e.printStackTrace();
                         }
                         updateconnection.closeAll();
+                        
                     }
                 }
                 
@@ -219,8 +231,10 @@ public class SatSandeshInventory implements ActionListener, ItemListener{
                 entryDateText.setText("");
                 issuedByNameText.setText("");
                 languageDropDown.setSelectedItem("");
-                stallDropDown.setSelectedItem("");
+                stallDropDown.setSelectedIndex(0);
                 issuePriceText.setText("");
+                toStallDropDown.setSelectedIndex(1);
+                
                 
                 
             }

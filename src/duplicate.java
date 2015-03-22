@@ -43,7 +43,7 @@ public class duplicate extends JFrame implements ActionListener
 			{
 
 				connect c1=new connect();
-				c1.rs=c1.st.executeQuery("select subnos from basic group by subno, subnos having count(subno)>1 ;");
+				c1.rs=c1.st.executeQuery("select subnos from basic where subnos not in ('NA') group by subno, subnos having count(subno)>1 ;");
 				while(c1.rs.next())
 				{
 					i++;
@@ -58,7 +58,7 @@ public class duplicate extends JFrame implements ActionListener
 
 					connect c2=new connect();
 
-					c2.rs=c2.st.executeQuery("select asn, subnos, subno from basic group by subno, subnos having count(subno)>1 ");
+					c2.rs=c2.st.executeQuery("select asn, subnos, subno from basic where subnos not in ('NA') group by subno, subnos having count(subno)>1 ");
 					Object data[][]= new Object[i][2];
 					int z=0;
 					int j=0;

@@ -31,23 +31,23 @@ public class IssueReceiptBookClass implements ActionListener, ItemListener {
     JButton okButton, cancelButton;
     MigLayout mLayout= new MigLayout( "insets 30");
     
-    Object [] stalls = {"Kirpl Bagh", "Kirpal Ashram"};
+    Object [] stalls = {"Kirpal Bagh", "Kirpal Ashram"};
     
     public IssueReceiptBookClass()
     {
         //setting environment for the Frame issueReceiptBookWindow
-        issueReceiptBookWindow = new JFrame("Issue a Receipt Book");
+        issueReceiptBookWindow = new JFrame("Issue Receipt Book");
         issueReceiptBookWindow.setLayout(mLayout);
         issueReceiptBookWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         issueReceiptBookWindow.addWindowListener(new WindowAdapter() {
-                @Override
-                public void windowClosing(WindowEvent e) {
-                    System.exit(0);
-                }
+            @Override
+            public void windowClosing(WindowEvent e) {
+                System.exit(0);
             }
-        );
-        issueReceiptBookWindow.setSize(500,300);
-        //Getting the size of the screen, so that the window can 
+        }
+                );
+        issueReceiptBookWindow.setSize(500,350);
+        //Getting the size of the screen, so that the window can
         // adjust itself at the center of the screen
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         Dimension frameSize = issueReceiptBookWindow.getSize();
@@ -55,16 +55,16 @@ public class IssueReceiptBookClass implements ActionListener, ItemListener {
         int y = (screenSize.height - frameSize.height) / 2;
         issueReceiptBookWindow.setLocation(x, y);
         
-        //adding the system look and feel to the frame 
-        try 
-        {    
+        //adding the system look and feel to the frame
+        try
+        {
             issueReceiptBookWindow.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("skrm.jpg")));
             String cn = UIManager.getSystemLookAndFeelClassName();
             UIManager.setLookAndFeel(cn); // Use the native L&F
-        } 
-        catch (Exception cnf) 
+        }
+        catch (Exception cnf)
         {
-           // this class will create a log, helps in debugging
+            // this class will create a log, helps in debugging
             except currentException = new except(cnf, this.getClass().toString());
         }
         
@@ -73,7 +73,7 @@ public class IssueReceiptBookClass implements ActionListener, ItemListener {
         seriesLabel = new JLabel("<HTML>Series</HTML>");
         bookNumLabel = new JLabel("<HTML>Receipt Book No</HTML>");
         fromLabel = new JLabel("<HTML>From</HTML>");
-        toLabel = new JLabel("<HTML>To</HTML>"); 
+        toLabel = new JLabel("<HTML>To</HTML>");
         issuedToLabel = new JLabel("<HTML>Issued to Stall</HTML>");
         issueDateLabel = new JLabel("<HTML>Issue Date</HTML>");
         issuedByLabel = new JLabel("<HTML>Issued By</HTML>");
@@ -93,7 +93,10 @@ public class IssueReceiptBookClass implements ActionListener, ItemListener {
         issueDatetext = new TextFieldWithLimit( 2 , 2 );
         issueDateMonthtext = new TextFieldWithLimit( 2 , 2 );
         issueDateYearText = new TextFieldWithLimit( 4 , 4 );
-
+        
+        issueDateMonthtext.setText(""+(SamsUtilities.getCurrentMonth()));
+        issueDateYearText.setText(""+(SamsUtilities.getCurrentYear()));
+        
         fromText = new TextFieldWithLimit( 5 , 5 );
         fromText.setEnabled(false);
         
@@ -126,8 +129,8 @@ public class IssueReceiptBookClass implements ActionListener, ItemListener {
         issueReceiptBookWindow.add(issuedToLabel);
         issueReceiptBookWindow.add(stallDropDown, "span 2, w 100!");
         issueReceiptBookWindow.add(issueDateLabel);
-        issueReceiptBookWindow.add(issueDatetext, "split 3, w 20!");
-        issueReceiptBookWindow.add(issueDateMonthtext, " w 20!");
+        issueReceiptBookWindow.add(issueDatetext, "split 3, w 30!");
+        issueReceiptBookWindow.add(issueDateMonthtext, " w 30!");
         issueReceiptBookWindow.add(issueDateYearText, "w 40! , wrap 20px");
         issueReceiptBookWindow.add(issuedByLabel);
         issueReceiptBookWindow.add(issuedByText,"wrap 20px");
@@ -136,7 +139,7 @@ public class IssueReceiptBookClass implements ActionListener, ItemListener {
         
         //populate information from datatbase
         //fillSeriesNameInformation();
-    
+        
         //this is the last statement in the constructor, to make the frame visible
         // all the population of data structures has to be done before showing the frame
         issueReceiptBookWindow.setVisible(true);
@@ -156,9 +159,9 @@ public class IssueReceiptBookClass implements ActionListener, ItemListener {
             String issuedTo = (String)stallDropDown.getSelectedItem();
             String issueDate = issueDateYearText.getText()+"-"+issueDateMonthtext.getText()+"-"+issueDatetext.getText();
             String issuedBy = issuedByText.getText();
-            if(!seriesName.isEmpty() 
-                    && !bookNumString.isEmpty() 
-                    //&& !fromNum.isEmpty() 
+            if(!seriesName.isEmpty()
+                    && !bookNumString.isEmpty()
+                    //&& !fromNum.isEmpty()
                     //&& !toNum.isEmpty()
                     && !issuedTo.isEmpty()
                     && !issueDate.isEmpty()
@@ -170,13 +173,13 @@ public class IssueReceiptBookClass implements ActionListener, ItemListener {
                 //int to = Integer.parseInt(toNum);
                 String sqlQuery = "update receipt_book_inventory set issued_to = '"+issuedTo+"' , issued_date = '"+issueDate+"', issued_by = '"+issuedBy+"' where series_name = '"+seriesName+"' and book_num = "+bookNum;
                 int option = JOptionPane.showConfirmDialog(issueReceiptBookWindow, "Are you sure ?");
-                System.out.println("option :: "+option);
+                //System.out.println("option :: "+option);
                 if(option == 0)
                 {
                     connect updateconnection = new connect();
                     try
                     {
-                        System.out.println(sqlQuery);
+                        //System.out.println(sqlQuery);
                         updateconnection.a = updateconnection.st.executeUpdate(sqlQuery);
                     }
                     catch(Exception e)
@@ -186,12 +189,22 @@ public class IssueReceiptBookClass implements ActionListener, ItemListener {
                     updateconnection.closeAll();
                     
                 }
+                
+                issueDateMonthtext.setText(""+(SamsUtilities.getCurrentMonth()));
+                issueDateYearText.setText(""+(SamsUtilities.getCurrentYear()));
+                issueDatetext.setText(""); 
+                fromText.setText(""); 
+                toText.setText(""); 
+                issuedByText.setText("");
+                
+                seriesDropDown.setSelectedIndex(0); 
+                //bookNumDropDown.setSelectedIndex(1); 
+                stallDropDown.setSelectedIndex(0);
+                
             }
-             
-             
-              else 
+            else
                 JOptionPane.showMessageDialog(issueReceiptBookWindow, "Please fill all the fields");
-             
+            
             
             
         }
@@ -231,7 +244,7 @@ public class IssueReceiptBookClass implements ActionListener, ItemListener {
             }
             catch(Exception e)
             {
-                        
+                
             }
             fillInfo.closeAll();
         }
@@ -246,11 +259,11 @@ public class IssueReceiptBookClass implements ActionListener, ItemListener {
     {
         connect fillSerieConnection = new connect();
         Object[] seriesNameArray = null;
-        try 
+        try
         {
             String query = "select distinct series_name from receipt_book_inventory";
             String countQuery = "select count(distinct series_name) from receipt_book_inventory";
-
+            
             fillSerieConnection.rs = fillSerieConnection.st.executeQuery(countQuery);
             fillSerieConnection.rs.next();
             int ArrayCount = fillSerieConnection.rs.getInt(1);
@@ -264,7 +277,7 @@ public class IssueReceiptBookClass implements ActionListener, ItemListener {
                 seriesNameArray[i] = fillSerieConnection.rs.getString(1);
                 i++;
             }
-
+            
             fillSerieConnection.closeAll();
         } catch (Exception exc) {
             //exc.printStackTrace();
@@ -278,11 +291,11 @@ public class IssueReceiptBookClass implements ActionListener, ItemListener {
     {
         connect fillRcptNumConnection = new connect();
         //Object[] bookNumArray = null;
-        try 
+        try
         {
             String query = "select book_num from receipt_book_inventory where series_name = '"+series_name+"'";
             String countQuery = "select count(book_num) from receipt_book_inventory where series_name = '"+series_name+"'";
-
+            
             fillRcptNumConnection.rs = fillRcptNumConnection.st.executeQuery(countQuery);
             fillRcptNumConnection.rs.next();
             int ArrayCount = fillRcptNumConnection.rs.getInt(1);
@@ -299,8 +312,8 @@ public class IssueReceiptBookClass implements ActionListener, ItemListener {
                 bookNumDropDown.addItem(fillRcptNumConnection.rs.getString(1));
                 //i++;
             }
-            System.out.println(bookNumDropDown.getSelectedObjects().length);
-
+            //System.out.println(bookNumDropDown.getSelectedObjects().length);
+            
             fillRcptNumConnection.closeAll();
         } catch (Exception exc) {
             //exc.printStackTrace();

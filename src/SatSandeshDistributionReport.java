@@ -1,6 +1,8 @@
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.TextField;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -28,22 +30,29 @@ import net.miginfocom.swing.MigLayout;
  *
  * @author sanjay
  */
-public class SatSandeshInventorySummaryReport implements ActionListener{
+public class SatSandeshDistributionReport implements ActionListener{
 //Data Type declarations
-    JFrame satSandeshInventorySummaryReportWindow;
-    JLabel languageLabel, issueYearLabel, stallLabel;
+    JFrame satSandeshDistributionReportWindow;
+    JLabel languageLabel, issueYearLabel, stallLabel, reportYearLabel, monthLabel;
     
     JTable reportTable;
     JScrollPane scrollPane;
     
-    JComboBox yearDropDown, stallDropDown, languageDropDown;
+    TextFieldWithLimit monthText;
+    
+    JComboBox yearDropDown, stallDropDown, languageDropDown, reportYearDropDown;
     JButton okButton, cancelButton, printButton;
     MigLayout mLayout= new MigLayout( "insets 30");
     
     Object [] stalls = {"Main Store","Kirpal Bagh", "Kirpal Ashram","Other"};
     
-    Object col[];
-    //={"Month","Kirpal Bagh", "Kirpal Ashram","Other", "Total"};
+    Object col[]={"Month","By Hand",
+                            "By Hand (Bulk)",
+                            "By Post",
+                            "By Post (Bulk)",
+                            "Cash",
+                            "Grievances",
+                            "Complimentary","Binding", "Total"};
     
     String month[]={"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
     
@@ -57,16 +66,16 @@ public class SatSandeshInventorySummaryReport implements ActionListener{
     
     public static void main(String args[])
     {
-        new SatSandeshInventorySummaryReport();
+        new SatSandeshDistributionReport();
     }
     
-    public SatSandeshInventorySummaryReport()
+    public SatSandeshDistributionReport()
     {
-        //setting environment for the Frame satSandeshInventoryReportWindow
-        satSandeshInventorySummaryReportWindow = new JFrame("Sat Sandesh Inventory Report");
-        satSandeshInventorySummaryReportWindow.setLayout(mLayout);
-        satSandeshInventorySummaryReportWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        satSandeshInventorySummaryReportWindow.addWindowListener(new WindowAdapter() {
+        //setting environment for the Frame satSandeshDistributionReportWindow
+        satSandeshDistributionReportWindow = new JFrame("Sat Sandesh Distrbiution Report");
+        satSandeshDistributionReportWindow.setLayout(mLayout);
+        satSandeshDistributionReportWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        satSandeshDistributionReportWindow.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 System.exit(0);
@@ -77,16 +86,16 @@ public class SatSandeshInventorySummaryReport implements ActionListener{
         //Getting the size of the screen, so that the window can
         // adjust itself at the center of the screen
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        satSandeshInventorySummaryReportWindow.setSize((screenSize.width)/2,(screenSize.height*4)/5);
-        Dimension frameSize = satSandeshInventorySummaryReportWindow.getSize();
-        int x = (screenSize.width - frameSize.width)  / 4;
-        int y = (screenSize.height - frameSize.height) / 8;
-        satSandeshInventorySummaryReportWindow.setLocation(x, y);
+        satSandeshDistributionReportWindow.setSize(900,(screenSize.height*4)/5);
+        Dimension frameSize = satSandeshDistributionReportWindow.getSize();
+        int x = (screenSize.width - frameSize.width)  / 2;
+        int y = (screenSize.height - frameSize.height) / 2;
+        satSandeshDistributionReportWindow.setLocation(x, y);
         
         //adding the system look and feel to the frame
         try
         {
-            satSandeshInventorySummaryReportWindow.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("skrm.jpg")));
+            satSandeshDistributionReportWindow.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("skrm.jpg")));
             String cn = UIManager.getSystemLookAndFeelClassName();
             UIManager.setLookAndFeel(cn); // Use the native L&F
             UIManager.put("Table.gridColor", new ColorUIResource(Color.GRAY));
@@ -100,8 +109,16 @@ public class SatSandeshInventorySummaryReport implements ActionListener{
         //stallLabel = new JLabel("<HTML>Stall</HTML>");
         issueYearLabel = new JLabel("<HTML>Year</HTML>");
         languageLabel = new JLabel("<HTML>Language</HTML>");
+        //stallLabel = new JLabel("<HTML>Stall</HTML>");
+        reportYearLabel = new JLabel("<HTML>Report year</HTML>");
+        monthLabel  = new JLabel("<HTML>Month</HTML>");
+        
+        monthText = new TextFieldWithLimit(2, 2);
+        
+        
         
         yearDropDown = new JComboBox(fillIssueYearInformation());        
+        reportYearDropDown = new JComboBox(fillIssueYearInformation()); 
         //stallDropDown = new JComboBox(stalls);
         languageDropDown = new JComboBox(language);
         
@@ -119,16 +136,20 @@ public class SatSandeshInventorySummaryReport implements ActionListener{
         printButton.addActionListener(this);
         
         
-        satSandeshInventorySummaryReportWindow.add(issueYearLabel," span 1");
-        satSandeshInventorySummaryReportWindow.add(yearDropDown, "span 1, w 100!");        
-        //satSandeshInventoryReportWindow.add(stallLabel);
-        //satSandeshInventoryReportWindow.add(stallDropDown, "span 3, w 150!");
-        satSandeshInventorySummaryReportWindow.add(languageLabel," span 1");
-        satSandeshInventorySummaryReportWindow.add(languageDropDown,"span 1, w :90:, wrap 10px");
+        satSandeshDistributionReportWindow.add(issueYearLabel," span 1");
+        satSandeshDistributionReportWindow.add(yearDropDown, "span 1, w 100!");        
+        satSandeshDistributionReportWindow.add(monthLabel, "gapleft 50");
+        satSandeshDistributionReportWindow.add(monthText, "span 1, w :90");
+        //satSandeshDistributionReportWindow.add(stallLabel);
+        //satSandeshDistributionReportWindow.add(stallDropDown, "span 3, w 150!");
+        satSandeshDistributionReportWindow.add(languageLabel," gapleft 50, span 1");
+        satSandeshDistributionReportWindow.add(languageDropDown,"span 1, w :90:");
+        satSandeshDistributionReportWindow.add(reportYearLabel,"gapleft 50");
+        satSandeshDistributionReportWindow.add(reportYearDropDown, "span 1, w :90:, wrap 10px");
         
-        satSandeshInventorySummaryReportWindow.add(okButton, "gapleft 80, w :90:, span 2");
-        satSandeshInventorySummaryReportWindow.add(printButton,"gapleft 80, w :90:, span 2");
-        satSandeshInventorySummaryReportWindow.add(cancelButton, "gapleft 60, w :90: ,span 3, wrap 20px");
+        satSandeshDistributionReportWindow.add(okButton, " w :90:, span 2");
+        satSandeshDistributionReportWindow.add(printButton,"gapleft 80, w :90:, span 2");
+        satSandeshDistributionReportWindow.add(cancelButton, "gapleft 60, w :90: ,span 3, wrap 20px");
         
         printButton.setEnabled(false);
         
@@ -136,7 +157,7 @@ public class SatSandeshInventorySummaryReport implements ActionListener{
         
         //this is the last statement in the constructor, to make the frame visible
         // all the population of data structures has to be done before showing the frame
-        satSandeshInventorySummaryReportWindow.setVisible(true);
+        satSandeshDistributionReportWindow.setVisible(true);
     }
     
     
@@ -147,120 +168,117 @@ public class SatSandeshInventorySummaryReport implements ActionListener{
         if(event.getSource() == okButton)
         {
             int idx =0;
-            
+            //int typeQuantity[][] = new int[12][4];
+            int typeQuantityIssued[][] = new int[12][col.length - 1 ];
             try
             {
                 String yearString = (String)yearDropDown.getSelectedItem();
+                String reportString = (String)reportYearDropDown.getSelectedItem();
+                String monthString = monthText.getText();
                 //String stallString = (String)stallDropDown.getSelectedItem();
                 String languageString = (String)languageDropDown.getSelectedItem();
-                if(yearString.isEmpty() || languageString.isEmpty())
+                if(yearString.isEmpty() || languageString.isEmpty() || reportString.isEmpty() )
                     return;
                 
-                
-                // This is pretty tricky
-                // the length attribute of an array returns the size by incrementing it by 1 
-                // and the first element is empty, so I need to take it from 2nd element
-                // but the size of arrays have to be 1 less than the size of array
                 int year = Integer.parseInt(yearString);
-                col = getYearListWithStartingYear(year);
-                int yearQuantity[][] = new int[12][col.length -1];
-                int yearQuantityIssued[][] = new int[12][col.length -1];
-                //System.out.println("Length :: "+ col.length);
+                int reportYear = Integer.parseInt(reportString);
+                int monthNum = 0; 
+                if(monthString.isEmpty() == false)monthNum= Integer.parseInt(monthString);
                 
+                connect c1=new connect();
                 for(idx = 1; idx < 13; idx++)
                 {
-                    for(int recordYear = 0 ; recordYear < col.length -1 ; recordYear++ )
+                    for(int type = 0 ; type < col.length -2 ; type++ )
                     {
-                        connect c1=new connect();
-                        String sqlQuery = "select quantity from sat_sandesh_inventory_issue where issue_year="+col[recordYear+1]+" and issue_month ="+idx+" and language ='"+languageString+"'";
-                        System.out.println(sqlQuery);
+                        
+                        String sqlQuery;
+                        if(monthNum == 0 )
+                            sqlQuery = "select quantity from sat_sandesh_inventory_issue where issue_year="+reportYear+" and issue_month ="+idx+" and issue_type = '"+col[type+1]+"' and language ='"+languageString+"' and entry_date between '"+year+"-4-1' and '"+(year+1)+"-3-31'";
+                        else
+                            sqlQuery = "select quantity from sat_sandesh_inventory_issue where issue_year="+reportYear+" and issue_month ="+idx+" and issue_type = '"+col[type+1]+"' and language ='"+languageString+"' and entry_date between '"+year+"-"+monthNum+"-1' and '"+year+"-"+monthNum+"-31'";
+                        
+                        if(col[type+1].equals("Binding") == true)
+                            sqlQuery += " and customer_name not in ('Binding')";
+                                    
+                        
+                        //System.out.println(sqlQuery);
                         c1.rs=c1.st.executeQuery(sqlQuery);
-                        yearQuantityIssued[idx -1][recordYear] = 0;
+                        typeQuantityIssued[idx -1][type] = 0;
                         while(c1.rs.next())
                         {
-                            System.out.println(c1.rs.getInt(1));
-                            yearQuantityIssued[idx -1][recordYear] += c1.rs.getInt(1);
+                            int qty = c1.rs.getInt(1);
+                            if(col[type+1].equals("Binding") == true)
+                            {
+                                if(idx > 1)
+                                    continue;
+                                qty = -1*qty;
+                            }
+                            typeQuantityIssued[idx -1][type] += qty;
                         }
-                        c1.rs.close();
+                        
                         
                         //============================================
                         
-                        connect c2=new connect();
-                        sqlQuery = "select quantity from sat_sandesh_inventory_entry where issue_year="+col[recordYear+1]+" and issue_month ="+idx+" and language ='"+languageString+"'";
+                        //connect c2=new connect();
+                        //sqlQuery = "select quantity from sat_sandesh_inventory_entry where issue_year="+year+" and issue_month ="+idx+" and counter = '"+stalls[stall]+"' and language ='"+languageString+"'";
                         //System.out.println(sqlQuery);
-                        c2.rs=c2.st.executeQuery(sqlQuery);
-                        yearQuantity[idx -1][recordYear] = 0;
-                        while(c2.rs.next())
-                        {
-                            yearQuantity[idx -1][recordYear] += c2.rs.getInt(1);
-                        }
-                        c2.rs.close();
+                        //c2.rs=c2.st.executeQuery(sqlQuery);
+                        //typeQuantity[idx -1][type] = 0;
+                        //while(c2.rs.next())
+                        //{
+                        //    typeQuantity[idx -1][type] += c2.rs.getInt(1);
+                        //}
+                        //c2.rs.close();
                         //System.out.println((stallQuantity[idx -1][stall] - stallQuantityIssued[idx -1][stall]));
                     }
                 }
-                
-                System.out.println(col.length);                
+                c1.rs.close();
+                //System.out.println(i);                
                 {
                     Object data[][]= new Object[14][col.length];
                     
-                    int total[] = new int[col.length];
+                    int total[] = new int[col.length - 1];
                     for(idx = 1; idx < 13; idx++)
                     {
                         data[idx-1][0] = month[idx-1];
                         int colTotal = 0;
-                        for(int recordYear = 0 ; recordYear < col.length -1 ; recordYear++ )
+                        for(int type = 0 ; type < col.length - 2; type++ )
                         {
-                            int qty = (yearQuantity[idx -1][recordYear] - yearQuantityIssued[idx -1][recordYear]);
-                            data[idx -1][recordYear+1] = qty;
-                            total[recordYear]+=qty;
+                            //int qty = (typeQuantity[idx -1][type] - typeQuantityIssued[idx -1][type]);
+                            int qty = typeQuantityIssued[idx -1][type];
+                            data[idx -1][type+1] = qty;
+                            total[type]+=qty;
                             colTotal+=qty;
                         }
                         data[idx-1][col.length -1] = colTotal;
                     }
-                    
-                    //this is bad, I don't know how is this working
                     data[12][0] = "Total";
-                    data[13][0] = "Binding";
-                    
                     int totalQty = 0;
-                    for(int recordYear = 0 ; recordYear < col.length -1 ; recordYear++ )
-                    {
-                        data[12][recordYear + 1] = total[recordYear];
-                        totalQty += total[recordYear];
-                        
-                        connect c2=new connect();
-                        String sqlQuery = "select quantity from sat_sandesh_inventory_issue where issue_month = 1 and issue_year="+col[recordYear+1]+" and issue_type = 'binding' and language = '"+languageString+"'";
-                        //System.out.println(sqlQuery);
-                        c2.rs=c2.st.executeQuery(sqlQuery);
-                        int bindingQty = 0;
-                        while(c2.rs.next())
-                        {
-                            bindingQty += c2.rs.getInt(1);
-                        }
-                        c2.rs.close();
-                        data[13][recordYear + 1] = bindingQty;
+                    for(idx  = 1; idx < col.length ; idx++){
+                        data[12][idx] = total[idx - 1];
+                        totalQty += total[idx-1];
                     }
-                    data[12][col.length -1] = totalQty;
-                
+                    data[12][col.length - 1] = totalQty;
+                    
                     reportTable = new JTable(data,col);
                     reportTable.setFont(new Font("Serif", Font.PLAIN, 15));
                     
                     //reportTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
                     reportTable.getColumnModel().getColumn(0).setPreferredWidth(50);
-                    
-                    for(int recordYear = 1 ; recordYear < col.length ; recordYear++ )
-                        reportTable.getColumnModel().getColumn(recordYear).setPreferredWidth(100);
-                   
+                    for(int i = 1; i < col.length ; i++ )
+                        reportTable.getColumnModel().getColumn(i).setPreferredWidth(100);
                     
                     reportTable.setRowHeight(28);
                     reportTable.setShowGrid(true);
                     
                     scrollPane =new JScrollPane(reportTable);
-                    scrollPane.setBounds(40,100,500,450);
-                    satSandeshInventorySummaryReportWindow.add(scrollPane,"span 5, wrap 20px");
+                    scrollPane.setBounds(40,150,760,400);
+                    satSandeshDistributionReportWindow.add(scrollPane,"span 5, wrap 20px");
                     printButton.setEnabled(true);
-                    satSandeshInventorySummaryReportWindow.setTitle("Summary Sat Sandesh Inventory Report for the year(s) from "+yearString);
-                    
+                    if(monthNum == 0 )
+                        satSandeshDistributionReportWindow.setTitle("Sat Sandesh Distribution Report for the period Jan-Dec'"+reportString+" issued in the financial year "+yearString);
+                    else
+                        satSandeshDistributionReportWindow.setTitle("Sat Sandesh Distribution Report for the period Jan-Dec'"+reportString+" issued in "+month[monthNum-1]+"-"+yearString);
                 }
             }
             catch(Exception e)
@@ -272,9 +290,9 @@ public class SatSandeshInventorySummaryReport implements ActionListener{
         }
         else if(event.getSource() == cancelButton)
         {
-            satSandeshInventorySummaryReportWindow.setVisible(false);
+            satSandeshDistributionReportWindow.setVisible(false);
             new sams();
-            satSandeshInventorySummaryReportWindow.dispose();
+            satSandeshDistributionReportWindow.dispose();
             
         }
         
@@ -291,14 +309,14 @@ public class SatSandeshInventorySummaryReport implements ActionListener{
                 //boolean complete = reportTable.print();
                 if (complete) {
                     /* show a success message  */
-                    JOptionPane.showMessageDialog(satSandeshInventorySummaryReportWindow,
+                    JOptionPane.showMessageDialog(satSandeshDistributionReportWindow,
                                               "Printing Complete",
                                               "Printing Result",
                                               JOptionPane.INFORMATION_MESSAGE);
                     
                 } else {
                     /*show a message indicating that printing was cancelled */
-                    JOptionPane.showMessageDialog(satSandeshInventorySummaryReportWindow,
+                    JOptionPane.showMessageDialog(satSandeshDistributionReportWindow,
                                               "Printing Cancelled",
                                               "Printing Result",
                                               JOptionPane.INFORMATION_MESSAGE);
@@ -306,7 +324,7 @@ public class SatSandeshInventorySummaryReport implements ActionListener{
                 }
             } catch (PrinterException pe) {
                 /* Printing failed, report to the user */
-                JOptionPane.showMessageDialog(satSandeshInventorySummaryReportWindow,
+                JOptionPane.showMessageDialog(satSandeshDistributionReportWindow,
                                           "Printing Failed: " + pe.getMessage(),
                                           "Printing Result",
                                           JOptionPane.ERROR_MESSAGE);
@@ -316,38 +334,6 @@ public class SatSandeshInventorySummaryReport implements ActionListener{
         }
     }
 
-    static public Object[] getYearListWithStartingYear(int year)
-    {
-        connect fillSerieConnection = new connect();
-        Object[] seriesNameArray = null;
-        try
-        {
-            String query = "select distinct issue_year from sat_sandesh_inventory_entry where issue_year > "+(year -1 )+" order by issue_year ASC ";
-            String countQuery = "select count(distinct issue_year) from sat_sandesh_inventory_entry where issue_year > ("+(year -1 )+")";
-            
-            fillSerieConnection.rs = fillSerieConnection.st.executeQuery(countQuery);
-            fillSerieConnection.rs.next();
-            int ArrayCount = fillSerieConnection.rs.getInt(1);
-            //System.out.println(ArrayCount+1);
-            seriesNameArray = new Object[ArrayCount + 1];
-            seriesNameArray[0] = "";
-            fillSerieConnection.rs = fillSerieConnection.st.executeQuery(query);
-            //CodeChooser.addItem("");
-            int i = 1;
-            while (fillSerieConnection.rs.next()) {
-                seriesNameArray[i] = fillSerieConnection.rs.getString(1);
-                //System.out.println(fillSerieConnection.rs.getString(1));
-                i++;
-            }
-            
-            fillSerieConnection.closeAll();
-        } catch (Exception exc) {
-            //exc.printStackTrace();
-            //Except.except(exc, "ADD JOB CARD--Raw Material Thread Error");
-            fillSerieConnection.closeAll();
-        }
-        return seriesNameArray;
-    }
     
     
     static public Object[] fillIssueYearInformation()
