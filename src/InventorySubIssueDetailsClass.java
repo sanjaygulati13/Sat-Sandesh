@@ -277,7 +277,7 @@ public class InventorySubIssueDetailsClass implements ActionListener, ItemListen
                                 
                                 try
                                 {
-                                    //System.out.println(sqlQuery);
+                                    System.out.println(sqlQuery);
                                     updateconnection.a = updateconnection.st.executeUpdate(sqlQuery);
                                 }
                                 catch(Exception e)

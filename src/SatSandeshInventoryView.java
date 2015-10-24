@@ -156,7 +156,7 @@ public class SatSandeshInventoryView implements ActionListener{
                         c1.rs.next();
                         pageEntrySize += c1.rs.getInt(1);
                         
-                        System.out.println(pageEntrySize);
+                        //System.out.println(pageEntrySize);
                         
                         int numEntries = 0;
                         pageData  = new Object[pageEntrySize][12];

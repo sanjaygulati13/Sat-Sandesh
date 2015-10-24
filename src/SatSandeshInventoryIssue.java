@@ -15,13 +15,16 @@ import static java.awt.print.Printable.NO_SUCH_PAGE;
 import static java.awt.print.Printable.PAGE_EXISTS;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
-
 import java.util.Vector;
+
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import net.miginfocom.swing.MigLayout;
@@ -37,6 +40,8 @@ import net.miginfocom.swing.MigLayout;
  */
 public class SatSandeshInventoryIssue  implements ActionListener, ItemListener, Printable  {
 
+    private static final int NUM_ROWS = 20;
+    
     //Data Type declarations
     JFrame satSandeshInventoryIssueWindow;
     JLabel customerNameLabel, languageLabel, pageNumberLabel, amountLabel,issueTypeLabel, issueYearLabel, issueMonthLabel, issuedByLabel, entryDateLabel, stallLabel, quantityLabel, codeLabel;
@@ -46,11 +51,15 @@ public class SatSandeshInventoryIssue  implements ActionListener, ItemListener, 
     JLabel totalQuantityLabel, totalAmountLabel;
     JTextField totalQuantityText, totalAmountText;
     
-    TextFieldWithLimit customerNameText[], entryDateText,entryMonthText,entryYearText, pageNumberText, issuedByText[], amountText[];
+    JPanel entryPanel;
+    JScrollPane scrollPane;
+    
+    TextFieldWithLimit /*customerNameText[],*/ entryDateText,entryMonthText,entryYearText, pageNumberText, issuedByText[], amountText[];
     JComboBox yearDropDown[], monthDropDown[], stallDropDown, languageDropDown[], issueTypeDropDown[];
+    JComboBox customerNameDropDown[];
     JButton okButton, cancelButton, printButton;
     MigLayout mLayout= new MigLayout( "insets 30");
-    
+    MigLayout pLayout= new MigLayout( "insets 20");    
     Object [] stalls = {"Kirpal Bagh", "Kirpal Ashram","Other"};
     String [] issueType = {
                             "",
@@ -63,6 +72,12 @@ public class SatSandeshInventoryIssue  implements ActionListener, ItemListener, 
                             "Complimentary",
                             "Binding"
                             };
+    
+    String [] customerName = {
+      "",
+      "Member",
+      "Non Member"
+    };
     
     String language[] = {
                         "",
@@ -89,10 +104,10 @@ public class SatSandeshInventoryIssue  implements ActionListener, ItemListener, 
         //Getting the size of the screen, so that the window can
         // adjust itself at the center of the screen
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        satSandeshInventoryIssueWindow.setSize((screenSize.width*3)/4,(screenSize.height*7)/8);
+        satSandeshInventoryIssueWindow.setSize((screenSize.width*5)/6,(screenSize.height*9)/10);
         Dimension frameSize = satSandeshInventoryIssueWindow.getSize();
         int x = (screenSize.width - frameSize.width)  / 8;
-        int y = (screenSize.height - frameSize.height) / 15;
+        int y = (screenSize.height - frameSize.height) / 8;
         satSandeshInventoryIssueWindow.setLocation(x, y);
         
         //adding the system look and feel to the frame
@@ -108,7 +123,12 @@ public class SatSandeshInventoryIssue  implements ActionListener, ItemListener, 
             except currentException = new except(cnf, this.getClass().toString());
         }
         
+        
         //Data Type population Start
+        
+        entryPanel = new JPanel();
+        entryPanel.setLayout(pLayout);
+        
         //Labels
         stallLabel = new JLabel("<HTML>Stall</HTML>");
         customerNameLabel = new JLabel("<HTML>Customer</HTML>");
@@ -128,15 +148,16 @@ public class SatSandeshInventoryIssue  implements ActionListener, ItemListener, 
         //codeDropDown = new JComboBox[2];
         Object [] codeArray = fillDespCodeInformation();
         
-        customerNameText = new TextFieldWithLimit[15];
-        yearDropDown = new JComboBox[15];
-        monthDropDown = new JComboBox[15];
-        quantityText = new TextFieldWithLimit[15];
-        languageDropDown = new JComboBox[15];
-        issueTypeDropDown =  new JComboBox[15];
-        amountText = new TextFieldWithLimit[15];
-        issuedByText = new TextFieldWithLimit[15];
-        codeDropDown = new JComboBox[15];
+        //customerNameText = new TextFieldWithLimit[NUM_ROWS];
+        customerNameDropDown = new JComboBox[NUM_ROWS];
+        yearDropDown = new JComboBox[NUM_ROWS];
+        monthDropDown = new JComboBox[NUM_ROWS];
+        quantityText = new TextFieldWithLimit[NUM_ROWS];
+        languageDropDown = new JComboBox[NUM_ROWS];
+        issueTypeDropDown =  new JComboBox[NUM_ROWS];
+        amountText = new TextFieldWithLimit[NUM_ROWS];
+        issuedByText = new TextFieldWithLimit[NUM_ROWS];
+        codeDropDown = new JComboBox[NUM_ROWS];
         
         totalQuantityLabel = new JLabel("<HTML>Total Quantity</HTML>");
         totalQuantityText = new JTextField();
@@ -148,9 +169,9 @@ public class SatSandeshInventoryIssue  implements ActionListener, ItemListener, 
         
         //DropDowns
         //fill the information from the database while initialization
-        for(int i = 0; i < 15; ++i)
+        for(int i = 0; i < NUM_ROWS; ++i)
         {
-            customerNameText[i] = new TextFieldWithLimit(32,32);
+            customerNameDropDown[i] = new JComboBox(customerName);
             languageDropDown[i] = new JComboBox(language);
             yearDropDown[i] = new JComboBox(fillIssueYearInformation());
             monthDropDown[i] = new JComboBox();
@@ -203,16 +224,16 @@ public class SatSandeshInventoryIssue  implements ActionListener, ItemListener, 
         
         //adding the gui elements to frame and setting the layout simultaneously
         
-        satSandeshInventoryIssueWindow.add(stallLabel);
+        satSandeshInventoryIssueWindow.add(stallLabel,"span 1, w 100, align right");
         satSandeshInventoryIssueWindow.add(stallDropDown, "span 3, w 150!");
-        satSandeshInventoryIssueWindow.add(pageNumberLabel);
-        satSandeshInventoryIssueWindow.add(pageNumberText);
-        satSandeshInventoryIssueWindow.add(entryDateLabel);
+        satSandeshInventoryIssueWindow.add(pageNumberLabel,"span 2, align right");
+        satSandeshInventoryIssueWindow.add(pageNumberText,"span 1");
+        satSandeshInventoryIssueWindow.add(entryDateLabel,"span 2, align right");
         satSandeshInventoryIssueWindow.add(entryDateText, "split 5, w 30!");
-        satSandeshInventoryIssueWindow.add(entryMonthText);
-        satSandeshInventoryIssueWindow.add(entryYearText, "wrap 10px");
+        satSandeshInventoryIssueWindow.add(entryMonthText,"span 1");
+        satSandeshInventoryIssueWindow.add(entryYearText, "span 1, wrap 4px");
         
-        
+        /*
         satSandeshInventoryIssueWindow.add(customerNameLabel," span 1, w 100");
         satSandeshInventoryIssueWindow.add(languageLabel," span 1, gapleft 10");
         satSandeshInventoryIssueWindow.add(issueYearLabel," span 1");
@@ -221,11 +242,21 @@ public class SatSandeshInventoryIssue  implements ActionListener, ItemListener, 
         satSandeshInventoryIssueWindow.add(issueTypeLabel," span 1");
         satSandeshInventoryIssueWindow.add(amountLabel," span 1");
         satSandeshInventoryIssueWindow.add(issuedByLabel," span 1");
-        satSandeshInventoryIssueWindow.add(codeLabel,"span 1, wrap 5px");
+        satSandeshInventoryIssueWindow.add(codeLabel,"span 1, wrap 2px");
+        */
+        entryPanel.add(customerNameLabel," span 1, w 100");
+        entryPanel.add(languageLabel," span 1, gapleft 10");
+        entryPanel.add(issueYearLabel," span 1");
+        entryPanel.add(issueMonthLabel," span 1");
+        entryPanel.add(quantityLabel," span 1");
+        entryPanel.add(issueTypeLabel," span 1");
+        entryPanel.add(amountLabel," span 1");
+        entryPanel.add(issuedByLabel," span 1");
+        entryPanel.add(codeLabel,"span 1, wrap 2px");
         
-        
-        for(int __x = 0; __x < 15; __x++)
+        for(int __x = 0; __x < NUM_ROWS; __x++)
         {
+            /*
             satSandeshInventoryIssueWindow.add(customerNameText[__x], "span 1, w 100!");
             satSandeshInventoryIssueWindow.add(languageDropDown[__x],"span 1, w :100:");
             satSandeshInventoryIssueWindow.add(yearDropDown[__x], "span 1, w 100!");
@@ -234,19 +265,35 @@ public class SatSandeshInventoryIssue  implements ActionListener, ItemListener, 
             satSandeshInventoryIssueWindow.add(issueTypeDropDown[__x],"span 1");
             satSandeshInventoryIssueWindow.add(amountText[__x],"span 1, w :90:");
             satSandeshInventoryIssueWindow.add(issuedByText[__x],"span 1, w :90:");
-            satSandeshInventoryIssueWindow.add(codeDropDown[__x],"span 1, w :90:, wrap 5px");
+            satSandeshInventoryIssueWindow.add(codeDropDown[__x],"span 1, w :90:, wrap 2px");
+            */
+            entryPanel.add(customerNameDropDown[__x], "span 1, w 130!");
+            entryPanel.add(languageDropDown[__x],"span 1, w :100:");
+            entryPanel.add(yearDropDown[__x], "span 1, w 100!");
+            entryPanel.add(monthDropDown[__x],"span 1, w :90:");
+            entryPanel.add(quantityText[__x],"span 1, w :90:");
+            entryPanel.add(issueTypeDropDown[__x],"span 1");
+            entryPanel.add(amountText[__x],"span 1, w :90:");
+            entryPanel.add(issuedByText[__x],"span 1, w :90:");
+            entryPanel.add(codeDropDown[__x],"span 1, w :90:, wrap 2px");
+            
         }
         
-        satSandeshInventoryIssueWindow.add(totalQuantityLabel,"span 4, w :90:, align right");
+        scrollPane = new JScrollPane(entryPanel);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        satSandeshInventoryIssueWindow.add(scrollPane,"span, wrap");
+        
+        satSandeshInventoryIssueWindow.add(totalQuantityLabel,"span 7, w :90:, align right");
         satSandeshInventoryIssueWindow.add(totalQuantityText,"span 1, w :90:");
-        satSandeshInventoryIssueWindow.add(totalAmountLabel,"span 1, w :90:, align right");
-        satSandeshInventoryIssueWindow.add(totalAmountText,"span 1, w :90:, wrap 5px");
+        satSandeshInventoryIssueWindow.add(totalAmountLabel,"span 3, align right");
+        satSandeshInventoryIssueWindow.add(totalAmountText,"span 1, w :90:, wrap 2px");
         
         //satSandeshInventoryIssueWindow.add(quantityLabel );
         //satSandeshInventoryIssueWindow.add(quantityText, "span 2, w 100!");
-        satSandeshInventoryIssueWindow.add(okButton, "gapleft 80, w :90:, span 2");
-        satSandeshInventoryIssueWindow.add(cancelButton, "gapleft 60, w :90: ,span 3");
-        satSandeshInventoryIssueWindow.add(printButton, "gapleft 60, w :90: ,span 3");
+        satSandeshInventoryIssueWindow.add(okButton, "w :90:, span 7, align right");
+        satSandeshInventoryIssueWindow.add(cancelButton, " w :90: ,span 4, align center");
+        satSandeshInventoryIssueWindow.add(printButton, "w :90: ,span 4, align left");
         
         //populate information from datatbase
         //fillSeriesNameInformation();
@@ -260,12 +307,12 @@ public class SatSandeshInventoryIssue  implements ActionListener, ItemListener, 
     public void actionPerformed(ActionEvent event)
     {
         
-        for(int i = 0; i < 15; i++)
+        for(int i = 0; i < NUM_ROWS; i++)
         {
             if(event.getSource() == amountText[i])
             {
                 float total = 0.0f;
-                for(int j = 0; j < 15; j++)
+                for(int j = 0; j < NUM_ROWS; j++)
                 {
                     String amtString = amountText[j].getText(); 
                     float amount = 0.0f;
@@ -279,7 +326,7 @@ public class SatSandeshInventoryIssue  implements ActionListener, ItemListener, 
             if(event.getSource() == quantityText[i])
             {
                 int total = 0;
-                for(int j = 0; j < 15; j++)
+                for(int j = 0; j < NUM_ROWS; j++)
                 {
                     String qtyString = quantityText[j].getText(); 
                     int quantity = 0;
@@ -299,9 +346,9 @@ public class SatSandeshInventoryIssue  implements ActionListener, ItemListener, 
             
             //gather the info from user input into the frame
             String issueDate = entryYearText.getText()+"-"+entryMonthText.getText()+"-"+entryDateText.getText();
-            for(int i = 0; i < 15; i++)
+            for(int i = 0; i < NUM_ROWS; i++)
             {
-                String customerName = (String)customerNameText[i].getText();
+                String customerName = (String)customerNameDropDown[i].getSelectedItem();
                 if(!customerName.isEmpty())
                 {
                     String issueYear = (String)yearDropDown[i].getSelectedItem();
@@ -426,7 +473,7 @@ public class SatSandeshInventoryIssue  implements ActionListener, ItemListener, 
                             }
                             updateconnection.closeAll();
                             
-                            customerNameText[i].setText("");
+                            customerNameDropDown[i].setSelectedIndex(1);
                             amountText[i].setText("");
                             languageDropDown[i].setSelectedItem("");
                             issueTypeDropDown[i].setSelectedItem("");
@@ -496,7 +543,7 @@ public class SatSandeshInventoryIssue  implements ActionListener, ItemListener, 
     
     public void itemStateChanged(ItemEvent ie)
     {
-        for(int i = 0; i < 15; i++)
+        for(int i = 0; i < NUM_ROWS; i++)
         {
             if(ie.getSource() == yearDropDown[i])
             {

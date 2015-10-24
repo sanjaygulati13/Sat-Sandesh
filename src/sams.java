@@ -31,7 +31,7 @@ public class sams extends JFrame implements ActionListener {
     
     //miscellaneous
     JMenu recdel, oth, despatch, freeze, inactive, deactive, account_book_details_menu, petty_menu;
-    JMenuItem rcptdet, accnt, accntsum,accnt_monthly, accnt_yearly, despdet, moddesp, retb,retl, freezed, freezes, deactived, deactives, inactived, inactives, state, district,subl, dnol, pet,petty_month, petty_year, dup;
+    JMenuItem rcptdet, accnt, accntsum,accnt_monthly, accnt_yearly, accnt_subscription, despdet, moddesp, retb,retl, freezed, freezes, deactived, deactives, inactived, inactives, state, district,subl, dnol, pet,petty_month, petty_year, dup;
     JMenuItem ind, retb1, SupplementaryIndex;
     //search
     JMenuItem searchsubno, searchrcptno, searchname, searchaddr;
@@ -45,7 +45,7 @@ public class sams extends JFrame implements ActionListener {
     
     JMenu add_inventory_menu, issue_inventory_menu, report_inventory_menu;
     JMenuItem new_inventory_menu_item, sub_issue_inventory_menu_item;
-    JMenuItem distribute_inventory_menu_item, bind_inventory_menu_item;
+    JMenuItem distribute_inventory_menu_item, bind_inventory_menu_item, account_book_posting_inventory_menu_item;
     JMenuItem summary_inventory_report_menu_item, detailed_inventory_report_menu_item, distribution_inventory_report_menu_item, view_page_number_inventory_report ;
     
     
@@ -189,6 +189,12 @@ public class sams extends JFrame implements ActionListener {
         account_book_details_menu = new JMenu("Account Book");						//account book--misclellaneous
         account_book_details_menu.setMnemonic('A');
 
+        //account_book_posting_inventory_menu_item
+        account_book_posting_inventory_menu_item = new JMenuItem("Account Book Posting");
+        account_book_posting_inventory_menu_item.setMnemonic('B');
+        account_book_posting_inventory_menu_item.addActionListener(this);
+        
+        
         accnt = new JMenuItem("Detailed");
         accnt.setMnemonic('D');
 
@@ -200,6 +206,9 @@ public class sams extends JFrame implements ActionListener {
 
         accnt_yearly = new JMenuItem("Yearly Report");
         accnt_yearly.setMnemonic('Y');
+        
+        accnt_subscription = new JMenuItem("Subscription Report");
+        accnt_subscription.setMnemonic('S');
 
 
         despdet = new JMenuItem("Add D# Details");				//despatch code details--misclellaneous
@@ -312,6 +321,8 @@ public class sams extends JFrame implements ActionListener {
         distribute_inventory_menu_item = new JMenuItem("Distribution");
         distribute_inventory_menu_item.setMnemonic('S');
         distribute_inventory_menu_item.addActionListener(this);
+        
+        
         
         bind_inventory_menu_item = new JMenuItem("Binding");
         bind_inventory_menu_item.setMnemonic('S');
@@ -462,6 +473,8 @@ public class sams extends JFrame implements ActionListener {
         account_book_details_menu.add(accntsum);
         account_book_details_menu.add(accnt_monthly);
         account_book_details_menu.add(accnt_yearly);
+        account_book_details_menu.add(accnt_subscription);
+        
         despatch.add(despdet);
         despatch.add(moddesp);
 
@@ -518,6 +531,7 @@ public class sams extends JFrame implements ActionListener {
         receipt_book_menu.add(receipt_issue_details_menu);
         receipt_book_menu.add(receipt_book_reporting_menu);
         receipt_book_menu.add(account_book_details_menu);
+        receipt_book_menu.add(account_book_posting_inventory_menu_item);
         
         receipt_issue_details_menu.add(issue_new_receipt_book_menu_item);
         receipt_issue_details_menu.add(issue_reissue_menu_item);
@@ -559,6 +573,7 @@ public class sams extends JFrame implements ActionListener {
         accntsum.addActionListener(this);
         accnt_monthly.addActionListener(this);
         accnt_yearly.addActionListener(this);
+        accnt_subscription.addActionListener(this);
 
         despdet.addActionListener(this);
         retb.addActionListener(this);
@@ -752,7 +767,8 @@ public class sams extends JFrame implements ActionListener {
 
         //miscellaneous
         if (ae.getSource() == rcptdet) {
-            new accdet();
+            this.setVisible(false);
+            new CheckReceiptBookDetailsInput();
             this.dispose();
         }
 
@@ -781,6 +797,13 @@ public class sams extends JFrame implements ActionListener {
             new accnt_yearly();
             this.dispose();
         }
+        
+        if (ae.getSource() == accnt_subscription) {
+            this.setVisible(false);
+            new SatSandeshSubscriptionReport();
+            this.dispose();
+        }
+        
 
         if (ae.getSource() == retb) {
             new returnback();
@@ -854,7 +877,7 @@ public class sams extends JFrame implements ActionListener {
         }
 
         if (ae.getSource() == searchrcptno) {
-            new searchrcpt();
+            new SatSandeshSubscriptionSearchByReceiptNumber();
             this.dispose();
         }
 
@@ -925,6 +948,13 @@ public class sams extends JFrame implements ActionListener {
         {
             this.setVisible(false);
             new SatSandeshInventoryIssue();
+            this.dispose();
+        }
+        
+        if(ae.getSource() == account_book_posting_inventory_menu_item)
+        {
+            this.setVisible(false);
+            new SatSandeshAccountBookPosting();
             this.dispose();
         }
         
