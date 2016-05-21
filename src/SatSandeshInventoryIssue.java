@@ -473,7 +473,7 @@ public class SatSandeshInventoryIssue  implements ActionListener, ItemListener, 
                             }
                             updateconnection.closeAll();
                             
-                            customerNameDropDown[i].setSelectedIndex(1);
+                            customerNameDropDown[i].setSelectedIndex(0);
                             amountText[i].setText("");
                             languageDropDown[i].setSelectedItem("");
                             issueTypeDropDown[i].setSelectedItem("");

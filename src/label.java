@@ -107,13 +107,14 @@ public class label implements Printable, ActionListener
 			}
 			
 			i=0;
+                        connect c10=new connect();
 			for(i=0;i<x;i++)
 			{
-				connect c10=new connect();
 				c10.rs=c10.st.executeQuery("select * from basic where asn="+asn[i]);
 				c10.rs.next();
 				textLines[i][0]="SUB # "+ c10.rs.getString(2)+" "+ c10.rs.getString(3)+" / "+c10.rs.getInt(5)+" / ";
 			}
+                        c10.closeAll();
 				
 			
 			c2.st.close();

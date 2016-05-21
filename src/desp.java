@@ -11,9 +11,10 @@ public class desp extends JFrame implements ActionListener
 		new desp();
 	}	
 		
-	JLabel nam, phno, despcd, email, add1, rem, hist, dist, stat, pin;
+	JLabel nam, phno, despcd, email, add1, rem, hist, dist, stat, pin, distributionTypeLabel;
 	JTextField remt, histt, distt;
 	TextFieldWithLimit namt, lnamt, phnot, despcdt, addt11, addt12, addt13, statt, pint, emailt;
+        JComboBox distributionTypeDropDown;
 	JButton sav, clr, back;
 		
 	public desp()
@@ -42,6 +43,7 @@ public class desp extends JFrame implements ActionListener
 		nam=new JLabel("Name");
 		phno=new JLabel("Phone No");
 		despcd=new JLabel("Desp Code");
+                distributionTypeLabel = new JLabel("<html>Dist Type</html>");
 		email=new JLabel("email id");
 		add1=new JLabel("Address");
 		rem=new JLabel("Remarks");
@@ -55,7 +57,7 @@ public class desp extends JFrame implements ActionListener
 		namt=new TextFieldWithLimit(16,16);
 		lnamt=new TextFieldWithLimit(15,15);
 		phnot=new TextFieldWithLimit(13,12);
-		despcdt=new TextFieldWithLimit(3,2);
+		despcdt=new TextFieldWithLimit(4,3);
 		addt11=new TextFieldWithLimit(33,32);
 		addt12=new TextFieldWithLimit(33,32);
 		addt13=new TextFieldWithLimit(33,32);
@@ -70,6 +72,10 @@ public class desp extends JFrame implements ActionListener
 		sav=new JButton("Save");
 		clr=new JButton("Clear");
 		back=new JButton("Back");
+                
+                distributionTypeDropDown = new JComboBox();
+                distributionTypeDropDown.addItem("By Post");
+                distributionTypeDropDown.addItem("By Hand");
 		
 		nam.setBounds(20,30,50,20);
 		add(nam);
@@ -79,6 +85,12 @@ public class desp extends JFrame implements ActionListener
 		
 		despcd.setBounds(20,70,130,20);
 		add(despcd);
+                
+                distributionTypeLabel.setBounds(180,70,80,20);
+                add(distributionTypeLabel);
+                
+                distributionTypeDropDown.setBounds(260,70,120,20);
+                add(distributionTypeDropDown);
 		
 		email.setBounds(400,70,50,20);
 		add(email);
@@ -112,7 +124,7 @@ public class desp extends JFrame implements ActionListener
 		phnot.setBounds(480,30,120,20);
 		add(phnot);
 		
-		despcdt.setBounds(100,70,30,20);
+		despcdt.setBounds(100,70,50,20);
 		add(despcdt);
 		
 		emailt.setBounds(480,70,240,20);
@@ -170,8 +182,9 @@ public class desp extends JFrame implements ActionListener
 		{
 			
 			String name1,lname1, phone, email, add1, add2, add3, remarks, history, district, state;
+                        String distributionTypeText;
 			int dno, pinno;
-			System.out.println("hello");
+			//System.out.println("hello");
 			
 			dno=Integer.parseInt(despcdt.getText());
 			name1=namt.getText();
@@ -186,6 +199,7 @@ public class desp extends JFrame implements ActionListener
 			district=distt.getText();
 			state=statt.getText();
 			pinno=Integer.parseInt(pint.getText());
+                        distributionTypeText = (String)(distributionTypeDropDown.getSelectedItem());
 			//System.out.println(""+dno+name1+phone+email+add1+add2+add3+remarks+history+district+state+pinno);
 			
 			try
@@ -203,8 +217,8 @@ public class desp extends JFrame implements ActionListener
 				if(k==0)
 				{
 					connect c1=new connect();
-					c1.a=c1.st.executeUpdate("insert into despcode values("+dno+",'"+name1+"','"+lname1+"','"+phone+"','"+email+"','"+add1+"','"+add2+"','"+add3+"','"+remarks+"','"+history+"','"+district+"','"+state+"',"+pinno+")");
-					System.out.println(""+c1.a);
+					c1.a=c1.st.executeUpdate("insert into despcode values("+dno+",'"+name1+"','"+lname1+"','"+phone+"','"+email+"','"+add1+"','"+add2+"','"+add3+"','"+remarks+"','"+history+"','"+district+"','"+state+"',"+pinno+",'"+distributionTypeText+"')");
+					//System.out.println(""+c1.a);
 					if(c1.a==1)
 					{
 						new desp();
@@ -233,6 +247,7 @@ public class desp extends JFrame implements ActionListener
 					distt.setText("");
 					statt.setText("");
 					pint.setText("");
+                                        distributionTypeDropDown.setSelectedIndex(0);
 			
 				}
 			}
@@ -260,6 +275,7 @@ public class desp extends JFrame implements ActionListener
 			distt.setText("");
 			statt.setText("");
 			pint.setText("");
+                        distributionTypeDropDown.setSelectedIndex(0);
 			
 			
 		}

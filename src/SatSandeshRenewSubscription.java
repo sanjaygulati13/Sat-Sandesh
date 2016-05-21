@@ -31,7 +31,7 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
     
     JTextField asnt1, statust1 /*, distt1, subtt1 , langt1*/;						//subscription details
     JComboBox dt1, distt1, subt22, subtt1, langt1, seriesDropDown;
-    TextFieldWithLimit subt21, rect1;
+    TextFieldWithLimit subt21, receiptNumberText;
     
     
     JTextField /*paytt1,*/ chddt1;											//payment details
@@ -131,7 +131,7 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
         asnt1=new JTextField(8);
         subt21=new TextFieldWithLimit(5,5);
         statust1=new JTextField(20);
-        rect1=new TextFieldWithLimit(5,5);
+        receiptNumberText=new TextFieldWithLimit(5,5);
         distt1=new JComboBox();
         subt22=new JComboBox();
         
@@ -370,10 +370,10 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
         p1.add(seriesLabel);
         seriesLabel.setBounds(820,45,20,20);
         
-        p1.add(rect1);
+        p1.add(receiptNumberText);
         //rect1.setBounds(860,45,40,20);
-        rect1.setBounds(840,45,40,20);
-        rect1.addFocusListener(this);
+        receiptNumberText.setBounds(840,45,40,20);
+        receiptNumberText.addFocusListener(this);
         
         p1.add(dist1);
         dist1.setBounds(30,75,100,20);
@@ -762,7 +762,7 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
                 }
                 
                 
-                rcpt=Integer.parseInt(rect1.getText());
+                rcpt=Integer.parseInt(receiptNumberText.getText());
                 dno=Integer.parseInt((String)dt1.getSelectedItem());
                 subno1=(String)subt22.getSelectedItem();
                 subno=Integer.parseInt(subt21.getText());
@@ -1119,7 +1119,7 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
     
     @Override
     public void focusGained(FocusEvent fe) {
-        if(fe.getSource() == rect1)
+        if(fe.getSource() == receiptNumberText)
         {
             seriesNameText = (String)(seriesDropDown.getSelectedItem());
             //System.out.println("Gained " + seriesName);   
@@ -1128,10 +1128,10 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
 
     @Override
     public void focusLost(FocusEvent fe) {
-        if(fe.getSource() == rect1)
+        if(fe.getSource() == receiptNumberText)
         {
             int rcptNum;
-            String rcpt = rect1.getText();
+            String rcpt = receiptNumberText.getText();
             if(seriesNameText.isEmpty() && rcpt.isEmpty() == false)
             {
                 JOptionPane.showMessageDialog(this,"Please select series", "Please select series", JOptionPane.ERROR_MESSAGE);
@@ -1154,6 +1154,7 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
                     if(ArrayCount != 1)
                     {
                         JOptionPane.showMessageDialog(this,"Invalid receipt number", "Invalid receipt number", JOptionPane.ERROR_MESSAGE);
+                        receiptNumberText.setText("");
                         return;
                     }
                     
@@ -1165,6 +1166,7 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
                     if(centre.isEmpty())
                     {
                         JOptionPane.showMessageDialog(this,"Invalid receipt number", "Invalid receipt number", JOptionPane.ERROR_MESSAGE);
+                        receiptNumberText.setText("");
                         return;
                     }
                     String bookNum = fillSeriesConnection.rs.getString(2);

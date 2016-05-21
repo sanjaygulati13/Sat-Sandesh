@@ -24,30 +24,36 @@ public class sams extends JFrame implements ActionListener {
         setLocation(x, y);
     }
 
-    //ImageIcon img;
+    
     JMenuBar mbar;
-    JMenu subscription_menu, dis, mis, search, lab, month, rem, mem, inventory_management_menu;
-    JMenuItem new1, renew, des, rembulk, remsub, cross, memd, mems, bulk, subno, all, dno, remstatus, dstatus, left;
+    JMenu subscription_menu, labels_top_menu, registers_menu, subscriber_report_menu, track_data_menu,   inventory_management_menu, inventory_report_menu;
+    JMenu search_menu;
+    JMenuItem newSubscriptionMenuItem, renewSubscriptionMenuItem,bulknewEntry,bulkRenewEntry, despatchRegisterMenuItem, distributorRemindersMenuItem, despatchRemindersMenuItem, crossCheckingReportMenuItem, detailedMemberStatusMenuItem, summaryMemberStatusMenuItem, centerLabelsMenuItem, despatchLabelsMenuItem, centerListMenuItem, distributorLabelsMenuItem, reminderStatusMenuItem, distributorStatusMenuItem, leftoutsMenuItem;
     
-    //miscellaneous
-    JMenu recdel, oth, despatch, freeze, inactive, deactive, account_book_details_menu, petty_menu;
-    JMenuItem rcptdet, accnt, accntsum,accnt_monthly, accnt_yearly, accnt_subscription, despdet, moddesp, retb,retl, freezed, freezes, deactived, deactives, inactived, inactives, state, district,subl, dnol, pet,petty_month, petty_year, dup;
-    JMenuItem ind, retb1, SupplementaryIndex;
-    //search
+    
+    JMenu recordDeletionMenu, freeze, inactive, deactive, account_book_details_menu, petty_menu;
+    JMenuItem receiptBookStatusMenuItem, accnt, accntsum,accnt_monthly, accnt_yearly, subscriptionReportMenuItem, addDistributorCodeMenuItem, alterDistributorCodeMenuItem, markReturnBackMenuItem,returnBackListMenuItem, freezed, freezes, deactived, deactives, inactived, inactives, stateSubscriberReportMenuItem, districtSubscriberReportMenuItem,despatchCodeSubscriberReportMenuItem, distributorCodeSubscriberReportMenuItem, pet,petty_month, petty_year, dup;
+    JMenuItem indexRegisterMenuItem, supplementaryIndexRegisterMenuItem;
+    
+    
     JMenuItem searchsubno, searchrcptno, searchname, searchaddr;
-    JButton newb, renewb, memstatusb, reminderb, labelsubb, labeldistb, indexb, backupb;
+    JButton newb, renewb, memstatusb, reminderb, labelsubb, labeldistb, indexb, backupButton;
     Font f = new Font("ARIAL", Font.BOLD, 14);
-    JLabel l1, l2;
-    //inventory management
-    JMenu receipt_book_menu, sat_sandesh_menu, receipt_issue_details_menu, receipt_book_reporting_menu;
-    JMenuItem receipt_add_new_series_menu_item, issue_new_receipt_book_menu_item, issue_reissue_menu_item, issue_revert_menu_item;
-    JMenuItem issue_receipt_book_status, issue_series_issue_details;
+    JLabel titleLabel, satSandeshIconLabel;
     
-    JMenu add_inventory_menu, issue_inventory_menu, report_inventory_menu;
+    
+    JMenuItem inventory_management_sat_sandesh_menu_item, inventory_reports_sat_sandesh_menu_item;
+    JMenuItem receipt_add_new_series_menu_item, issue_new_receipt_book_menu_item, issue_reissue_menu_item, issue_revert_menu_item;
+    JMenuItem issue_series_issue_details;
+    
     JMenuItem new_inventory_menu_item, sub_issue_inventory_menu_item;
     JMenuItem distribute_inventory_menu_item, bind_inventory_menu_item, account_book_posting_inventory_menu_item;
     JMenuItem summary_inventory_report_menu_item, detailed_inventory_report_menu_item, distribution_inventory_report_menu_item, view_page_number_inventory_report ;
     
+    
+    JMenuItem oldPeriodReportMenuItem, backupMenuItem, restoreBackupMenuItem,consolidate_stock_menu_item;
+    JMenuItem inventory_management_receipt_book_menu_item, inventory_reports_receipt_book_menu_item;
+    JMenuItem consolidated_reports_menu_item, counter_book_status_menu_item;
     
     public sams() {
 
@@ -81,92 +87,228 @@ public class sams extends JFrame implements ActionListener {
         this.setJMenuBar(mbar);
         subscription_menu = new JMenu("Subscription");								//subscription
         subscription_menu.setMnemonic('s');
-        dis = new JMenu("Display/Print");								//display/print
-        dis.setMnemonic('d');
-        mis = new JMenu("Miscellaneous");								//miscellaneous
-        mis.setMnemonic('m');
+        
+        labels_top_menu = new JMenu("Labels");								//display/print
+        labels_top_menu.setMnemonic('l');
+        
+        registers_menu = new JMenu("Registers");		
+        registers_menu.setMnemonic('r');
+        
+        subscriber_report_menu= new JMenu("Subscriber Reports");
+        subscriber_report_menu.setMnemonic('u');
+        
+        track_data_menu = new JMenu("Track Data");	
+        track_data_menu.setMnemonic('T');
         
         inventory_management_menu = new JMenu("Inventory Management");
         inventory_management_menu.setMnemonic('i');
         
-        search = new JMenu("Search");									//search
-        search.setMnemonic('e');
-        lab = new JMenu("Labels");									//labels--d/p
-        lab.setMnemonic('l');
-        new1 = new JMenuItem("New");									//new--subscription
-        new1.setMnemonic('n');
-        renew = new JMenuItem("Renew");								//renew--subscription
-        renew.setMnemonic('r');
-        ind = new JMenuItem("Index Register");						//index--d/p
-        ind.setMnemonic('i');
+        inventory_report_menu= new JMenu("Inventory Reports");	
+        inventory_report_menu.setMnemonic('v');
         
-        SupplementaryIndex = new JMenuItem("Suppl. index Register");
-        SupplementaryIndex.setMnemonic('S');
         
-        des = new JMenuItem("Despatch register");						//despatch--d/p
-        des.setMnemonic('p');
-        rem = new JMenu("Reminders");									//reminders--d/p
-        rem.setMnemonic('r');
-        cross = new JMenuItem("Cross Checking Reports");				//cross check reports--d/p
-        cross.setMnemonic('c');
-        mem = new JMenu("Member Status");							//member status--d/p
-        mem.setMnemonic('m');
+        
+        search_menu = new JMenu("Search");									//search
+        search_menu.setMnemonic('e');
+        //lab = new JMenu("Labels");									//labels--d/p
+        //lab.setMnemonic('l');
+        
+        newSubscriptionMenuItem = new JMenuItem("New");									//new--subscription
+        newSubscriptionMenuItem.setMnemonic('n');
+        
+        renewSubscriptionMenuItem = new JMenuItem("Renew");                                                                 //renew--subscription
+        renewSubscriptionMenuItem.setMnemonic('r');
+        
+        bulknewEntry = new JMenuItem("Bulk New");							//bulk new--subscription
+        bulknewEntry.setMnemonic('u');
+         
+        bulkRenewEntry = new JMenuItem("Bulk Renew");
+        bulkRenewEntry.setMnemonic('l');
+        
+        
+        despatchLabelsMenuItem = new JMenuItem("Despatch Labels");								//by sub no--d/p--labels--monthly
+        despatchLabelsMenuItem.setMnemonic('l');
+        
+        despatchRemindersMenuItem = new JMenuItem("Despatch Reminders");					//by sub no--d/p--reminders
+        despatchRemindersMenuItem.setMnemonic('r');
+        
+        distributorLabelsMenuItem = new JMenuItem("Distributor Labels");							//by distributor--d/p--labels--monthly
+        distributorLabelsMenuItem.setMnemonic('d');
+        
+        distributorRemindersMenuItem = new JMenuItem("Distributor Reminders");					//by D#--d/p--reminders
+        distributorRemindersMenuItem.setMnemonic('e');
+        
+        leftoutsMenuItem = new JMenuItem("Leftouts");
+        leftoutsMenuItem.setMnemonic('o');
+        
+        //===============
+        despatchRegisterMenuItem = new JMenuItem("Despatch register");						//despatch--d/p
+        despatchRegisterMenuItem.setMnemonic('d');
+        
+        
+        indexRegisterMenuItem = new JMenuItem("Index Register");						//index--d/p
+        indexRegisterMenuItem.setMnemonic('i');
+        
+        supplementaryIndexRegisterMenuItem = new JMenuItem("Supplimentary index Register");
+        supplementaryIndexRegisterMenuItem.setMnemonic('s');
+        
+        //===============
+        centerLabelsMenuItem = new JMenuItem("Center Labels");							//bulk address--d/p--labels
+        centerLabelsMenuItem.setMnemonic('c');
+        
+        centerListMenuItem = new JMenuItem("Center List");		//print centerListMenuItem distributorLabelsMenuItem--d/p--labels
+        centerListMenuItem.setMnemonic('l');
+        
+        crossCheckingReportMenuItem = new JMenuItem("Cross Checking Report");				//cross check reports--d/p
+        crossCheckingReportMenuItem.setMnemonic('r');
+        
+        despatchCodeSubscriberReportMenuItem = new JMenuItem("Despatch Code Wise");							//misclellaneous--others--sub list
+        despatchCodeSubscriberReportMenuItem.setMnemonic('d');
+        
+        distributorCodeSubscriberReportMenuItem = new JMenuItem("Distributor Code Wise");							//misclellaneous--others--distributorLabelsMenuItem list
+        distributorCodeSubscriberReportMenuItem.setMnemonic('i');
+        
+        distributorStatusMenuItem = new JMenuItem("Distributor Status");							//member status--d/p
+        distributorStatusMenuItem.setMnemonic('s');
+        
+        districtSubscriberReportMenuItem = new JMenuItem("District Wise");					//misclellaneous--others--districtSubscriberReportMenuItem list
+        districtSubscriberReportMenuItem.setMnemonic('t');
+        
+        detailedMemberStatusMenuItem = new JMenuItem("Member Status - Detailed");
+        detailedMemberStatusMenuItem.setMnemonic('m');
+        
+        summaryMemberStatusMenuItem = new JMenuItem("Member Status - Summary");
+        summaryMemberStatusMenuItem.setMnemonic('y');
+        
+        oldPeriodReportMenuItem = new JMenuItem("Old Period Report");
+        oldPeriodReportMenuItem.setMnemonic('p');
+        
+        
+        reminderStatusMenuItem = new JMenuItem("Reminder Status");							//member status--d/p
+        reminderStatusMenuItem.setMnemonic('e');
+        
+        returnBackListMenuItem=new JMenuItem("Return Back List");
+        returnBackListMenuItem.setMnemonic('b');
+        
+        stateSubscriberReportMenuItem = new JMenuItem("State Wise");							//misclellaneous--others--stateSubscriberReportMenuItem list
+        stateSubscriberReportMenuItem.setMnemonic('w');
+        
+        subscriptionReportMenuItem = new JMenuItem("Subscription Report");
+        subscriptionReportMenuItem.setMnemonic('u');
+        
+        recordDeletionMenu = new JMenu("Record Deletion");						//record deletion--miscellaneous
+        //recordDeletionMenu.setMnemonic('e');
+        
+        //=================================
+        
+        addDistributorCodeMenuItem = new JMenuItem("Add Distributor Code");
+        addDistributorCodeMenuItem.setMnemonic('a');
 
-        memd = new JMenuItem("Detailed");
-        memd.setMnemonic('D');
-        mems = new JMenuItem("Summary");
-        mems.setMnemonic('S');
+        alterDistributorCodeMenuItem = new JMenuItem("Alter Distributor Code");
+        alterDistributorCodeMenuItem.setMnemonic('M');
+        
+        backupMenuItem = new JMenuItem("Backup");
+        backupMenuItem.setMnemonic('b');
+        
+        restoreBackupMenuItem = new JMenuItem("Restore Backup");
+        restoreBackupMenuItem.setMnemonic('r');
+        
+        markReturnBackMenuItem = new JMenuItem("Mark Return Back");						//mark return back--misclellaneous--record deletion
+        markReturnBackMenuItem.setMnemonic('m');
+        
+        //=================================
+        
+        inventory_management_receipt_book_menu_item = new JMenuItem("Receipt Book");
+        
 
-        left = new JMenuItem("Leftouts");
-        left.setMnemonic('L');
-        remstatus = new JMenuItem("Reminder Status");							//member status--d/p
-        remstatus.setMnemonic('r');
+        account_book_posting_inventory_menu_item = new JMenuItem("Account Book Posting");
+        account_book_posting_inventory_menu_item.setMnemonic('p');
+        account_book_posting_inventory_menu_item.addActionListener(this);
+        
+        receipt_add_new_series_menu_item = new JMenuItem("Add New Series");
+        receipt_add_new_series_menu_item.setMnemonic('a');
+        receipt_add_new_series_menu_item.addActionListener(this);
+        
+        issue_reissue_menu_item = new JMenuItem("Book Re-Issue");
+        issue_reissue_menu_item.setMnemonic('r');
+        issue_reissue_menu_item.addActionListener(this);
+        
+        issue_new_receipt_book_menu_item = new JMenuItem("Issue New Receipt Book");
+        issue_new_receipt_book_menu_item.setMnemonic('i');
+        issue_new_receipt_book_menu_item.addActionListener(this);
+        
+        issue_revert_menu_item = new JMenuItem("Book Revert Back");
+        issue_revert_menu_item.setMnemonic('b');
+        issue_revert_menu_item.addActionListener(this);
+        
+            //=================================
+        inventory_management_sat_sandesh_menu_item = new JMenuItem("Sat Sandesh");
+        
+        new_inventory_menu_item = new JMenuItem("Add Inventory");
+        new_inventory_menu_item.setMnemonic('v');
+        new_inventory_menu_item.addActionListener(this);
+        
+        bind_inventory_menu_item = new JMenuItem("Binding Issue");
+        bind_inventory_menu_item.setMnemonic('n');
+        bind_inventory_menu_item.addActionListener(this);
+        
+        distribute_inventory_menu_item = new JMenuItem("Issue distribution");
+        distribute_inventory_menu_item.setMnemonic('d');
+        distribute_inventory_menu_item.addActionListener(this);
+        
+        consolidate_stock_menu_item = new JMenuItem("Consolidate Stock");
+        consolidate_stock_menu_item.setMnemonic('c');
+        
+        sub_issue_inventory_menu_item = new JMenuItem("Issue Inventory");
+        sub_issue_inventory_menu_item.setMnemonic('s');
+        sub_issue_inventory_menu_item.addActionListener(this);
+        
+        //=================================
+        
+        inventory_reports_receipt_book_menu_item = new JMenuItem("Receipt Book");
+        
+        receiptBookStatusMenuItem = new JMenuItem("Receipt Book Status");				//Receipt Book details--misclellaneous
+        receiptBookStatusMenuItem.setMnemonic('b');
+        
+        issue_series_issue_details = new JMenuItem("Series Issue Status");
+        issue_series_issue_details.setMnemonic('i');
+        issue_series_issue_details.addActionListener(this);
+        
+        account_book_details_menu = new JMenu("Account Book Status");						//account book--misclellaneous
+        account_book_details_menu.setMnemonic('a');
+        
+        inventory_reports_sat_sandesh_menu_item = new JMenuItem("Sat Sandesh");
+        
+       
+        consolidated_reports_menu_item = new JMenuItem("Consolidated Reports");
+        consolidated_reports_menu_item.setMnemonic('o');
+        consolidated_reports_menu_item.addActionListener(this);
+        
+        counter_book_status_menu_item = new JMenuItem("Counter Book Status");
+        counter_book_status_menu_item.setMnemonic('c');
+        counter_book_status_menu_item.addActionListener(this);
+        
+        
+        summary_inventory_report_menu_item = new JMenuItem("Consolidated Stock Status");
+        summary_inventory_report_menu_item.setMnemonic('n');
+        summary_inventory_report_menu_item.addActionListener(this);
+        
+        detailed_inventory_report_menu_item = new JMenuItem("Stock Status");
+        detailed_inventory_report_menu_item.setMnemonic('s');
+        detailed_inventory_report_menu_item.addActionListener(this);
+        
+        distribution_inventory_report_menu_item = new JMenuItem("Distribution Report");
+        distribution_inventory_report_menu_item.setMnemonic('d');
+        distribution_inventory_report_menu_item.addActionListener(this);    
+        
+        
+        view_page_number_inventory_report = new JMenuItem("View Page Details");
+        view_page_number_inventory_report.setMnemonic('p');
+        view_page_number_inventory_report.addActionListener(this);    
+        
 
-        dstatus = new JMenuItem("Distributor Status");							//member status--d/p
-        dstatus.setMnemonic('d');
-
-
-        month = new JMenu("Monthly Labels");							//monthly labels--d/p--labels
-        month.setMnemonic('o');
-        bulk = new JMenuItem("Bulk Address");							//bulk address--d/p--labels
-        bulk.setMnemonic('b');
-        all = new JMenuItem("Print all Distributor Details ");		//print all dno--d/p--labels
-        all.setMnemonic('A');
-        subno = new JMenuItem("Sub No.");								//by sub no--d/p--labels--monthly
-        subno.setMnemonic('u');
-        dno = new JMenuItem("Distributor");							//by distributor--d/p--labels--monthly
-        dno.setMnemonic('t');
-        rembulk = new JMenuItem("Bulk Reminders");					//by D#--d/p--reminders
-        rembulk.setMnemonic('b');
-        remsub = new JMenuItem("Sub No Reminders");					//by sub no--d/p--reminders
-        remsub.setMnemonic('S');
-
-        recdel = new JMenu("Record Deletion");						//record deletion--miscellaneous
-        recdel.setMnemonic('e');
-
-        oth = new JMenu("Others");									//other--miscellaneous
-        oth.setMnemonic('O');
-
-        despatch = new JMenu("Despatch");								//despatch--miscellaneous
-        despatch.setMnemonic('D');
-
-        state = new JMenuItem("State List");							//misclellaneous--others--state list
-        state.setMnemonic('S');
-
-        subl = new JMenuItem("Sub No List");							//misclellaneous--others--sub list
-        subl.setMnemonic('u');
-
-        dnol = new JMenuItem("D# List");							//misclellaneous--others--dno list
-        dnol.setMnemonic('L');
-
-
-        district = new JMenuItem("District list");					//misclellaneous--others--district list
-        district.setMnemonic('D');
-
-
-        rcptdet = new JMenuItem("Receipt Book details");				//Receipt Book details--misclellaneous
-        rcptdet.setMnemonic('R');
-
+        //=================================
+        
         dup=new JMenuItem("Duplicate SUB No");
         dup.setMnemonic('D');
         dup.addActionListener(this);
@@ -186,13 +328,9 @@ public class sams extends JFrame implements ActionListener {
         petty_year.setMnemonic('Y');
         petty_year.addActionListener(this);
 
-        account_book_details_menu = new JMenu("Account Book");						//account book--misclellaneous
-        account_book_details_menu.setMnemonic('A');
+        
 
-        //account_book_posting_inventory_menu_item
-        account_book_posting_inventory_menu_item = new JMenuItem("Account Book Posting");
-        account_book_posting_inventory_menu_item.setMnemonic('B');
-        account_book_posting_inventory_menu_item.addActionListener(this);
+        
         
         
         accnt = new JMenuItem("Detailed");
@@ -207,25 +345,6 @@ public class sams extends JFrame implements ActionListener {
         accnt_yearly = new JMenuItem("Yearly Report");
         accnt_yearly.setMnemonic('Y');
         
-        accnt_subscription = new JMenuItem("Subscription Report");
-        accnt_subscription.setMnemonic('S');
-
-
-        despdet = new JMenuItem("Add D# Details");				//despatch code details--misclellaneous
-        despdet.setMnemonic('D');
-
-        moddesp = new JMenuItem("Modify D# Details");
-        moddesp.setMnemonic('M');
-
-        retb1=new JMenu("Return Back");
-        retb1.setMnemonic('R');
-
-        retb = new JMenuItem("Mark Return Back");						//mark return back--misclellaneous--record deletion
-        retb.setMnemonic('M');
-
-        retl=new JMenuItem("Return Back list");
-        retl.setMnemonic('l');
-
         /*del=new JMenuItem("Delete");									//delete--misclellaneous--record deletion
         del.setMnemonic('e');
          */
@@ -260,94 +379,8 @@ public class sams extends JFrame implements ActionListener {
         inactives = new JMenuItem("Summary");
         inactives.setMnemonic('S');
 
-        /* Receipt Book Menu under Inventory Management Menu*/
-        receipt_book_menu = new JMenu("Receipt Book");
-        receipt_book_menu.setMnemonic('r');
         
-        receipt_add_new_series_menu_item = new JMenuItem("Add Series");
-        receipt_add_new_series_menu_item.setMnemonic('a');
-        receipt_add_new_series_menu_item.addActionListener(this);
-        
-        receipt_issue_details_menu = new JMenu("Issue Receipt Book");
-        receipt_issue_details_menu.setMnemonic('i');
-        
-        receipt_book_reporting_menu = new JMenu("Report");
-        receipt_book_reporting_menu.setMnemonic('r');
-        
-        issue_new_receipt_book_menu_item = new JMenuItem("New Receipt Book");
-        issue_new_receipt_book_menu_item.setMnemonic('n');
-        issue_new_receipt_book_menu_item.addActionListener(this);
-        
-        issue_receipt_book_status = new JMenuItem("Receipt Book Status");
-        issue_receipt_book_status.setMnemonic('r');
-        issue_receipt_book_status.addActionListener(this);
-        
-        issue_reissue_menu_item = new JMenuItem("Re-Issue");
-        issue_reissue_menu_item.setMnemonic('r');
-        issue_reissue_menu_item.addActionListener(this);
-        
-        issue_revert_menu_item = new JMenuItem("Revert Back");
-        issue_revert_menu_item.setMnemonic('b');
-        issue_revert_menu_item.addActionListener(this);
-        
-        
-        
-        issue_series_issue_details = new JMenuItem("Series Issue Details");
-        issue_series_issue_details.setMnemonic('s');
-        issue_series_issue_details.addActionListener(this);
-        
-        /*Sat Sandesh Menu under Inventory management Menu*/
-        sat_sandesh_menu = new JMenu("Sat Sandesh");
-        sat_sandesh_menu.setMnemonic('s');
-        
-        
-        add_inventory_menu  = new JMenu("Add Inventory");
-        add_inventory_menu.setMnemonic('a');
-        
-        issue_inventory_menu = new JMenu("Issue Inventory");
-        issue_inventory_menu.setMnemonic('i');
-        
-        report_inventory_menu = new JMenu("Report");
-        report_inventory_menu.setMnemonic('r');
-        
-        new_inventory_menu_item = new JMenuItem("New");
-        new_inventory_menu_item.setMnemonic('S');
-        new_inventory_menu_item.addActionListener(this);
-        
-        sub_issue_inventory_menu_item = new JMenuItem("Sub Issue");
-        sub_issue_inventory_menu_item.setMnemonic('S');
-        sub_issue_inventory_menu_item.addActionListener(this);
-        
-        distribute_inventory_menu_item = new JMenuItem("Distribution");
-        distribute_inventory_menu_item.setMnemonic('S');
-        distribute_inventory_menu_item.addActionListener(this);
-        
-        
-        
-        bind_inventory_menu_item = new JMenuItem("Binding");
-        bind_inventory_menu_item.setMnemonic('S');
-        bind_inventory_menu_item.addActionListener(this);
-        
-        summary_inventory_report_menu_item = new JMenuItem("Summary");
-        summary_inventory_report_menu_item.setMnemonic('S');
-        summary_inventory_report_menu_item.addActionListener(this);
-        
-        detailed_inventory_report_menu_item = new JMenuItem("Detailed");
-        detailed_inventory_report_menu_item.setMnemonic('D');
-        detailed_inventory_report_menu_item.addActionListener(this);
-        
-        distribution_inventory_report_menu_item = new JMenuItem("Distribution");
-        distribution_inventory_report_menu_item.setMnemonic('r');
-        distribution_inventory_report_menu_item.addActionListener(this);    
-        
-        
-        view_page_number_inventory_report = new JMenuItem("View Page Details");
-        view_page_number_inventory_report.setMnemonic('p');
-        view_page_number_inventory_report.addActionListener(this);    
-                
-        
-
-        searchsubno = new JMenuItem("Search By Sub No");				// search options
+        searchsubno = new JMenuItem("Search By Sub No");				// search_menu options
         searchsubno.setMnemonic('S');
         searchsubno.addActionListener(this);
 
@@ -405,7 +438,7 @@ public class sams extends JFrame implements ActionListener {
         labelsubb.addActionListener(this);
 
 
-        labeldistb = new JButton("Lable Dist Code");					//label distribuor code button
+        labeldistb = new JButton("Label Dist Code");					//label distribuor code button
         labeldistb.setMnemonic('E');
         labeldistb.setBounds(300, 125, 150, 50);
         add(labeldistb);
@@ -420,197 +453,209 @@ public class sams extends JFrame implements ActionListener {
         add(indexb);
         indexb.addActionListener(this);
 
-        backupb = new JButton("Backup");							//backup button
-        backupb.setMnemonic('B');
-        backupb.setFont(f);
-        backupb.setBounds(800, 125, 150, 50);
-        add(backupb);
-        backupb.addActionListener(this);
+        backupButton = new JButton("Backup");							//backup button
+        backupButton.setMnemonic('B');
+        backupButton.setFont(f);
+        backupButton.setBounds(800, 125, 150, 50);
+        add(backupButton);
+        backupButton.addActionListener(this);
 
-
-
-
-        dis.add(lab);												//d/p menu items
-        dis.add(rem);
-        dis.add(mem);
-        dis.add(ind);
-        dis.add(SupplementaryIndex);
-        dis.add(des);
-        dis.add(cross);
-        dis.add(left);
-        dis.add(remstatus);
-        dis.add(dstatus);
-
-
-
-        mem.add(memd);
-        mem.add(mems);
-        lab.add(month);
-        lab.add(bulk);
-        lab.add(all);
-        month.add(subno);
-        month.add(dno);
-
-        rem.add(rembulk);
-        rem.add(remsub);
-
-        subscription_menu.add(new1);												//subscription menu items
-        subscription_menu.add(renew);
-
-
-        //JMenu recdel, oth;
-        //JMenuItem
-
-        mis.add(recdel);
-        mis.add(oth);
-        mis.add(despatch);
-        //mis.add(account_book_details_menu);
-        mis.add(petty_menu);
-        mis.add(rcptdet);
-        mis.add(dup);
+        
+        //----------------search_menu menu --------------------------------//
+        search_menu.add(searchsubno);
+        search_menu.add(searchrcptno);
+        search_menu.add(searchname);
+        search_menu.add(searchaddr);
         
         account_book_details_menu.add(accnt);
         account_book_details_menu.add(accntsum);
         account_book_details_menu.add(accnt_monthly);
         account_book_details_menu.add(accnt_yearly);
-        account_book_details_menu.add(accnt_subscription);
+
+        subscription_menu.add(bulknewEntry);
+        subscription_menu.add(bulkRenewEntry);
+        subscription_menu.add(newSubscriptionMenuItem);												//subscription menu items
+        subscription_menu.add(renewSubscriptionMenuItem);
+ 
+
+        labels_top_menu.add(despatchLabelsMenuItem);
+        labels_top_menu.add(despatchRemindersMenuItem);
+        labels_top_menu.add(distributorLabelsMenuItem);
+        labels_top_menu.add(distributorRemindersMenuItem);
+        labels_top_menu.add(leftoutsMenuItem);
         
-        despatch.add(despdet);
-        despatch.add(moddesp);
+        
+        registers_menu.add(despatchRegisterMenuItem);
+        registers_menu.add(indexRegisterMenuItem);
+        registers_menu.add(supplementaryIndexRegisterMenuItem);       
+        
+        registers_menu.add(petty_menu);
+        //registers_menu.add(receiptBookStatusMenuItem);
+        registers_menu.add(dup);
+
+        
+        subscriber_report_menu.add(centerLabelsMenuItem);
+        subscriber_report_menu.add(centerListMenuItem);
+        subscriber_report_menu.add(crossCheckingReportMenuItem);
+        subscriber_report_menu.add(despatchCodeSubscriberReportMenuItem);
+        subscriber_report_menu.add(distributorCodeSubscriberReportMenuItem);
+        subscriber_report_menu.add(distributorStatusMenuItem);
+        subscriber_report_menu.add(districtSubscriberReportMenuItem);
+        subscriber_report_menu.add(detailedMemberStatusMenuItem);
+        subscriber_report_menu.add(summaryMemberStatusMenuItem);
+        subscriber_report_menu.add(oldPeriodReportMenuItem);
+        subscriber_report_menu.add(reminderStatusMenuItem);
+        subscriber_report_menu.add(returnBackListMenuItem);
+        subscriber_report_menu.add(stateSubscriberReportMenuItem);
+        subscriber_report_menu.add(subscriptionReportMenuItem);
+        subscriber_report_menu.add(recordDeletionMenu);
+        
+        //labels_top_menu.add(reminderStatusMenuItem);
+        
+        track_data_menu.add(addDistributorCodeMenuItem);
+        track_data_menu.add(alterDistributorCodeMenuItem);
+        track_data_menu.add(backupMenuItem);
+        track_data_menu.add(markReturnBackMenuItem);
+        track_data_menu.add(restoreBackupMenuItem);
+        track_data_menu.add(search_menu);
+        
+        inventory_management_menu.addSeparator();
+        inventory_management_menu.add(inventory_management_receipt_book_menu_item);
+        inventory_management_menu.addSeparator();
+        inventory_management_menu.add(account_book_posting_inventory_menu_item);
+        inventory_management_menu.add(receipt_add_new_series_menu_item);
+        inventory_management_menu.add(issue_reissue_menu_item);
+        inventory_management_menu.add(issue_new_receipt_book_menu_item);
+        inventory_management_menu.add(issue_revert_menu_item);
+        inventory_management_menu.addSeparator();
+        inventory_management_menu.add(inventory_management_sat_sandesh_menu_item);
+        inventory_management_menu.addSeparator();
+        inventory_management_menu.add(new_inventory_menu_item);
+        inventory_management_menu.add(bind_inventory_menu_item);
+        inventory_management_menu.add(consolidate_stock_menu_item);
+        inventory_management_menu.add(distribute_inventory_menu_item);
+        inventory_management_menu.add(sub_issue_inventory_menu_item);
+        
+        
+        
+        inventory_report_menu.addSeparator();
+        inventory_report_menu.add(inventory_reports_receipt_book_menu_item);
+        inventory_report_menu.addSeparator();
+        inventory_report_menu.add(account_book_details_menu);
+        inventory_report_menu.add(consolidated_reports_menu_item);
+        inventory_report_menu.add(counter_book_status_menu_item);
+        inventory_report_menu.add(receiptBookStatusMenuItem);
+        inventory_report_menu.add(issue_series_issue_details);
+        inventory_report_menu.addSeparator();
+        inventory_report_menu.add(inventory_reports_sat_sandesh_menu_item);
+        inventory_report_menu.addSeparator();
+        inventory_report_menu.add(summary_inventory_report_menu_item);
+        inventory_report_menu.add(distribution_inventory_report_menu_item);
+        inventory_report_menu.add(detailed_inventory_report_menu_item);
+        inventory_report_menu.add(view_page_number_inventory_report);
+        
+        
 
         petty_menu.add(pet);
         petty_menu.add(petty_month);
         petty_menu.add(petty_year);
 
-        recdel.add(retb1);
-        recdel.add(freeze);
+        
+        recordDeletionMenu.add(freeze);
 
-        retb1.add(retb);
-        retb1.add(retl);
+        
 
         freeze.add(freezed);
         freeze.add(freezes);
 
-        recdel.add(deactive);
+        recordDeletionMenu.add(deactive);
 
         deactive.add(deactived);
         deactive.add(deactives);
 
-        recdel.add(inactive);
+        recordDeletionMenu.add(inactive);
 
         inactive.add(inactived);
         inactive.add(inactives);
-        //recdel.add(del);
-        oth.add(state);
-        oth.add(district);
-        oth.add(subl);
-        oth.add(dnol);
+        
+        //inventory_management_sat_sandesh_menu_item.add(report_inventory_menu);
 
-        //=============Inventory Management Menu----------------------//
-        inventory_management_menu.add(receipt_book_menu);
-        inventory_management_menu.add(sat_sandesh_menu);
-        
-        sat_sandesh_menu.add(add_inventory_menu);
-        sat_sandesh_menu.add(issue_inventory_menu);
-        sat_sandesh_menu.add(report_inventory_menu);
-        
-        add_inventory_menu.add(new_inventory_menu_item);
-        add_inventory_menu.add(sub_issue_inventory_menu_item);
-        
-        issue_inventory_menu.add(distribute_inventory_menu_item);
-        issue_inventory_menu.add(bind_inventory_menu_item);
-        
-        report_inventory_menu.add(summary_inventory_report_menu_item);
-        report_inventory_menu.add(detailed_inventory_report_menu_item);
-        report_inventory_menu.add(distribution_inventory_report_menu_item);
-        report_inventory_menu.add(view_page_number_inventory_report);
         
         
         
-        receipt_book_menu.add(receipt_add_new_series_menu_item);
-        receipt_book_menu.add(receipt_issue_details_menu);
-        receipt_book_menu.add(receipt_book_reporting_menu);
-        receipt_book_menu.add(account_book_details_menu);
-        receipt_book_menu.add(account_book_posting_inventory_menu_item);
         
-        receipt_issue_details_menu.add(issue_new_receipt_book_menu_item);
-        receipt_issue_details_menu.add(issue_reissue_menu_item);
-        receipt_issue_details_menu.add(issue_revert_menu_item);
+        newSubscriptionMenuItem.addActionListener(this);
+        renewSubscriptionMenuItem.addActionListener(this);
+        bulknewEntry.addActionListener(this);
+        despatchRegisterMenuItem.addActionListener(this);
+        //rem.addActionListener(this);
+        crossCheckingReportMenuItem.addActionListener(this);
+        detailedMemberStatusMenuItem.addActionListener(this);
+        leftoutsMenuItem.addActionListener(this);
+        summaryMemberStatusMenuItem.addActionListener(this);
+        oldPeriodReportMenuItem.addActionListener(this);
+        reminderStatusMenuItem.addActionListener(this);
+        distributorStatusMenuItem.addActionListener(this);
+        centerLabelsMenuItem.addActionListener(this);
+        centerListMenuItem.addActionListener(this);
+        despatchLabelsMenuItem.addActionListener(this);
+        distributorLabelsMenuItem.addActionListener(this);
+        indexRegisterMenuItem.addActionListener(this);
+        supplementaryIndexRegisterMenuItem.addActionListener(this);
+        despatchRemindersMenuItem.addActionListener(this);
+        distributorRemindersMenuItem.addActionListener(this);
+        receiptBookStatusMenuItem.addActionListener(this);
         
-        
-        receipt_book_reporting_menu.add(issue_receipt_book_status);
-        receipt_book_reporting_menu.add(issue_series_issue_details);
-
-        //----------------search menu --------------------------------//
-        search.add(searchsubno);
-        search.add(searchrcptno);
-        search.add(searchname);
-        search.add(searchaddr);
-
-
-
-        new1.addActionListener(this);
-        renew.addActionListener(this);
-        des.addActionListener(this);
-        rem.addActionListener(this);
-        cross.addActionListener(this);
-        memd.addActionListener(this);
-        left.addActionListener(this);
-        mems.addActionListener(this);
-        remstatus.addActionListener(this);
-        dstatus.addActionListener(this);
-        bulk.addActionListener(this);
-        all.addActionListener(this);
-        subno.addActionListener(this);
-        dno.addActionListener(this);
-        ind.addActionListener(this);
-        SupplementaryIndex.addActionListener(this);
-        remsub.addActionListener(this);
-        rembulk.addActionListener(this);
-        rcptdet.addActionListener(this);
+        consolidate_stock_menu_item.addActionListener(this);
 
         accnt.addActionListener(this);
         accntsum.addActionListener(this);
         accnt_monthly.addActionListener(this);
         accnt_yearly.addActionListener(this);
-        accnt_subscription.addActionListener(this);
+        subscriptionReportMenuItem.addActionListener(this);
 
-        despdet.addActionListener(this);
-        retb.addActionListener(this);
-        retl.addActionListener(this);
+        addDistributorCodeMenuItem.addActionListener(this);
+        backupMenuItem.addActionListener(this);
+        restoreBackupMenuItem.addActionListener(this);
+        markReturnBackMenuItem.addActionListener(this);
+        returnBackListMenuItem.addActionListener(this);
         freezed.addActionListener(this);
         freezes.addActionListener(this);
         inactived.addActionListener(this);
         inactives.addActionListener(this);
         deactived.addActionListener(this);
         deactives.addActionListener(this);
-        state.addActionListener(this);
-        district.addActionListener(this);
-        subl.addActionListener(this);
-        dnol.addActionListener(this);
+        stateSubscriberReportMenuItem.addActionListener(this);
+        districtSubscriberReportMenuItem.addActionListener(this);
+        despatchCodeSubscriberReportMenuItem.addActionListener(this);
+        distributorCodeSubscriberReportMenuItem.addActionListener(this);
 
-        moddesp.addActionListener(this);
+        alterDistributorCodeMenuItem.addActionListener(this);
 
 
-        l1 = new JLabel("SAT SANDESH");
+        titleLabel = new JLabel("SAT SANDESH");
 
-        l1.setBounds(330, 350, 400, 100);
-        l1.setFont(new Font("SERIF", Font.BOLD, 50));
-        add(l1);
+        titleLabel.setBounds(330, 350, 400, 100);
+        titleLabel.setFont(new Font("SERIF", Font.BOLD, 50));
+        add(titleLabel);
 
         try {
-            l2 = new JLabel();
-            l2.setBounds(450, 250, 110, 70);
-            l2.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("skrm.jpg"))));
-            add(l2);
+            satSandeshIconLabel = new JLabel();
+            satSandeshIconLabel.setBounds(450, 250, 110, 70);
+            satSandeshIconLabel.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("skrm.jpg"))));
+            add(satSandeshIconLabel);
         } catch (Exception e) {
             new except(e, this.getClass().toString());
         }
+        
         mbar.add(subscription_menu);
-        mbar.add(dis);
-        mbar.add(mis);
+        mbar.add(labels_top_menu);
+        mbar.add(registers_menu);
+        mbar.add(subscriber_report_menu);
+        mbar.add(track_data_menu);
         mbar.add(inventory_management_menu);
-        mbar.add(search);
+        mbar.add(inventory_report_menu);
+        
 
 
         setVisible(true);
@@ -637,18 +682,18 @@ public class sams extends JFrame implements ActionListener {
             this.dispose();
         }
 
-        if (ae.getSource() == left) {
+        if (ae.getSource() == leftoutsMenuItem) {
             new leftout();
             this.dispose();
         }
 
 
-        if (ae.getSource() == remstatus) {
+        if (ae.getSource() == reminderStatusMenuItem) {
             remstatus1 remstatus1 = new remstatus1();
             this.dispose();
         }
 
-        if (ae.getSource() == dstatus) {
+        if (ae.getSource() == distributorStatusMenuItem) {
             dstatus dstatus1 = new dstatus();
             this.dispose();
         }
@@ -673,41 +718,68 @@ public class sams extends JFrame implements ActionListener {
             this.dispose();
         }
 
-        if (ae.getSource() == backupb) {
+        if (ae.getSource() == backupButton || ae.getSource() == backupMenuItem) {
             TestBackup testBackup = new TestBackup();
             JOptionPane.showMessageDialog(null, "BACKUP SUCCESSFULL", "SUCCESS", JOptionPane.INFORMATION_MESSAGE);
         }
 
-        if (ae.getSource() == ind) {
+        if (ae.getSource() == indexRegisterMenuItem) {
             indexdate indexdate = new indexdate();
             this.dispose();
         }
         
-        if(ae.getSource()==SupplementaryIndex)
+        if(ae.getSource()==supplementaryIndexRegisterMenuItem)
         {
             new SupplementaryIndexDate();
             this.dispose();
         }
 
 
-        if (ae.getSource() == new1) {
+        if (ae.getSource() == newSubscriptionMenuItem) {
             SatSandeshNewSubscription entry = new SatSandeshNewSubscription();
             this.dispose();
         }
 
-        if (ae.getSource() == renew) {
+        if (ae.getSource() == renewSubscriptionMenuItem) {
             SatSandeshRenewSubNumSelection renew1 = new SatSandeshRenewSubNumSelection();
             this.dispose();
         }
+        if (ae.getSource() == bulknewEntry) {
+            SatSandeshBulkSubscription bulkEntry = new SatSandeshBulkSubscription();
+            this.dispose();
+        }
+        if (ae.getSource() == bulkRenewEntry) {
+        
+            //this.dispose();
+        }
 
-        if (ae.getSource() == subno) {
+        if (ae.getSource() == consolidated_reports_menu_item) {
+        
+            //this.dispose();
+        }
+        
+        if (ae.getSource() == counter_book_status_menu_item) {
+        
+            //this.dispose();
+        }
+        
+        if (ae.getSource() == consolidate_stock_menu_item) {
+        
+            //this.dispose();
+        }
+        if (ae.getSource() == restoreBackupMenuItem) {
+        
+            //this.dispose();
+        }        
+        
+        if (ae.getSource() == despatchLabelsMenuItem) {
             labelsubno labelsubno = new labelsubno();
             this.dispose();
         }
 
 
 
-        if (ae.getSource() == dno) {
+        if (ae.getSource() == distributorLabelsMenuItem) {
             new labeldist();
             this.dispose();
         }
@@ -735,45 +807,45 @@ public class sams extends JFrame implements ActionListener {
             this.dispose();
         }
 
-        if (ae.getSource() == bulk) {
+        if (ae.getSource() == centerLabelsMenuItem) {
             new bulkadd();
             this.dispose();
         }
-        if (ae.getSource() == all) {
+        if (ae.getSource() == centerListMenuItem) {
             new printalldno();
             this.dispose();
         }
 
-        if (ae.getSource() == des) {
+        if (ae.getSource() == despatchRegisterMenuItem) {
             new despreg();
             this.dispose();
         }
 
-        if (ae.getSource() == cross) {
+        if (ae.getSource() == crossCheckingReportMenuItem) {
             new crosschk();
             this.dispose();
         }
 
-        if (ae.getSource() == memd) {
+        if (ae.getSource() == detailedMemberStatusMenuItem) {
             new memstatus();
             this.dispose();
         }
 
-        if (ae.getSource() == mems) {
+        if (ae.getSource() == summaryMemberStatusMenuItem) {
             new memsum();
             this.dispose();
         }
 
 
         //miscellaneous
-        if (ae.getSource() == rcptdet) {
+        if (ae.getSource() == receiptBookStatusMenuItem) {
             this.setVisible(false);
             new CheckReceiptBookDetailsInput();
             this.dispose();
         }
 
 
-        if (ae.getSource() == despdet) {
+        if (ae.getSource() == addDistributorCodeMenuItem) {
             new desp();
             this.dispose();
         }
@@ -798,19 +870,19 @@ public class sams extends JFrame implements ActionListener {
             this.dispose();
         }
         
-        if (ae.getSource() == accnt_subscription) {
+        if (ae.getSource() == subscriptionReportMenuItem) {
             this.setVisible(false);
             new SatSandeshSubscriptionReport();
             this.dispose();
         }
         
 
-        if (ae.getSource() == retb) {
+        if (ae.getSource() == markReturnBackMenuItem) {
             new returnback();
             this.dispose();
         }
 
-        if (ae.getSource() == retl) {
+        if (ae.getSource() == returnBackListMenuItem) {
             new returnlist();
             this.dispose();
         }
@@ -850,22 +922,22 @@ public class sams extends JFrame implements ActionListener {
         }
 
 
-        if (ae.getSource() == state) {
+        if (ae.getSource() == stateSubscriberReportMenuItem) {
             new printstate();
             this.dispose();
         }
 
        
-        if (ae.getSource() == district) {
+        if (ae.getSource() == districtSubscriberReportMenuItem) {
             new printdistrict();
             this.dispose();
         }
 
-        if (ae.getSource() == subl) {
+        if (ae.getSource() == despatchCodeSubscriberReportMenuItem) {
             new printsubno();
             this.dispose();
         }
-        if (ae.getSource() == dnol) {
+        if (ae.getSource() == distributorCodeSubscriberReportMenuItem) {
             new printdno();
             this.dispose();
         }
@@ -891,17 +963,17 @@ public class sams extends JFrame implements ActionListener {
             this.dispose();
         }
 
-        if (ae.getSource() == remsub) {
+        if (ae.getSource() == despatchRemindersMenuItem) {
             new remindersub();
             this.dispose();
         }
 
-        if (ae.getSource() == rembulk) {
+        if (ae.getSource() == distributorRemindersMenuItem) {
             new reminderbulk();
             this.dispose();
         }
 
-        if (ae.getSource() == moddesp) {
+        if (ae.getSource() == alterDistributorCodeMenuItem) {
             new moddesp();
             this.dispose();
         }

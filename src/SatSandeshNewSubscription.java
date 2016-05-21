@@ -15,7 +15,7 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
     JLabel  subd1, asn1, sub1, status1, seriesLabel, rec1, dist1, d1, subt1, lang1;				//subscription details
     JLabel pay1, payt1, chdd1, dat1, am1, starm1,stary1, end1, newRenewLabel;						//payment details
     JLabel mem1, tit1, nam1, lnam1, add1, dis1, stat1, pin1;						//member details
-    JLabel oth1, tel1, hist1, email1, ret1, rem1, subIssueCounterLabel; 									//other details
+    JLabel oth1, tel1, counterLabel, email1, ret1, rem1, subIssueCounterLabel; 									//other details
     int endm2, endy2;
     Thread t=null;
     
@@ -42,7 +42,7 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
     JTextField  rett1;											//other details
     TextArea remt1;
     TextFieldWithLimit telt1,emailt1, subIssueCounterText;
-    JComboBox histt1;
+    JComboBox counterDropDown;
     
     JButton sav, mod, clear, back;
     int x, amount;
@@ -129,7 +129,7 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
         pin1=new JLabel("Pin Code");
         oth1=new JLabel("OTHER DETAILS");
         tel1=new JLabel("Telephone");
-        hist1=new JLabel("Counter");
+        counterLabel=new JLabel("Counter");
         email1=new JLabel("e-mail");
         ret1=new JLabel("Return Back");
         subIssueCounterLabel = new JLabel("<html>Sub Counter</html>");
@@ -183,13 +183,13 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
         rett1=new JTextField(5);
         remt1=new TextArea(85,3);
         
-        histt1=new JComboBox();
+        counterDropDown=new JComboBox();
         
-        histt1.addItem("Kirpal Bagh");
-        histt1.addItem("Kirpal Ashram");
-        histt1.addItem("Sawan Ashram");
-        //		histt1.addItem("Darshan Dham");
-        //		histt1.addItem("Tours/Function");
+        counterDropDown.addItem("Kirpal Bagh");
+        counterDropDown.addItem("Kirpal Ashram");
+        counterDropDown.addItem("Sawan Ashram");
+        //		counterDropDown.addItem("Darshan Dham");
+        //		counterDropDown.addItem("Tours/Function");
         
         
         sav=new JButton("Save");
@@ -504,11 +504,11 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
         p4.add(telt1);
         telt1.setBounds(110,45,110,20);
         
-        p4.add(hist1);
-        hist1.setBounds(240,45,60,20);
+        p4.add(counterLabel);
+        counterLabel.setBounds(240,45,60,20);
         
-        p4.add(histt1);
-        histt1.setBounds(300,45,150,20);
+        p4.add(counterDropDown);
+        counterDropDown.setBounds(300,45,150,20);
         
         p4.add(email1);
         //emailt1.setEnabled(false);
@@ -563,7 +563,7 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
         //clear.addActionListener(this);
         back.addActionListener(this);
         
-        //p4.add(histt1);
+        //p4.add(counterDropDown);
         
         add(p1);
         add(p2);
@@ -588,7 +588,7 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
             {
                 flag=0;
                 int asn, rcpt,subno, dno;
-                String sno1, subno1, dist, subt, lang,status;
+                String subno1, dist, subt, lang,status;
                 
                 //basic info
                 
@@ -698,7 +698,7 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
                 
                 
                 phone=telt1.getText();
-                history=(String)histt1.getSelectedItem();
+                history=(String)counterDropDown.getSelectedItem();
                 email=emailt1.getText();
                 return1=Integer.parseInt(rett1.getText());
                 remarks=remt1.getText();
@@ -707,19 +707,18 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
                 //database query for basic fragment
                 
                 connect c2=new connect();
-                c2.a=c2.st.executeUpdate("insert into basic values("+asn+",'"+subno1+"',"+subno+",'"+status+"',"+rcpt+",'"+dist+"',"+dno+",'"+subt+"','"+lang+"','"+seriesName+"')");
+                c2.a=c2.st.executeUpdate("insert into basic values("+asn+",'"+subno1+"',"+subno+",'"+status+"',"+rcpt+",'"+dist+"',"+dno+",'"+subt+"','"+lang+"','"+seriesName+"',0)");
                 
                 if(c2.a==1)
                     flag=flag+1;
-                c2.st.close();
-                c2.con.close();
+                c2.closeAll();
+                
                 
                 if(dno>0)
                 {
                     connect c10=new connect();
                     c10.a=c10.st.executeUpdate("insert into d"+dno+" values ("+asn+")");
-                    c10.st.close();
-                    c10.con.close();
+                    c10.closeAll();
                 }
                 
                 //database query for payment fragment
@@ -728,8 +727,7 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
                 c3.a=c3.st.executeUpdate("insert into payment values("+asn+",'"+payt+"',"+chno+","+date1+","+dat2+","+dat3+","+amt+","+startm+","+starty+","+endm+","+endy+" , '"+SamsAddons.getCurrentSqlDate()+"', 'New')");
                 if(c3.a==1)
                     flag=flag+1;
-                c3.st.close();
-                c3.con.close();
+                c3.closeAll();
                 
                 //database query for subscription details fragment
                 
@@ -737,8 +735,8 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
                 c4.a=c4.st.executeUpdate("insert into subdetails values ("+asn+",'"+title+"','"+fname+"','"+lname+"','"+address1+"','"+add2+"','"+add3+"','"+dist2+"','"+state+"',"+pin+")");
                 if(c4.a==1)
                     flag=flag+1;
-                c4.st.close();
-                c4.con.close();
+                c4.closeAll();
+                
                 
                 //database query for other details fragment
                 
@@ -747,9 +745,7 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
                 
                 if(c5.a==1)
                     flag=flag+1;
-                c5.st.close();
-                c5.con.close();
-                
+                c5.closeAll();
                 
                 
                 if(flag==4)
@@ -758,8 +754,8 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
                     z = x+1;
                     connect c6=new connect();
                     c6.a=c6.st.executeUpdate("update asn set asn="+z+" where asn="+x);
-                    c6.st.close();
-                    c6.con.close();
+                    c6.closeAll();
+                    
                     asnt1.setText("SN"+z);
                     
                     flag=0;
@@ -779,6 +775,7 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
             }
             catch(Exception e)
             {
+                e.printStackTrace();
                 JOptionPane.showMessageDialog(this, "ERROR : "+e, "ERROR", JOptionPane.ERROR_MESSAGE);
                 
             }
@@ -811,7 +808,7 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
             statt1.setText("");
             pint1.setText("0");
             telt1.setText("");
-            histt1.setSelectedIndex(1);
+            counterDropDown.setSelectedIndex(1);
             emailt1.setText("");
             rett1.setText("0");
             rett1.setEnabled(false);
@@ -1187,6 +1184,8 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
             if(seriesNameText.isEmpty() && rcpt.isEmpty() == false)
             {
                 JOptionPane.showMessageDialog(this,"Please select series", "Please select series", JOptionPane.ERROR_MESSAGE);
+                //receiptNumberText.setText("");
+                seriesDropDown.requestFocus();
                 return;
             }
             
@@ -1206,6 +1205,8 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
                     if(ArrayCount != 1)
                     {
                         JOptionPane.showMessageDialog(this,"Invalid receipt number", "Invalid receipt number", JOptionPane.ERROR_MESSAGE);
+                        receiptNumberText.setText("");
+                        receiptNumberText.requestFocus();
                         return;
                     }
                     
@@ -1217,6 +1218,8 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
                     if(centre.isEmpty())
                     {
                         JOptionPane.showMessageDialog(this,"Invalid receipt number", "Invalid receipt number", JOptionPane.ERROR_MESSAGE);
+                        receiptNumberText.setText("");
+                        receiptNumberText.requestFocus();
                         return;
                     }
                     String bookNum = fillSeriesConnection.rs.getString(2);
@@ -1224,7 +1227,7 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
                     
                     String subCounterQuery = "select issued_to from sub_issue_details where series_name='"+seriesNameText+"' and book_num="+bookNum+" and rcpt_num="+rcptNum;
                     //System.out.println(centre);
-                    histt1.setSelectedItem(centre);
+                    counterDropDown.setSelectedItem(centre);
                     subIssueCounterText.setText("");
                     //System.out.println(subCounterQuery);
                     fillSeriesConnection.rs = fillSeriesConnection.st.executeQuery(subCounterQuery);
@@ -1262,7 +1265,7 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
                 subNum  = Integer.parseInt(subNumber);
                 String countQuery = "select count(asn) from basic where subnos = '"+subNumberCode+"' and subno = "+subNum;
                 //String sqlQuery = "select count(asn) from basic where subnos = '"+subNumberCode+"' and subno = "+subNum;
-                System.out.println(countQuery);
+                //System.out.println(countQuery);
                 connect fillSeriesConnection = new connect();
                 try
                 {
@@ -1297,7 +1300,7 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
                         statt1.setText("");
                         pint1.setText("0");
                         telt1.setText("");
-                        histt1.setSelectedIndex(1);
+                        counterDropDown.setSelectedIndex(1);
                         emailt1.setText("");
                         rett1.setText("0");
                         rett1.setEnabled(false);
