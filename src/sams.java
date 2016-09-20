@@ -27,19 +27,20 @@ public class sams extends JFrame implements ActionListener {
     
     JMenuBar mbar;
     JMenu subscription_menu, labels_top_menu, registers_menu, subscriber_report_menu, track_data_menu,   inventory_management_menu, inventory_report_menu;
-    JMenu search_menu;
+    //JMenu search_menu;
     JMenuItem newSubscriptionMenuItem, renewSubscriptionMenuItem,bulknewEntry,bulkRenewEntry, despatchRegisterMenuItem, distributorRemindersMenuItem, despatchRemindersMenuItem, crossCheckingReportMenuItem, detailedMemberStatusMenuItem, summaryMemberStatusMenuItem, centerLabelsMenuItem, despatchLabelsMenuItem, centerListMenuItem, distributorLabelsMenuItem, reminderStatusMenuItem, distributorStatusMenuItem, leftoutsMenuItem;
     
     
-    JMenu recordDeletionMenu, freeze, inactive, deactive, account_book_details_menu, petty_menu;
-    JMenuItem receiptBookStatusMenuItem, accnt, accntsum,accnt_monthly, accnt_yearly, subscriptionReportMenuItem, addDistributorCodeMenuItem, alterDistributorCodeMenuItem, markReturnBackMenuItem,returnBackListMenuItem, freezed, freezes, deactived, deactives, inactived, inactives, stateSubscriberReportMenuItem, districtSubscriberReportMenuItem,despatchCodeSubscriberReportMenuItem, distributorCodeSubscriberReportMenuItem, pet,petty_month, petty_year, dup;
+    JMenu freeze, inactive, deactive, account_book_details_menu, petty_menu;
+    JMenuItem receiptBookStatusMenuItem, accnt, accntsum,accnt_monthly, accnt_yearly, subscriptionReportMenuItem, addDistributorCodeMenuItem, alterDistributorCodeMenuItem, markReturnBackMenuItem,returnBackListMenuItem, /*freezed, freezes, deactived, deactives, inactived, inactives,*/ stateSubscriberReportMenuItem, districtSubscriberReportMenuItem,despatchCodeSubscriberReportMenuItem, distributorCodeSubscriberReportMenuItem, pet,petty_month, petty_year, dup;
     JMenuItem indexRegisterMenuItem, supplementaryIndexRegisterMenuItem;
+    //JMenuItem recordDeletionMenu;
     
     
-    JMenuItem searchsubno, searchrcptno, searchname, searchaddr;
+    JMenuItem searchsubno /*, searchrcptno, searchname, searchaddr*/;
     JButton newb, renewb, memstatusb, reminderb, labelsubb, labeldistb, indexb, backupButton;
     Font f = new Font("ARIAL", Font.BOLD, 14);
-    JLabel titleLabel, satSandeshIconLabel;
+    JLabel titleLabel,userLabel, satSandeshIconLabel;
     
     
     JMenuItem inventory_management_sat_sandesh_menu_item, inventory_reports_sat_sandesh_menu_item;
@@ -108,8 +109,8 @@ public class sams extends JFrame implements ActionListener {
         
         
         
-        search_menu = new JMenu("Search");									//search
-        search_menu.setMnemonic('e');
+        //search_menu = new JMenu("Search");									//search
+        //search_menu.setMnemonic('e');
         //lab = new JMenu("Labels");									//labels--d/p
         //lab.setMnemonic('l');
         
@@ -196,7 +197,8 @@ public class sams extends JFrame implements ActionListener {
         subscriptionReportMenuItem = new JMenuItem("Subscription Report");
         subscriptionReportMenuItem.setMnemonic('u');
         
-        recordDeletionMenu = new JMenu("Record Deletion");						//record deletion--miscellaneous
+        //recordDeletionMenu = new JMenuItem("Record Deletion");						//record deletion--miscellaneous
+        //recordDeletionMenu.addActionListener(this);
         //recordDeletionMenu.setMnemonic('e');
         
         //=================================
@@ -327,11 +329,6 @@ public class sams extends JFrame implements ActionListener {
         petty_year=new JMenuItem("Yearly Report");
         petty_year.setMnemonic('Y');
         petty_year.addActionListener(this);
-
-        
-
-        
-        
         
         accnt = new JMenuItem("Detailed");
         accnt.setMnemonic('D');
@@ -349,7 +346,7 @@ public class sams extends JFrame implements ActionListener {
         del.setMnemonic('e');
          */
 
-        freeze = new JMenu("Freeze Records List");
+        /*freeze = new JMenu("Freeze Records List");
         freeze.setMnemonic('f');
 
         deactive = new JMenu("Deactive Records List");
@@ -377,14 +374,14 @@ public class sams extends JFrame implements ActionListener {
         inactived.setMnemonic('D');
 
         inactives = new JMenuItem("Summary");
-        inactives.setMnemonic('S');
+        inactives.setMnemonic('S');*/
 
         
-        searchsubno = new JMenuItem("Search By Sub No");				// search_menu options
+        searchsubno = new JMenuItem("Search");				// search_menu options
         searchsubno.setMnemonic('S');
         searchsubno.addActionListener(this);
 
-        searchrcptno = new JMenuItem("Search By rcpt No");
+        /*searchrcptno = new JMenuItem("Search By rcpt No");
         searchrcptno.setMnemonic('R');
         searchrcptno.addActionListener(this);
 
@@ -395,7 +392,7 @@ public class sams extends JFrame implements ActionListener {
 
         searchaddr = new JMenuItem("Search By Address");
         searchaddr.setMnemonic('A');
-        searchaddr.addActionListener(this);
+        searchaddr.addActionListener(this);*/
 
 
 
@@ -462,10 +459,10 @@ public class sams extends JFrame implements ActionListener {
 
         
         //----------------search_menu menu --------------------------------//
-        search_menu.add(searchsubno);
-        search_menu.add(searchrcptno);
+        //search_menu.add(searchsubno);
+        /*search_menu.add(searchrcptno);
         search_menu.add(searchname);
-        search_menu.add(searchaddr);
+        search_menu.add(searchaddr);*/
         
         account_book_details_menu.add(accnt);
         account_book_details_menu.add(accntsum);
@@ -508,7 +505,7 @@ public class sams extends JFrame implements ActionListener {
         subscriber_report_menu.add(returnBackListMenuItem);
         subscriber_report_menu.add(stateSubscriberReportMenuItem);
         subscriber_report_menu.add(subscriptionReportMenuItem);
-        subscriber_report_menu.add(recordDeletionMenu);
+        //subscriber_report_menu.add(recordDeletionMenu);
         
         //labels_top_menu.add(reminderStatusMenuItem);
         
@@ -517,7 +514,7 @@ public class sams extends JFrame implements ActionListener {
         track_data_menu.add(backupMenuItem);
         track_data_menu.add(markReturnBackMenuItem);
         track_data_menu.add(restoreBackupMenuItem);
-        track_data_menu.add(search_menu);
+        track_data_menu.add(searchsubno);
         
         inventory_management_menu.addSeparator();
         inventory_management_menu.add(inventory_management_receipt_book_menu_item);
@@ -561,9 +558,7 @@ public class sams extends JFrame implements ActionListener {
         petty_menu.add(petty_year);
 
         
-        recordDeletionMenu.add(freeze);
-
-        
+        /*recordDeletionMenu.add(freeze);
 
         freeze.add(freezed);
         freeze.add(freezes);
@@ -576,7 +571,7 @@ public class sams extends JFrame implements ActionListener {
         recordDeletionMenu.add(inactive);
 
         inactive.add(inactived);
-        inactive.add(inactives);
+        inactive.add(inactives);*/
         
         //inventory_management_sat_sandesh_menu_item.add(report_inventory_menu);
 
@@ -605,7 +600,7 @@ public class sams extends JFrame implements ActionListener {
         despatchRemindersMenuItem.addActionListener(this);
         distributorRemindersMenuItem.addActionListener(this);
         receiptBookStatusMenuItem.addActionListener(this);
-        
+        bulkRenewEntry.addActionListener(this);
         consolidate_stock_menu_item.addActionListener(this);
 
         accnt.addActionListener(this);
@@ -619,12 +614,12 @@ public class sams extends JFrame implements ActionListener {
         restoreBackupMenuItem.addActionListener(this);
         markReturnBackMenuItem.addActionListener(this);
         returnBackListMenuItem.addActionListener(this);
-        freezed.addActionListener(this);
+        /*freezed.addActionListener(this);
         freezes.addActionListener(this);
         inactived.addActionListener(this);
         inactives.addActionListener(this);
         deactived.addActionListener(this);
-        deactives.addActionListener(this);
+        deactives.addActionListener(this);*/
         stateSubscriberReportMenuItem.addActionListener(this);
         districtSubscriberReportMenuItem.addActionListener(this);
         despatchCodeSubscriberReportMenuItem.addActionListener(this);
@@ -634,10 +629,15 @@ public class sams extends JFrame implements ActionListener {
 
 
         titleLabel = new JLabel("SAT SANDESH");
+        userLabel = new JLabel("User: "+SamsUtilities.getUserName());
 
         titleLabel.setBounds(330, 350, 400, 100);
         titleLabel.setFont(new Font("SERIF", Font.BOLD, 50));
         add(titleLabel);
+        
+        userLabel.setBounds(30, 450, 80, 40);
+        userLabel.setFont(new Font("SERIF", Font.BOLD, 12));
+        add(userLabel);
 
         try {
             satSandeshIconLabel = new JLabel();
@@ -660,6 +660,17 @@ public class sams extends JFrame implements ActionListener {
 
         setVisible(true);
         new refresh();
+        
+        
+        while(SamsUtilities.getUserName().isEmpty())
+        {
+            String userName= JOptionPane.showInputDialog("Please enter your name ");
+            //System.out.println(userName);
+            SamsUtilities.setUserName(userName);
+            userLabel.setText("User: "+SamsUtilities.getUserName());
+            if(SamsUtilities.getUserName().isEmpty() == false)JOptionPane.showMessageDialog(this, "Welcome "+SamsUtilities.getUserName()+" !!");
+        }
+        
 
     }
 
@@ -749,8 +760,8 @@ public class sams extends JFrame implements ActionListener {
             this.dispose();
         }
         if (ae.getSource() == bulkRenewEntry) {
-        
-            //this.dispose();
+            SatSandeshBulkRenewSubscription bulkRenew = new SatSandeshBulkRenewSubscription();
+            this.dispose();
         }
 
         if (ae.getSource() == consolidated_reports_menu_item) {
@@ -887,6 +898,7 @@ public class sams extends JFrame implements ActionListener {
             this.dispose();
         }
 
+        /*
         if (ae.getSource() == freezes) {
             new freeze();
             this.dispose();
@@ -920,7 +932,12 @@ public class sams extends JFrame implements ActionListener {
             new inactived();
             this.dispose();
         }
-
+*/
+        if(ae.getSource() == oldPeriodReportMenuItem)
+        {
+            new SatSandeshOldSubscriberStatusWindow();
+            this.dispose();
+        }
 
         if (ae.getSource() == stateSubscriberReportMenuItem) {
             new printstate();
@@ -944,11 +961,11 @@ public class sams extends JFrame implements ActionListener {
 
 
         if (ae.getSource() == searchsubno) {
-            new searchsub();
+            new SatSandeshSearchBySubNumber();
             this.dispose();
         }
 
-        if (ae.getSource() == searchrcptno) {
+        /*if (ae.getSource() == searchrcptno) {
             new SatSandeshSubscriptionSearchByReceiptNumber();
             this.dispose();
         }
@@ -961,7 +978,7 @@ public class sams extends JFrame implements ActionListener {
         if (ae.getSource() == searchaddr) {
             new searchadd();
             this.dispose();
-        }
+        }*/
 
         if (ae.getSource() == despatchRemindersMenuItem) {
             new remindersub();

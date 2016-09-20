@@ -106,7 +106,7 @@ public class InventorySubIssueDetailsClass implements ActionListener, ItemListen
         
         //DropDowns
         //fill the information from the database while initialization
-        seriesDropDown = new JComboBox(IssueReceiptBookClass.fillSeriesNameInformation());
+        seriesDropDown = new JComboBox(SamsUtilities.fillSeriesInformation());
         bookNumDropDown = new JComboBox();
         
         seriesDropDown.addItemListener(this);

@@ -57,7 +57,7 @@ public class SatSandeshInventoryIssue  implements ActionListener, ItemListener, 
     TextFieldWithLimit /*customerNameText[],*/ entryDateText,entryMonthText,entryYearText, pageNumberText, issuedByText[], amountText[];
     JComboBox yearDropDown[], monthDropDown[], stallDropDown, languageDropDown[], issueTypeDropDown[];
     JComboBox customerNameDropDown[];
-    JButton okButton, cancelButton, printButton;
+    JButton okButton, cancelButton, printButton, clearButton;
     MigLayout mLayout= new MigLayout( "insets 30");
     MigLayout pLayout= new MigLayout( "insets 20");    
     Object [] stalls = {"Kirpal Bagh", "Kirpal Ashram","Other"};
@@ -214,9 +214,15 @@ public class SatSandeshInventoryIssue  implements ActionListener, ItemListener, 
         okButton.setMnemonic('o');
         okButton.addActionListener(this);
         
-        cancelButton = new JButton("Cancel");
+        cancelButton = new JButton("Back");
         cancelButton.setMnemonic('c');
         cancelButton.addActionListener(this);
+        
+        
+        clearButton = new JButton("Reset");
+        clearButton.setMnemonic('r');
+        clearButton.addActionListener(this);
+        
         
         printButton = new JButton("Print");
         printButton.setMnemonic('p');
@@ -291,9 +297,10 @@ public class SatSandeshInventoryIssue  implements ActionListener, ItemListener, 
         
         //satSandeshInventoryIssueWindow.add(quantityLabel );
         //satSandeshInventoryIssueWindow.add(quantityText, "span 2, w 100!");
-        satSandeshInventoryIssueWindow.add(okButton, "w :90:, span 7, align right");
-        satSandeshInventoryIssueWindow.add(cancelButton, " w :90: ,span 4, align center");
-        satSandeshInventoryIssueWindow.add(printButton, "w :90: ,span 4, align left");
+        satSandeshInventoryIssueWindow.add(okButton, "w :90:, span 5, align right");
+        satSandeshInventoryIssueWindow.add(cancelButton, " w :90: ,span 3, align center");
+        satSandeshInventoryIssueWindow.add(clearButton, " w :90: ,span 3, align center");
+        satSandeshInventoryIssueWindow.add(printButton, "w :90: ,span 3, align left");
         
         //populate information from datatbase
         //fillSeriesNameInformation();
@@ -449,6 +456,7 @@ public class SatSandeshInventoryIssue  implements ActionListener, ItemListener, 
                     }
                 }
             }
+            System.out.println("Status : "+status);
             if(status == 1)
             {
                 int option = JOptionPane.showConfirmDialog(satSandeshInventoryIssueWindow, "Are you sure ?");
@@ -477,9 +485,9 @@ public class SatSandeshInventoryIssue  implements ActionListener, ItemListener, 
                             amountText[i].setText("");
                             languageDropDown[i].setSelectedItem("");
                             issueTypeDropDown[i].setSelectedItem("");
-                            issuedByText[i].setText("");
                             quantityText[i].setText("");
                             yearDropDown[i].setSelectedItem("");
+                            issuedByText[i].setText("");
                             monthDropDown[i].setSelectedItem("");
                             codeDropDown[i].setSelectedItem("");
                             codeDropDown[i].setSelectedItem("");
@@ -496,7 +504,31 @@ public class SatSandeshInventoryIssue  implements ActionListener, ItemListener, 
                 entryDateText.setText("");
                 entryMonthText.setText(""+SamsUtilities.getCurrentMonth());
                 entryYearText.setText(""+SamsUtilities.getCurrentYear());
+                totalQuantityText.setText("");
+                totalAmountText.setText("");
             }
+        }
+        else if(event.getSource() == clearButton)
+        {
+            for(int i = 0; i < NUM_ROWS; i++)
+            {
+                customerNameDropDown[i].setSelectedIndex(0);
+                amountText[i].setText("");
+                languageDropDown[i].setSelectedItem("");
+                issueTypeDropDown[i].setSelectedItem("");
+                quantityText[i].setText("");
+                yearDropDown[i].setSelectedItem("");
+                issuedByText[i].setText("");
+                monthDropDown[i].setSelectedItem("");
+                codeDropDown[i].setSelectedItem("");
+                codeDropDown[i].setSelectedItem("");
+                pageNumberText.setText("");
+            }
+            entryDateText.setText("");
+            entryMonthText.setText(""+SamsUtilities.getCurrentMonth());
+            entryYearText.setText(""+SamsUtilities.getCurrentYear());
+            totalQuantityText.setText("");
+            totalAmountText.setText("");
         }
         else if(event.getSource() == cancelButton)
         {
@@ -547,7 +579,9 @@ public class SatSandeshInventoryIssue  implements ActionListener, ItemListener, 
         {
             if(ie.getSource() == yearDropDown[i])
             {
+                //System.out.println("Evenbt enabled");
                 fillMonthInformation(monthDropDown[i], (String)yearDropDown[i].getSelectedItem(),(String)languageDropDown[i].getSelectedItem());
+                issuedByText[i].setText(SamsUtilities.getUserName());
             }
             //System.out.println(ie.getItem());
             if(ie.getSource() == issueTypeDropDown[i])
@@ -714,7 +748,7 @@ public class SatSandeshInventoryIssue  implements ActionListener, ItemListener, 
             fillRcptNumConnection.rs = fillRcptNumConnection.st.executeQuery(countQuery);
             fillRcptNumConnection.rs.next();
             int ArrayCount = fillRcptNumConnection.rs.getInt(1);
-            System.out.println(query);
+            //System.out.println(query);
             //bookNumArray = new Object[ArrayCount + 1];
             //bookNumArray[0] = "";
             fillRcptNumConnection.rs = fillRcptNumConnection.st.executeQuery(query);

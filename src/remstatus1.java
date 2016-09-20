@@ -56,9 +56,11 @@ public class remstatus1 extends JFrame implements ActionListener
 		
 		montht.setBounds(110,30,50,20);
 		add(montht);
+                montht.setText(""+SamsUtilities.getCurrentMonth());
 		
 		yeart.setBounds(110,70,50,20);
 		add(yeart);
+                yeart.setText(""+SamsUtilities.getCurrentYear());
 		
 		
 		ok.setBounds(30,120,70,25);

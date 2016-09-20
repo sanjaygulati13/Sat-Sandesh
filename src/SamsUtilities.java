@@ -16,6 +16,8 @@ import javax.swing.JFrame;
  */
 public class SamsUtilities {
     
+    static String userName = "";
+    
     public static int getCurrentDate()
     {
         GregorianCalendar cal=new GregorianCalendar();
@@ -23,6 +25,14 @@ public class SamsUtilities {
         int currDate = cal.get(Calendar.DATE);
         return currDate;
         
+    }
+    
+    public static void setUserName(String user){
+        userName = user;
+    }
+    
+    public static String getUserName(){
+        return userName;
     }
     
     public static int getCurrentMonth()
@@ -55,7 +65,7 @@ public class SamsUtilities {
         Object[] seriesNameArray = null;
         try
         {
-            String query = "select distinct series_name from receipt_book_inventory";
+            String query = "select distinct series_name from receipt_book_inventory order by series_name DESC";
             String countQuery = "select count(distinct series_name) from receipt_book_inventory";
             
             fillSerieConnection.rs = fillSerieConnection.st.executeQuery(countQuery);

@@ -1,8 +1,8 @@
-/**
- * @(#)leftout.java
- * @author 
- * @version 1.00 2009/10/25
- */
+ /**
+  * @(#)leftout.java
+  * @author
+  * @version 1.00 2009/10/25
+  */
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.print.*;
@@ -12,110 +12,123 @@ import javax.swing.*;
 
 public class leftout extends JFrame implements ActionListener, Printable
 {
-	public static void main(String arrgs[])
-	{
-		new leftout();
-		
-	}
-
-
-    int[] pageBreak;
-	int numLines=0;
-	String[][] textLines;
-	int[] asn;
-	int x=0;
-	int x1=0;
-	int i=0;
-	int chk=0;
-	JFrame f;
-
-	JLabel l1, l2;
-	
-	JTextField t1;
-        
-        JComboBox seriesNameDropDown;
-	
-	JButton b1, b2;
-    int m1;
-	
-    public leftout() 
+    public static void main(String arrgs[])
     {
-    	try 
+        new leftout();
+        
+    }
+    
+    
+    int[] pageBreak;
+    int numLines=0;
+    String[][] textLines;
+    int[] asn;
+    int x=0;
+    int x1=0;
+    int i=0;
+    int chk=0;
+    JFrame f;
+    
+    JLabel l1, l2;
+    
+    JTextField t1;
+    
+    JComboBox seriesNameDropDown;
+    
+    JButton b1, b2, resetButton;
+    int m1;
+    
+    public leftout()
+    {
+        try
         {
             this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("skrm.jpg")));
             String cn = UIManager.getSystemLookAndFeelClassName();
             UIManager.setLookAndFeel(cn); // Use the native L&F
-        } 
-        catch (Exception cnf) 
+        }
+        catch (Exception cnf)
         {
-        	System.out.println(cnf);
+            System.out.println(cnf);
         }
         setTitle("Print Leftouts");
-    	setLocation(10,10);
-    	setSize(600,300);
-    	setLayout(null);
-    	this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    	
-    	l1=new JLabel("Enter Rcpt No");
-    	l1.setBounds(30,30,100,20);
-    	add(l1);
+        setLocation(10,10);
+        setSize(600,300);
+        setLayout(null);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        seriesNameDropDown = new JComboBox(fillSeriesInformation());
+        l1=new JLabel("Enter Rcpt No");
+        l1.setBounds(30,30,100,20);
+        add(l1);
+        
+        seriesNameDropDown = new JComboBox(SamsUtilities.fillSeriesInformation());
         seriesNameDropDown.setBounds(30, 70, 90, 20);
         this.add(seriesNameDropDown);
-    	
-    	t1=new JTextField(100);
-    	t1.setBounds(140,30,430,80);
-    	add(t1);
-    	
-    	b1=new JButton("Print Label");
-    	b1.setBounds(60,120,110,20);
-    	b1.addActionListener(this);
-    	add(b1);
-    	
-    	b2=new JButton("Back");
-    	b2.setBounds(190,120,120,20);
-    	b2.addActionListener(this);
-    	add(b2);
-    	
-    	setVisible(true);
+        
+        t1=new JTextField(100);
+        t1.setBounds(140,30,430,80);
+        add(t1);
+        
+        b1=new JButton("Print Label");
+        b1.setBounds(60,120,110,20);
+        b1.addActionListener(this);
+        add(b1);
+        b1.setMnemonic('p');
+        
+        b2=new JButton("Back");
+        b2.setBounds(350,120,120,20);
+        b2.addActionListener(this);
+        add(b2);
+        b2.setMnemonic('b');
+        
+        resetButton = new JButton("Reset");
+        resetButton.setBounds(190,120,120,20);
+        resetButton.addActionListener(this);
+        add(resetButton);
+        resetButton.setMnemonic('r');
+        
+        setVisible(true);
     }
     
-        @Override
+    @Override
     public void actionPerformed(ActionEvent ae)
     {
-
+        
         if(ae.getSource()==b1)
         {
             PrinterJob job=PrinterJob.getPrinterJob();
             job.setPrintable(this);
             boolean ok=job.printDialog();
-
+            
             if(ok)
             {
-    			try
-    			{
-    				job.print();
-    			}
-    			catch(PrinterException pe)
-    			{
-    				System.out.println(pe);
-    				//pe.printStackTrace();
-
+                try
+                {
+                    job.print();
                 }
-
-    		}
-
+                catch(PrinterException pe)
+                {
+                    System.out.println(pe);
+                    //pe.printStackTrace();
+                    
+                }
+                
+            }
+            
         }
-
+        
         if(ae.getSource()==b2)
         {
-            new sams();
             this.dispose();
+            new sams();
         }
-    	
+        if(ae.getSource()==resetButton)
+        {
+            t1.setText("");
+            seriesNameDropDown.setSelectedIndex(0);
+        }
+        
     }
-
+    
     public void initLines()
     {
         try
@@ -146,12 +159,12 @@ public class leftout extends JFrame implements ActionListener, Printable
             }
             
             /*connect c1=new connect();
-             * c1.rs=c1.st.executeQuery("select count(b.asn) from basic b, payment p where b.asn=p.asn and b.dist='By Post')");
-             * while(c1.rs.next())
-             * {
-             * x=c1.rs.getInt(1);
-             * 
-             * }*/
+            * c1.rs=c1.st.executeQuery("select count(b.asn) from basic b, payment p where b.asn=p.asn and b.dist='By Post')");
+            * while(c1.rs.next())
+            * {
+            * x=c1.rs.getInt(1);
+            *
+            * }*/
             c.st.close();
             c.con.close();
             x=rcpt.length;
@@ -160,15 +173,15 @@ public class leftout extends JFrame implements ActionListener, Printable
             textLines=new String[numLines][7];
             
             /*
-             * connect c2=new connect();
-             * c2.rs=c2.st.executeQuery("select b.asn from basic b, payment p where b.asn=p.asn and b.dist='By Post' and (p.asn) in (select asn from payment where (endm>"+(m1-1)+" and endy="+y1+") or endy>"+y1+") order by subnos, subno");
-             * while(c2.rs.next())
-             * {
-             * asn[i1]=c2.rs.getInt(1);
-             * 
-             * i1++;
-             * }
-             */
+            * connect c2=new connect();
+            * c2.rs=c2.st.executeQuery("select b.asn from basic b, payment p where b.asn=p.asn and b.dist='By Post' and (p.asn) in (select asn from payment where (endm>"+(m1-1)+" and endy="+y1+") or endy>"+y1+") order by subnos, subno");
+            * while(c2.rs.next())
+            * {
+            * asn[i1]=c2.rs.getInt(1);
+            *
+            * i1++;
+            * }
+            */
             //i1=0;
             for(i1=0;i1<x;i1++)
             {
@@ -272,7 +285,7 @@ public class leftout extends JFrame implements ActionListener, Printable
         
     }
     
-        @Override
+    @Override
     public int print(Graphics g, PageFormat pf, int pageIndex)
     {
         Font f1=new Font("SERIF", Font.PLAIN, 8);
@@ -377,37 +390,4 @@ public class leftout extends JFrame implements ActionListener, Printable
         return PAGE_EXISTS;
     }
     
-    private Object[] fillSeriesInformation()
-    {
-        connect fillSerieConnection = new connect();
-        Object[] seriesNameArray = null;
-        try
-        {
-            String query = "select distinct series_name from receipt_book_inventory";
-            String countQuery = "select count(distinct series_name) from receipt_book_inventory";
-            
-            fillSerieConnection.rs = fillSerieConnection.st.executeQuery(countQuery);
-            fillSerieConnection.rs.next();
-            int ArrayCount = fillSerieConnection.rs.getInt(1);
-            //System.out.println(ArrayCount+1);
-            seriesNameArray = new Object[ArrayCount + 1];
-            seriesNameArray[0] = "";
-            fillSerieConnection.rs = fillSerieConnection.st.executeQuery(query);
-            //CodeChooser.addItem("");
-            int idx;
-            idx = 1;
-            while (fillSerieConnection.rs.next()) {
-                seriesNameArray[idx] = fillSerieConnection.rs.getString(1);
-                idx++;
-            }
-            
-            fillSerieConnection.closeAll();
-        } catch (Exception exc) {
-            //exc.printStackTrace();
-            //Except.except(exc, "ADD JOB CARD--Raw Material Thread Error");
-            fillSerieConnection.closeAll();
-        }
-        return seriesNameArray;
-        
-    }
 }

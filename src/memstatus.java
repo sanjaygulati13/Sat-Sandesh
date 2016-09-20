@@ -64,9 +64,11 @@ public class memstatus extends JFrame implements ActionListener
 		
 		montht.setBounds(110,30,50,20);
 		add(montht);
+                montht.setText(""+SamsUtilities.getCurrentMonth());
 		
 		yeart.setBounds(110,70,50,20);
 		add(yeart);
+                yeart.setText(""+SamsUtilities.getCurrentYear());
 		
 		langt.setBounds(110,110,100,20);
 		add(langt);

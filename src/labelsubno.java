@@ -41,9 +41,13 @@ public class labelsubno extends JFrame implements ActionListener
         year=new JLabel("Year");
         lang=new JLabel("Language");
         
+        
         montht=new JTextField(20);
+        montht.setText(""+SamsUtilities.getCurrentMonth());
         yeart=new JTextField(40);
+        yeart.setText(""+SamsUtilities.getCurrentYear());
         langt=new JComboBox();
+        
         
         ok=new JButton("Labels");
         stickerLabelButton = new JButton("Sticker");

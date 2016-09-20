@@ -43,7 +43,7 @@ public class SatSandeshSubscriptionSearchByReceiptNumber extends JFrame implemen
         l1.setBounds(40,40,110,20);
         con.add(l1);
         
-        seriesNameDropDown = new JComboBox(fillSeriesInformation());
+        seriesNameDropDown = new JComboBox(SamsUtilities.fillSeriesInformation());
         con.add(seriesNameDropDown);
         seriesNameDropDown.setBounds(160,40,100,20);
         
@@ -99,97 +99,19 @@ public class SatSandeshSubscriptionSearchByReceiptNumber extends JFrame implemen
         
     }
     
-    private Object[] fillSeriesInformation()
-    {
-        connect fillSerieConnection = new connect();
-        Object[] seriesNameArray = null;
-        try
-        {
-            String query = "select distinct series_name from receipt_book_inventory";
-            String countQuery = "select count(distinct series_name) from receipt_book_inventory";
-            
-            fillSerieConnection.rs = fillSerieConnection.st.executeQuery(countQuery);
-            fillSerieConnection.rs.next();
-            int ArrayCount = fillSerieConnection.rs.getInt(1);
-            //System.out.println(ArrayCount+1);
-            seriesNameArray = new Object[ArrayCount + 1];
-            seriesNameArray[0] = "";
-            fillSerieConnection.rs = fillSerieConnection.st.executeQuery(query);
-            //CodeChooser.addItem("");
-            int i = 1;
-            while (fillSerieConnection.rs.next()) {
-                seriesNameArray[i] = fillSerieConnection.rs.getString(1);
-                i++;
-            }
-            
-            fillSerieConnection.closeAll();
-        } catch (Exception exc) {
-            //exc.printStackTrace();
-            //Except.except(exc, "ADD JOB CARD--Raw Material Thread Error");
-            fillSerieConnection.closeAll();
-        }
-        return seriesNameArray;
-        
-    }
     
     
     public void actionPerformed(ActionEvent ae)
     {
         if(ae.getSource()==b1)
         {
-            int i=0;
-            try
+            String seriesName = (String)seriesNameDropDown.getSelectedItem();
+            if(seriesName.isEmpty())
             {
-                String seriesName = (String)seriesNameDropDown.getSelectedItem();
-                if(seriesName.isEmpty())
-                {
-                    JOptionPane.showMessageDialog(this,"Please select series", "Please select series", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                
-                connect c1=new connect();
-                c1.rs=c1.st.executeQuery("select b.asn, s.fname, s.lname, s.dist, s.state from basic b, subdetails s where b.asn=s.asn and b.series_name = '"+seriesName+"' and b.rcpt="+Integer.parseInt(t1.getText()));
-                while(c1.rs.next())
-                {
-                    i++;
-                }
-                c1.rs.close();
-                
-                //System.out.println(i);
-                
-                if(i==0)
-                    JOptionPane.showMessageDialog(null,"No Records Found","No Records",JOptionPane.ERROR_MESSAGE);
-                
-                else
-                {
-                    
-                    connect c2=new connect();
-                    
-                    c2.rs=c2.st.executeQuery("select b.asn, s.fname, s.lname, s.dist, s.state from basic b, subdetails s where b.asn=s.asn and  b.series_name = '"+seriesName+"' and b.rcpt="+Integer.parseInt(t1.getText()));
-                    Object data[][]= new Object[i][5];
-                    int z=0;
-                    int j=0;
-                    while(c2.rs.next())
-                    {
-                        z=j+1;
-                        data[j][0]=c2.rs.getInt(1);
-                        data[j][1]=c2.rs.getString(2);
-                        data[j][2]=c2.rs.getString(3);
-                        data[j][3]=c2.rs.getString(4);
-                        data[j][4]=c2.rs.getString(5);
-                        j++;
-                    }
-                    
-                    tb1=new JTable(data,col);
-                    sp=new JScrollPane(tb1);
-                    sp.setBounds(20,70,545,410);
-                    con.add(sp);
-                }
+                JOptionPane.showMessageDialog(this,"Please select series", "Please select series", JOptionPane.ERROR_MESSAGE);
+                return;
             }
-            catch(Exception e)
-            {
-                System.out.println("exception"+e);
-            }
+            searchByReceiptNumberAndFillTable(seriesName, t1.getText(), tb1);
         }
         if(ae.getSource()==b2)
         {
@@ -208,6 +130,57 @@ public class SatSandeshSubscriptionSearchByReceiptNumber extends JFrame implemen
         {
             new sams();
             this.dispose();
+        }
+    }
+    
+    public void searchByReceiptNumberAndFillTable(String seriesName, String rcptNumber, JTable tb1)
+    {
+        int i=0;
+        try
+        {
+            
+            connect c1=new connect();
+            c1.rs=c1.st.executeQuery("select b.asn, s.fname, s.lname, s.dist, s.state from basic b, subdetails s where b.asn=s.asn and b.series_name = '"+seriesName+"' and b.rcpt="+rcptNumber);
+            while(c1.rs.next())
+            {
+                i++;
+            }
+            c1.rs.close();
+            
+            //System.out.println(i);
+            
+            if(i==0)
+                JOptionPane.showMessageDialog(null,"No Records Found","No Records",JOptionPane.ERROR_MESSAGE);
+            
+            else
+            {
+                
+                connect c2=new connect();
+                
+                c2.rs=c2.st.executeQuery("select b.asn, s.fname, s.lname, s.dist, s.state from basic b, subdetails s where b.asn=s.asn and  b.series_name = '"+seriesName+"' and b.rcpt="+Integer.parseInt(t1.getText()));
+                Object data[][]= new Object[i][5];
+                int z=0;
+                int j=0;
+                while(c2.rs.next())
+                {
+                    z=j+1;
+                    data[j][0]=c2.rs.getInt(1);
+                    data[j][1]=c2.rs.getString(2);
+                    data[j][2]=c2.rs.getString(3);
+                    data[j][3]=c2.rs.getString(4);
+                    data[j][4]=c2.rs.getString(5);
+                    j++;
+                }
+                
+                tb1=new JTable(data,col);
+                sp=new JScrollPane(tb1);
+                sp.setBounds(20,70,545,410);
+                con.add(sp);
+            }
+        }
+        catch(Exception e)
+        {
+            System.out.println("exception"+e);
         }
     }
 }	

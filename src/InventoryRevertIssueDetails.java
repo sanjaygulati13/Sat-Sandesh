@@ -104,7 +104,7 @@ public class InventoryRevertIssueDetails implements ActionListener, ItemListener
         
         //DropDowns
         //fill the information from the database while initialization
-        seriesDropDown = new JComboBox(IssueReceiptBookClass.fillSeriesNameInformation());
+        seriesDropDown = new JComboBox(SamsUtilities.fillSeriesInformation());
         bookNumDropDown = new JComboBox();
         
         seriesDropDown.addItemListener(this);

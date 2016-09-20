@@ -53,7 +53,7 @@ public class CheckReceiptBookDetailsInput extends JFrame implements ActionListen
         
         fromt=new JTextField(20);
         tot=new JTextField(20);
-        seriesNameDropDown = new JComboBox(fillSeriesNameInformation());
+        seriesNameDropDown = new JComboBox(SamsUtilities.fillSeriesInformation());
         
         ok=new JButton("OK");
         clr=new JButton("Clear");
@@ -126,36 +126,6 @@ public class CheckReceiptBookDetailsInput extends JFrame implements ActionListen
         
     }
     
-    static public Object[] fillSeriesNameInformation()
-    {
-        connect fillSerieConnection = new connect();
-        Object[] seriesNameArray = null;
-        try
-        {
-            String query = "select distinct series_name from receipt_book_inventory";
-            String countQuery = "select count(distinct series_name) from receipt_book_inventory";
-            
-            fillSerieConnection.rs = fillSerieConnection.st.executeQuery(countQuery);
-            fillSerieConnection.rs.next();
-            int ArrayCount = fillSerieConnection.rs.getInt(1);
-            //System.out.println(ArrayCount+1);
-            seriesNameArray = new Object[ArrayCount + 1];
-            seriesNameArray[0] = "";
-            fillSerieConnection.rs = fillSerieConnection.st.executeQuery(query);
-            //CodeChooser.addItem("");
-            int i = 1;
-            while (fillSerieConnection.rs.next()) {
-                seriesNameArray[i] = fillSerieConnection.rs.getString(1);
-                i++;
-            }
-            
-            fillSerieConnection.closeAll();
-        } catch (Exception exc) {
-            //exc.printStackTrace();
-            //Except.except(exc, "ADD JOB CARD--Raw Material Thread Error");
-            fillSerieConnection.closeAll();
-        }
-        return seriesNameArray;
-    }
+    
 }
 

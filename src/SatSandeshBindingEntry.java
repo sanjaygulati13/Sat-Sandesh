@@ -100,6 +100,7 @@ public class SatSandeshBindingEntry implements ActionListener{
         monthText = new TextFieldWithLimit( 2 , 2 );
         yearText = new TextFieldWithLimit( 4 , 4 );
         nameText = new TextFieldWithLimit( 32 , 32 );
+        nameText.setText(SamsUtilities.getUserName());
         countText = new TextFieldWithLimit( 4 , 4 );
         amountText = new TextFieldWithLimit( 5 , 5 );
         

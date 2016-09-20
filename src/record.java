@@ -10,7 +10,7 @@ public class record extends JFrame implements ActionListener, Printable
     
     public static void main(String args[])
     {
-        new record(9,2009,"Hindi");
+        new record(8,2016,"Hindi");
     }
     
     
@@ -362,6 +362,7 @@ public class record extends JFrame implements ActionListener, Printable
                 {
                     a6++;
                 }
+                System.out.println(a6);
                 
                 
                 c1.rs=c1.st.executeQuery("select b.asn from basic b, subdetails s where b.asn=s.asn and b.lang='"+lang+"' and (s.state='"+state1[i]+"' and b.status='Deactive')");
@@ -772,6 +773,7 @@ public class record extends JFrame implements ActionListener, Printable
                 }
                 catch (PrinterException ex)
                 {
+                    ex.printStackTrace();
                     /* The job did not successfully complete */
                 }
             }

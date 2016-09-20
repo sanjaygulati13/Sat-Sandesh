@@ -48,6 +48,8 @@ public class despreg extends JFrame implements ActionListener, ItemListener {
         endt = new JTextField(20);
         blankt = new JTextField(20);
 
+        hdrt.setText(""+SamsUtilities.getCurrentYear());
+        
         ok = new JButton("OK");
         clr = new JButton("Clear");
         back = new JButton("Back");

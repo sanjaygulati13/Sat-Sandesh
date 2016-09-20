@@ -118,7 +118,7 @@ public class SatSandeshAccountBookPosting  implements ActionListener, Printable 
         //issueTypeLabel = new JLabel[7];
         //quantityText  = new TextFieldWithLimit[7];
         //codeDropDown = new JComboBox[2];
-        Object [] seriesNameArray = fillSeriesNameInformation();
+        Object [] seriesNameArray = SamsUtilities.fillSeriesInformation();
         
         //customerNameText = new TextFieldWithLimit[NUM_ROWS];
         rcptText = new TextFieldWithLimit[NUM_ROWS];
@@ -376,7 +376,7 @@ public class SatSandeshAccountBookPosting  implements ActionListener, Printable 
     
     
     
-    static public Object[] fillSeriesNameInformation()
+    /*static public Object[] fillSeriesNameInformation()
     {
         connect fillSerieConnection = new connect();
         Object[] seriesNameArray = null;
@@ -406,7 +406,7 @@ public class SatSandeshAccountBookPosting  implements ActionListener, Printable 
             fillSerieConnection.closeAll();
         }
         return seriesNameArray;
-    }
+    }*/
     
     @Override
     public int print(Graphics graphics, PageFormat pf, int page) throws

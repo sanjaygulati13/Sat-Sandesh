@@ -80,7 +80,7 @@ public class IssueReceiptBookClass implements ActionListener, ItemListener {
         
         //DropDowns
         //fill the information from the database while initialization
-        seriesDropDown = new JComboBox(fillSeriesNameInformation());
+        seriesDropDown = new JComboBox(SamsUtilities.fillSeriesInformation());
         
         
         bookNumDropDown = new JComboBox();
@@ -104,6 +104,7 @@ public class IssueReceiptBookClass implements ActionListener, ItemListener {
         toText.setEnabled(false);
         
         issuedByText = new TextFieldWithLimit(25, 25);
+        issuedByText.setText(SamsUtilities.getUserName());
         
         
         //Buttons
@@ -255,7 +256,7 @@ public class IssueReceiptBookClass implements ActionListener, ItemListener {
         new IssueReceiptBookClass();
     }
     
-    static public Object[] fillSeriesNameInformation()
+    /*static public Object[] fillSeriesNameInformation()
     {
         connect fillSerieConnection = new connect();
         Object[] seriesNameArray = null;
@@ -285,7 +286,7 @@ public class IssueReceiptBookClass implements ActionListener, ItemListener {
             fillSerieConnection.closeAll();
         }
         return seriesNameArray;
-    }
+    }*/
     
     public static void fillRecptNumInformation(JComboBox bookNumDropDown, String series_name)
     {

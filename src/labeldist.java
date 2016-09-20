@@ -66,7 +66,9 @@ public class labeldist extends JFrame implements ActionListener
         
         
         montht=new JTextField(20);
+        montht.setText(""+SamsUtilities.getCurrentMonth());
         yeart=new JTextField(40);
+        yeart.setText(""+SamsUtilities.getCurrentYear());
         langt=new JComboBox();
         
         ok=new JButton("OK");

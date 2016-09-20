@@ -108,9 +108,15 @@ public class SatSandeshInventoryStoreIssue implements ActionListener, ItemListen
         entryDateMonthText = new TextFieldWithLimit( 2 , 2 );
         entryDateYearText = new TextFieldWithLimit( 4 , 4 );
         issuedByNameText= new TextFieldWithLimit( 32 , 32 );
+        issuedByNameText.setText(SamsUtilities.getUserName());
         
         issueMonthtext.setText(""+SamsUtilities.getCurrentMonth());
         issueYearText.setText(""+SamsUtilities.getCurrentYear());
+        
+        entryDateText.setText(""+SamsUtilities.getCurrentDate());
+        entryDateMonthText.setText(""+SamsUtilities.getCurrentMonth());
+        entryDateYearText.setText(""+SamsUtilities.getCurrentYear());
+
         
         okButton = new JButton("OK");
         okButton.setMnemonic('o');

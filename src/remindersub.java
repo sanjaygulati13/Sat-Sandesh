@@ -50,8 +50,8 @@ public class remindersub extends JFrame implements ActionListener
 		yeartt=new JTextField(40);
 		langt=new JComboBox();
 		
-		ok=new JButton("OK");
-		clr=new JButton("Clear");
+		ok=new JButton("Save/OK");
+		clr=new JButton("Reset");
 		back=new JButton("Back");
 		
 		langt.addItem("Hindi");
@@ -61,7 +61,6 @@ public class remindersub extends JFrame implements ActionListener
 		
 		monthf.setBounds(30,70,70,20);
 		add(monthf);
-		
 		
 		montht.setBounds(30,110,70,20);
 		add(montht);
@@ -85,17 +84,20 @@ public class remindersub extends JFrame implements ActionListener
 		langt.setBounds(130,190,100,20);
 		add(langt);
 		
-		ok.setBounds(30,230,70,25);
+		ok.setBounds(30,230,80,25);
 		add(ok);
 		ok.addActionListener(this);
+                ok.setMnemonic('s');
 		
 		clr.setBounds(120,230,70,25);
 		add(clr);
 		clr.addActionListener(this);
+                clr.setMnemonic('r');
 		
 		back.setBounds(210,230,70,25);
 		add(back);
 		back.addActionListener(this);
+                back.setMnemonic('b');
 
 		setVisible(true);
 		

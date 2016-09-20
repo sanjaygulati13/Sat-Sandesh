@@ -129,6 +129,9 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
         startingPeriodYearDropDown = new JComboBox();
         subIssueCounterText = new JTextField();
         
+        monthText.setText(""+SamsUtilities.getCurrentMonth());
+        yearText.setText(""+SamsUtilities.getCurrentYear());
+        
         for( int month =1; month <= 12 ; month++ )
             startingPeriodMonthDropDown.addItem(""+month);
         
@@ -181,8 +184,12 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
         counterDropDown.addItem("Sawan Ashram");
         
         addDataButton = new JButton("Add Data");
-        cancelButton =new JButton("Cancel");
-        saveButton = new JButton("Save");
+        cancelButton =new JButton("Back");
+        saveButton = new JButton("Save/OK");
+        
+        addDataButton.setMnemonic('a');
+        cancelButton.setMnemonic('b');
+        saveButton.setMnemonic('s');
         
         //-----------------------------------------modififcations------------------------------------------//
         distributionNumberDropDown = new JComboBox();
