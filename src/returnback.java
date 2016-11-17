@@ -42,7 +42,8 @@ public class returnback extends JFrame implements ActionListener {
         l1.setBounds(30, 30, 60, 20);
         add(l1);
 
-        subs = new JComboBox();
+        subs = new JComboBox(SamsUtilities.getSubCodes());
+        /*
         //subs.addItem("BH");
         //subs.addItem("BD");
         subs.addItem("CM");
@@ -59,7 +60,7 @@ public class returnback extends JFrame implements ActionListener {
         subs.addItem("RJ");
         subs.addItem("UK");
         subs.addItem("UP");
-        //subs.addItem("UR");
+        //subs.addItem("UR");*/
         subs.setBounds(130, 30, 50, 20);
         add(subs);
 

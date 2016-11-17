@@ -115,7 +115,7 @@ public class SatSandeshSubscriptionSearchByReceiptNumber extends JFrame implemen
         }
         if(ae.getSource()==b2)
         {
-            new modify(Integer.parseInt(t2.getText()));
+            new SatSandeshModifySubscriptionData(Integer.parseInt(t2.getText()));
             this.dispose();
         }
         

@@ -642,9 +642,20 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
                         c2.a=c2.st.executeUpdate("insert into otherdet values("+asnNumbers[i]+",'"+
                                 phone+"','"+history+"','"+email+"',"+returnBack+",'"+
                                 remarks+"','','','')");
-                        
                         if(c2.a==1)
                             flag=flag+1;
+                        
+                        String sqlQuery = "insert into receipt_book_details values ('"
+                                +seriesName+"',"
+                                +rcptNum+","+asnNumbers[i]+",'"
+                                +paymentType+"','"+entryYear+"-"
+                                +entryMonth+"-"+entryDate+"',"
+                                +amount+",'"+history+"')";
+                        
+                        c2.a=c2.st.executeUpdate(sqlQuery);
+                        
+                        if(c2.a==1)
+                            flag=flag-1;
                         //c5.closeAll();
                     }
                     

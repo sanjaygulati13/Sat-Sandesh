@@ -11,11 +11,12 @@ public class Backup {
 
     public String getData(String host, String port, String user,String password, String db) throws Exception {
 
-        Process run = Runtime.getRuntime().exec(
-                "mysqldump --host=" + host + " --port=" + port
+        String runCommand = "mysqldump --host=" + host + " --port=" + port
                 + " --user=" + user + " --password=" + password
                 + " --compact --complete-insert --extended-insert "
-                + "--skip-comments --skip-triggers " + db);
+                + "--skip-comments --skip-triggers " + db;
+        System.out.println(runCommand);
+        Process run = Runtime.getRuntime().exec(runCommand);
         InputStream in = run.getInputStream();
         BufferedReader br = new BufferedReader(new InputStreamReader(in));
 

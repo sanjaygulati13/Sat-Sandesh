@@ -175,7 +175,7 @@ public class searchadd extends JFrame implements ActionListener
 		}
 		if(ae.getSource()==b2)
 		{
-			new modify(Integer.parseInt(t2.getText()));
+			new SatSandeshModifySubscriptionData(Integer.parseInt(t2.getText()));
 			this.dispose();
 		}
 

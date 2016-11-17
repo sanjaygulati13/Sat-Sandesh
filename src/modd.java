@@ -135,6 +135,7 @@ public class modd extends JFrame implements ActionListener
             distt.setText(c2.rs.getString(11));
             statt.setText(c2.rs.getString(12));
             pint.setText(c2.rs.getString(13));
+            distributionTypeDropDown.setSelectedItem(c2.rs.getString(14));
         }
         catch(Exception e)
         {
@@ -225,7 +226,9 @@ public class modd extends JFrame implements ActionListener
             {
                 
                 connect c1=new connect();
-                c1.a=c1.st.executeUpdate("update despcode set fname='"+name1+"', lname='"+lname1+"',phone='"+phone+"',email='"+email+"',add1='"+add1+"',add2='"+add2+"',add3='"+add3+"',remarks='"+remarks+"',history='"+history+"',district='"+district+"',state='"+state+"',pinno="+pinno+", distributionType = '"+distributionTypeText+"' where dno="+dno);
+                String sqlQuery = "update despcode set fname='"+name1+"', lname='"+lname1+"',phone='"+phone+"',email='"+email+"',add1='"+add1+"',add2='"+add2+"',add3='"+add3+"',remarks='"+remarks+"',history='"+history+"',district='"+district+"',state='"+state+"',pinno="+pinno+", distributionType = '"+distributionTypeText+"' where dno="+dno;
+                System.out.println(sqlQuery);
+                c1.a=c1.st.executeUpdate(sqlQuery);
                 if(c1.a==1)
                 {
                     JOptionPane.showMessageDialog(this, "Modification Done SuccessFully", "SUCCESS", JOptionPane.INFORMATION_MESSAGE);

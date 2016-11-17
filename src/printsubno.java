@@ -48,8 +48,9 @@ public class printsubno extends JFrame implements ActionListener
 		subno=new JLabel("Sub No");
 
 
-		subnot=new JComboBox();
-        subnot.addItem("BH");
+		subnot=new JComboBox(SamsUtilities.getSubCodes());
+                
+        /*subnot.addItem("BH");
 		subnot.addItem("BD");
 		subnot.addItem("CM");
 		subnot.addItem("DL");
@@ -66,7 +67,7 @@ public class printsubno extends JFrame implements ActionListener
 		subnot.addItem("RJ");
 		subnot.addItem("UK");
 		subnot.addItem("UP");
-		subnot.addItem("UR");
+		subnot.addItem("UR");*/
 
 
 		ok=new JButton("OK");

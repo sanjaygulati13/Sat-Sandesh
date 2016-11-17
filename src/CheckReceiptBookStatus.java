@@ -68,7 +68,8 @@ public class CheckReceiptBookStatus extends JFrame implements ActionListener
             
             connect c1=new connect();
             
-            String sqlQuery = "select count(distinct(rcpt)) from basic where ( rcpt < "+(endNum+1) +" and rcpt > "+(startNum-1)+" ) and series_name = '"+series+"' ";
+            //String sqlQuery = "select count(distinct(rcpt)) from basic where ( rcpt < "+(endNum+1) +" and rcpt > "+(startNum-1)+" ) and series_name = '"+series+"' ";
+            String sqlQuery = "select count(distinct(receipt_number)) from receipt_book_details where ( receipt_number < "+(endNum+1) +" and receipt_number > "+(startNum-1)+" ) and series_name = '"+series+"' ";
             //System.out.println(sqlQuery);
             c1.rs=c1.st.executeQuery(sqlQuery);
             if(c1.rs.next())
@@ -92,7 +93,8 @@ public class CheckReceiptBookStatus extends JFrame implements ActionListener
             for(count = startNum; count <= endNum; count++)
             {
                 k=0;
-                String searchQuery = "select count(asn) from basic where series_name = '"+series+"' and rcpt = "+count;
+                //String searchQuery = "select count(asn) from receipt_book_details where series_name = '"+series+"' and rcpt = "+count;
+                String searchQuery = "select count(asn) from receipt_book_details where series_name = '"+series+"' and receipt_number = "+count;
                 //System.out.println(searchQuery);
                 c2.rs=c2.st.executeQuery(searchQuery);
                 //flag=0;
@@ -200,7 +202,7 @@ public class CheckReceiptBookStatus extends JFrame implements ActionListener
             int k = 0;
             int unaccountedReceiptCount = 0;
             //select rcpt from basic where rcpt > 2999 and rcpt < 3051 and series_name = '2015' and page_number = 0;
-            String sqlQuery = "select count(distinct(rcpt)) from basic where ( rcpt < "+(endNum+1) +" and rcpt > "+(startNum-1)+" ) and series_name = '"+series+"' and page_number = 0";
+            String sqlQuery = "select count(distinct(receipt_number)) from receipt_book_details where ( receipt_number < "+(endNum+1) +" and receipt_number > "+(startNum-1)+" ) and series_name = '"+series+"' and page_number = 0";
             //System.out.println(sqlQuery);
             c1.rs=c1.st.executeQuery(sqlQuery);
             if(c1.rs.next())
@@ -221,7 +223,8 @@ public class CheckReceiptBookStatus extends JFrame implements ActionListener
             for(count = startNum; count <= endNum; count++)
             {
                 k=0;
-                String searchQuery = "select count(asn) from basic where page_number = 0 and series_name = '"+series+"' and rcpt = "+count;
+                //String searchQuery = "select count(asn) from basic where page_number = 0 and series_name = '"+series+"' and rcpt = "+count;
+                String searchQuery = "select count(asn) from receipt_book_details where page_number = 0 and series_name = '"+series+"' and receipt_number = "+count;
                 //System.out.println(searchQuery);
                 c2.rs=c2.st.executeQuery(searchQuery);
                 //flag=0;

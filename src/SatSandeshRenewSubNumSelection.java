@@ -42,10 +42,11 @@ public class SatSandeshRenewSubNumSelection extends JFrame implements ActionList
         add(subno);
         subno.setBounds(50, 30, 80, 25);
 
-        subt1 = new JComboBox();
+        subt1 = new JComboBox(SamsUtilities.getSubCodes());
         subt1.setBounds(130, 30, 50, 25);
         add(subt1);
 
+        /*
         subt1.addItem("BH");
         subt1.addItem("BD");
         subt1.addItem("CM");
@@ -62,7 +63,7 @@ public class SatSandeshRenewSubNumSelection extends JFrame implements ActionList
         subt1.addItem("RJ");
         subt1.addItem("UK");
         subt1.addItem("UP");
-        subt1.addItem("UR");
+        subt1.addItem("UR");*/
 
         subt2 = new TextFieldWithLimit(5, 5);
         //subt2.setSelectionStart(0);

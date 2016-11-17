@@ -33,11 +33,11 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
     
     JTextField /*paytt1,*/ chddt1;											//payment details
     TextFieldWithLimit dateText, monthText, yearText, amt1, endt1, newRenewText;//starty1, startm1,
-    JComboBox paytt1, starty1, startm1;
+    JComboBox paytt1, starty1, startm1, stateCodeDropDown;
     
     
-    TextFieldWithLimit titt1, namt1, lnamt1, statt1, pint1,addt11,addt21,addt31,dist21;	//member details
-    
+    TextFieldWithLimit titt1, namt1, lnamt1, pint1,addt11,addt21,addt31,dist21;	//member details
+    JComboBox stateNameDropDown;
     
     JTextField  rett1;											//other details
     TextArea remt1;
@@ -49,6 +49,7 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
     String str;
     int flag=0;
     int s2=0;
+    Object[] items;
     
     protected final void center() {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -141,7 +142,8 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
         receiptNumberText=new TextFieldWithLimit(5,5);
         distt1=new JComboBox();
         
-        Object[] items={"BH","BD","CM","DL","EN","HR","LF","LH","MH","MP","MS","PB","PJ","RJ","UK","UP","UR"};
+        //Object[] items={"BH","BD","CM","DL","EN","HR","LF","LH","MH","MP","MS","PB","PJ","RJ","UK","UP","UR"};
+        items = SamsUtilities.getSubCodes();
         subNumberCodeDropDown=new JComboBox(items);
         subNumberCodeDropDown.putClientProperty("JComboBox.isTableCellEditor", Boolean.TRUE);
         //subt22.setAutoscrolls(true);
@@ -174,7 +176,8 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
         addt21=new TextFieldWithLimit(32,32);
         addt31=new TextFieldWithLimit(32,32);
         dist21=new TextFieldWithLimit(22,22);
-        statt1=new TextFieldWithLimit(3,3);
+        stateCodeDropDown = new JComboBox(SamsUtilities.fillStateCodeList());
+        stateNameDropDown = new JComboBox(SamsUtilities.fillStateNameList());
         pint1=new TextFieldWithLimit(6,6);
         telt1=new TextFieldWithLimit(12,12);
         
@@ -470,11 +473,11 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
         add1.setBounds(520,45,60,20);
         
         p3.add(addt11);
-        addt11.setBounds(600,45,240,20);
+        addt11.setBounds(600,35,240,20);
         p3.add(addt21);
-        addt21.setBounds(600,70,240,20);
+        addt21.setBounds(600,60,240,20);
         p3.add(addt31);
-        addt31.setBounds(600,95,240,20);
+        addt31.setBounds(600,85,240,20);
         
         p3.add(dis1);
         dis1.setBounds(30,110,60,20);
@@ -485,15 +488,21 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
         p3.add(stat1);
         stat1.setBounds(340,110,40,20);
         
-        p3.add(statt1);
-        statt1.setBounds(380,110,40,20);
+        p3.add(stateNameDropDown);
+        stateNameDropDown.setBounds(380,110,200,20);
+        stateNameDropDown.addItemListener(this);
+        
+        p3.add(stateCodeDropDown);
+        stateCodeDropDown.setBounds(590,110,80,20);
+        stateCodeDropDown.setEnabled(false);
+        //stateCodeDropDown.addItemListener(this);
         
         p3.add(pin1);
-        pin1.setBounds(430,110,50,20);
+        pin1.setBounds(680,110,90,20);
         
         p3.add(pint1);
         pint1.setText("0");
-        pint1.setBounds(480,110,50,20);
+        pint1.setBounds(770,110,50,20);
         
         p4.add(oth1);
         oth1.setBounds(30,10,200,30);
@@ -677,7 +686,7 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
                 add2=addt21.getText();
                 add3=addt31.getText();
                 dist2=dist21.getText();
-                state=statt1.getText();
+                state= (String)stateCodeDropDown.getSelectedItem();
                 pin=Integer.parseInt(pint1.getText());
                 
                 //other details
@@ -745,7 +754,16 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
                 
                 if(c5.a==1)
                     flag=flag+1;
+                
+                
+                String sqlQuery = "insert into receipt_book_details values ('"+seriesName+"',"+rcpt+","+asn+",'"+payt+"','"+dat3+"-"+dat2+"-"+date1+"',"+amt+",'"+history+"')";
+                c5.a=c5.st.executeUpdate(sqlQuery);
+                if(c5.a!=1)
+                    flag--;
                 c5.closeAll();
+                
+                
+                
                 
                 
                 if(flag==4)
@@ -769,7 +787,6 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
                 t=new Thread(this);
                 //t.start();
                 Thread.sleep(3000);
-                
                 new SatSandeshNewSubscription();
                 
             }
@@ -777,7 +794,6 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
             {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(this, "ERROR : "+e, "ERROR", JOptionPane.ERROR_MESSAGE);
-                
             }
         }
         
@@ -805,7 +821,8 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
             namt1.setText("");
             lnamt1.setText("");
             dist21.setText("");
-            statt1.setText("");
+            stateCodeDropDown.setSelectedIndex(0);
+            stateNameDropDown.setSelectedIndex(0);
             pint1.setText("0");
             telt1.setText("");
             counterDropDown.setSelectedIndex(1);
@@ -832,7 +849,11 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
     @Override
     public void itemStateChanged(ItemEvent ie)
     {
-        if(ie.getSource()==dt1)
+        if(ie.getSource() == stateNameDropDown)
+        {
+            stateCodeDropDown.setSelectedItem(SamsUtilities.getStateCodeForStateName((String)stateNameDropDown.getSelectedItem()));
+        }
+         if(ie.getSource()==dt1)
         {
             try
             {
@@ -842,9 +863,9 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
                 dist21.setText(""+c14.rs.getString(1));
                 dist21.setEnabled(false);
                 dist21.setFont(f);
-                statt1.setText(""+c14.rs.getString(2));
-                statt1.setEnabled(false);
-                statt1.setFont(f);
+                stateCodeDropDown.setSelectedItem(""+c14.rs.getString(2));
+                stateCodeDropDown.setEnabled(false);
+                stateCodeDropDown.setFont(f);
                 c14.st.close();
                 c14.con.close();
             }
@@ -855,7 +876,7 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
             
         }
         
-        if(ie.getSource()==distt1)
+         if(ie.getSource()==distt1)
         {
             if(distt1.getSelectedItem()=="Distributor")
             {
@@ -873,7 +894,7 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
             
         }
         
-        if(ie.getSource()==subscriptionDurationDropDown)
+         if(ie.getSource()==subscriptionDurationDropDown)
         {
             try
             {
@@ -904,7 +925,7 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
             
         }
         
-        if(ie.getSource()==langt1)
+         if(ie.getSource()==langt1)
         {
             try
             {
@@ -928,7 +949,7 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
             }
         }
         
-        if(ie.getSource()==paytt1)
+         if(ie.getSource()==paytt1)
         {
             if(paytt1.getSelectedItem()=="Cash")
             {
@@ -995,6 +1016,49 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
         
         if(ie.getSource()==subNumberCodeDropDown)
         {
+            for(int stateCode = 0 ; stateCode != items.length ; ++stateCode)
+            {
+                if(subNumberCodeDropDown.getSelectedItem() == items[stateCode])
+                {
+                    String sub_code_str = (String)(items[stateCode]);
+                    String state_code_text = SamsUtilities.getStateCodeForSubCode(sub_code_str);
+                    String state_name_text = SamsUtilities.getStateNameForStateCode(state_code_text);
+                    //System.out.println("'"+sub_code_str+ "' '" +state_name_text + "' '" + state_code_text+"'" );
+                    
+                    if(state_name_text.isEmpty() == false)
+                    {
+                        stateNameDropDown.setEnabled(false);
+                        stateCodeDropDown.setEnabled(false);
+                        stateCodeDropDown.setSelectedItem(state_code_text);
+                        stateNameDropDown.setSelectedItem(state_name_text); 
+                        //stateNameDropDown.setSelectedItem(state_name_text);
+                        distt1.setSelectedItem("By Post");
+                        distt1.setEnabled(false);
+                    }
+                    else
+                    {
+                        stateNameDropDown.setSelectedIndex(0);
+                        stateNameDropDown.setEnabled(true);
+                        stateCodeDropDown.setSelectedIndex(0);
+                        stateCodeDropDown.setEnabled(true);
+                        distt1.setSelectedItem("By Post");
+                        distt1.setEnabled(false);
+                        
+                    }
+                    
+                    if(sub_code_str.equals("BD"))
+                    {
+                        
+                        stateCodeDropDown.setSelectedIndex(0);
+                        stateCodeDropDown.setEnabled(true);
+                        distt1.setSelectedItem("Distributor");
+                        distt1.setEnabled(false);
+                        
+                    }
+                    
+                }
+            }
+            /*
             if(subNumberCodeDropDown.getSelectedItem()=="DL")
             {
                 statt1.setText("DL");
@@ -1145,6 +1209,7 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
                 distt1.setEnabled(true);
                 
             }
+*/
             
         }
         
@@ -1297,7 +1362,8 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
                         namt1.setText("");
                         lnamt1.setText("");
                         dist21.setText("");
-                        statt1.setText("");
+                        stateCodeDropDown.setSelectedItem("");
+                        stateNameDropDown.setSelectedIndex(0);
                         pint1.setText("0");
                         telt1.setText("");
                         counterDropDown.setSelectedIndex(1);

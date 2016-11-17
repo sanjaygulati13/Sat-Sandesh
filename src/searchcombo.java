@@ -139,7 +139,7 @@ public class searchcombo extends JFrame implements ActionListener
         }
         if(ae.getSource()==b2)
         {
-            new modify(Integer.parseInt(t5.getText()));
+            new SatSandeshModifySubscriptionData(Integer.parseInt(t5.getText()));
             this.dispose();
         }
         

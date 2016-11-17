@@ -25,7 +25,7 @@ public class remstatus extends JFrame implements ActionListener, Printable
     JLabel[] dist=new JLabel[10];
     JLabel[] total2=new JLabel[10];
     
-    JButton b1, print1;
+    JButton backButton, print1;
     
     
     
@@ -100,11 +100,11 @@ public class remstatus extends JFrame implements ActionListener, Printable
         if(m12<3)
             y12=y+1;
         
-        b1=new JButton("Back");
-        j.add(b1);
-        b1.setMnemonic('b');
-        b1.addActionListener(this);
-        b1.setBounds(400,560,80,25);
+        backButton=new JButton("Back");
+        j.add(backButton);
+        backButton.setMnemonic('b');
+        backButton.addActionListener(this);
+        backButton.setBounds(400,560,80,25);
         
         print1=new JButton("Print");
         j.add(print1);
@@ -394,17 +394,14 @@ public class remstatus extends JFrame implements ActionListener, Printable
     
     public void actionPerformed(ActionEvent e)
     {
-        if(e.getSource()==b1)
+        if(e.getSource()==backButton)
         {
-            this.dispose();
-            new sams();
+            j.dispose();
+            new sams();   
         }
         
         if(e.getSource()==print1)
         {
-            
-            
-            
             PrinterJob job = PrinterJob.getPrinterJob();
             job.setPrintable(this);
             
