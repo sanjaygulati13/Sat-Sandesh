@@ -280,7 +280,7 @@ public class labelcross extends JFrame implements Printable, ActionListener
         if(chk%2==1 && (end-start)!=lineHeight)
         {
             g.setFont( new Font("SERIF", Font.BOLD, 10));
-            g.drawString("( "+SamsAddons.getCurrentDate()+" ) (TR: "+NumberOfRecords+")", ((int)pf.getWidth()/2-65), y+lineHeight);
+            g.drawString("( "+SamsUtilities.getCurrentDateString()+" ) (TR: "+NumberOfRecords+")", ((int)pf.getWidth()/2-65), y+lineHeight);
             
             g.setFont( new Font("SERIF", Font.PLAIN, 9));
             for(int line=start;line<end-2 && i<x; line+=10)

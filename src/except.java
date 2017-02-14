@@ -35,7 +35,7 @@ public class except {
             int len=abc.length();
 			byte buf[]=abc.getBytes();
 
-            String path="c:/sams_log.sams";
+            String path="./sams_log.sams";
 
 			File f1=new File(path);
 			FileOutputStream fobj=new FileOutputStream(f1,true);
@@ -47,6 +47,7 @@ public class except {
         }
         catch(Exception e1)
         {
+            
 
         }
     }

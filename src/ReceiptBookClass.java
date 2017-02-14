@@ -167,7 +167,7 @@ public class ReceiptBookClass implements ActionListener {
                 //ending number for current receipt book
                 int endingNum = startingNum + numReceipts - 1;
                 connect seriesConnection = new connect();
-                String sqlQuery = "insert into receipt_book_inventory values ( '"+seriesName+"', "+(bookNum++)+", "+numReceipts+" , "+startingNum+", "+endingNum+", '' , '' , '0000-00-00' , '"+SamsAddons.getCurrentSqlDate()+"' ) ";
+                String sqlQuery = "insert into receipt_book_inventory values ( '"+seriesName+"', "+(bookNum++)+", "+numReceipts+" , "+startingNum+", "+endingNum+", '' , '' , '0000-00-00' , '"+SamsUtilities.getCurrentSqlDate()+"' ) ";
                 try
                 {
                     

@@ -509,7 +509,7 @@ public class reminderd implements Printable, ActionListener
 					g.setFont(new Font("SERIF", Font.BOLD, 10));
 					g.drawString("LIST OF REMINDERS OF SAT-SANDESH MEMBERS SERVICED BY DISTRIBUTOR CODE # "+dno+" DISTRICT ("+dist+" , "+state+" )",(int)pf.getWidth()/2-360,y);
                                         g.drawString("( - "+(pageIndex+1)+" - )", (int)pf.getWidth()/2+270,y);
-                                        g.drawString("("+SamsAddons.getCurrentDate()+")  (TR: "+NumberOfRecords+")",(int)pf.getWidth()/2+310 , y);
+                                        g.drawString("("+SamsUtilities.getCurrentDateString()+")  (TR: "+NumberOfRecords+")",(int)pf.getWidth()/2+310 , y);
 				}
 				
 				

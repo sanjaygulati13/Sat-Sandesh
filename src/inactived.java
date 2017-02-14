@@ -503,7 +503,7 @@ public class inactived implements Printable, ActionListener
                     g.setFont(new Font("SERIF", Font.BOLD, 10));
                     g.drawString("Detailed List Of Inactive Sat Sandesh Members Whose Period Has Ended B/W "+mi+"-"+yi+" & "+(month-1)+"-"+year, (int)pf.getWidth()/2-350,y);
                     g.drawString("( - "+(pageIndex+1)+" - )", (int)pf.getWidth()/2+270,y);
-                    g.drawString("("+SamsAddons.getCurrentDate()+")  (TR: "+NumberOfRecords+")",(int)pf.getWidth()/2+310 , y);
+                    g.drawString("("+SamsUtilities.getCurrentDateString()+")  (TR: "+NumberOfRecords+")",(int)pf.getWidth()/2+310 , y);
                     
                 }
                 

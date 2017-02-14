@@ -35,19 +35,15 @@ public class refresh {
             //System.out.println("update basic set basic.status='Freeze' where basic.asn in (select asn from payment where (endm<"+m+" and endy="+(y-1)+") or endy<"+(y-1)+")");
             connect c1 = new connect();
             c1.a = c1.st.executeUpdate("update basic set status='Active' where status not in ('STOPPED')");
-            c1.st.close();
-            c1.con.close();
+            c1.closeAll();
+            
 
 
             connect c4 = new connect();
             c4.a = c4.st.executeUpdate("update basic set basic.status='Freeze' where basic.asn in (select asn from payment where (endm<" + m + " and endy=" + (y - 1) + ") or endy<" + (y - 1) + ") and basic.status not in ('STOPPED')");
             System.out.println("update basic set basic.status='Freeze' where basic.asn in (select asn from payment where (endm<" + m + " and endy=" + (y - 1) + ") or endy<" + (y - 1) + ") and basic.status not in ('STOPPED')");
-            
-            c4.st.close();
-            c4.con.close();
-            
-            
             System.out.println("freezed : "+c4.a);
+            c4.closeAll();
             //--------------------------6 mnth nd 1 year-------------------------------//
 
             md = (m + 5) % 12;
@@ -65,8 +61,6 @@ public class refresh {
             //System.out.println("update basic set basic.status='Deactive' where basic.asn in (select asn from payment where (endm>"+(m-1)+" and endy="+(y-1)+") UNION select asn from payment where (endm<"+md+" and endy="+yd+") )");
 
             connect c5 = new connect();
-
-
 //            System.out.println("update basic set basic.status='Deactive' where basic.asn in (select asn "
 //                        + "from payment where ((endm>" + (m - 1) + " and endy=" + (y - 1) + ")"
 //                        + "|| (endm<" + (md+1) + " and endy=" + yd + ") )) and basic.status not in ('STOPPED')");
@@ -92,8 +86,7 @@ public class refresh {
 
             System.out.println("deactivated : "+c5.a);
             
-            c5.st.close();
-            c5.con.close();
+            c5.closeAll();
             //System.out.println("B");
             //=======================================inactive last 6 months=============================================
 
@@ -150,8 +143,7 @@ public class refresh {
             }
             //System.out.println(""+c3.a);                                                                 (endm<2 and endy=2010) or endy=2009 and (endm>8 and endy=2009)
             System.out.println("inactivated : "+c3.a);
-            c3.st.close();
-            c3.con.close();
+            c3.closeAll();
 
         } catch (Exception e) {
             //System.out.println(e);

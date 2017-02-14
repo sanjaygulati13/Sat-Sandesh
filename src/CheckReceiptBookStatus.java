@@ -13,7 +13,7 @@ public class CheckReceiptBookStatus extends JFrame implements ActionListener
     
     public static void main(String args[])
     {
-        new CheckReceiptBookStatus(451,500,"2015");
+        new CheckReceiptBookStatus(2601,2650,"2015");
     }
     
     int startNum,endNum;
@@ -95,7 +95,7 @@ public class CheckReceiptBookStatus extends JFrame implements ActionListener
                 k=0;
                 //String searchQuery = "select count(asn) from receipt_book_details where series_name = '"+series+"' and rcpt = "+count;
                 String searchQuery = "select count(asn) from receipt_book_details where series_name = '"+series+"' and receipt_number = "+count;
-                //System.out.println(searchQuery);
+                System.out.println(searchQuery);
                 c2.rs=c2.st.executeQuery(searchQuery);
                 //flag=0;
                 if(c2.rs.next())

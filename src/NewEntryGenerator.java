@@ -394,7 +394,7 @@ public class NewEntryGenerator {
                     this.getSubscriptionStartYear()+","+
                     this.getSubscriptionEndMonth()+","+
                     this.getSubscriptionEndYear()+" , '"+
-                    SamsAddons.getCurrentSqlDate()+"', 'New')";
+                    SamsUtilities.getCurrentSqlDate()+"', 'New')";
             
             connect c3=new connect();
             c3.a=c3.st.executeUpdate(paymentQuery);

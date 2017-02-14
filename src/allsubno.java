@@ -530,7 +530,7 @@ public class allsubno implements Printable, ActionListener
                     
                     g.drawString("LIST OF SAT SANDESH MEMBERS OF  '"+sub+"'" , (int)pf.getWidth()/2-200,y);
                     g.drawString("( - "+(pageIndex+1)+" - )", (int)pf.getWidth()/2+150,y);
-                    g.drawString("("+SamsAddons.getCurrentDate()+")  (TR: "+NumberOfRecords+")",(int)pf.getWidth()/2+230 , y);
+                    g.drawString("("+SamsUtilities.getCurrentDateString()+")  (TR: "+NumberOfRecords+")",(int)pf.getWidth()/2+230 , y);
                     
                 }
                 

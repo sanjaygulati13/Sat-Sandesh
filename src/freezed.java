@@ -505,7 +505,7 @@ public class freezed implements Printable, ActionListener
                     g.setFont(new Font("SERIF", Font.BOLD, 10));
                     g.drawString("Detailed List of Freeze Sat Sandesh Members Whose Period Has Ended Before "+mf+"-"+yf, (int)pf.getWidth()/2-350,y);
                     g.drawString("(Page Number "+(pageIndex+1)+")", (int)pf.getWidth()/2+200,y);
-                    g.drawString("("+SamsAddons.getCurrentDate()+")  (TR: "+NumberOfRecords+")",(int)pf.getWidth()/2+280 , y);
+                    g.drawString("("+SamsUtilities.getCurrentDateString()+")  (TR: "+NumberOfRecords+")",(int)pf.getWidth()/2+280 , y);
                 }
                 
                 

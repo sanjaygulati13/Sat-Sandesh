@@ -36,7 +36,7 @@ public class SupplementaryIndex implements Printable, ActionListener
 		y1=y2;
                 
                 StartDate=""+y1+"-"+m+"-"+d;
-                CurrentDate=SamsAddons.getCurrentSqlDate();
+                CurrentDate=SamsUtilities.getCurrentSqlDate();
 	
                 System.out.println(StartDate +":::::::::::::"+ CurrentDate);
                 
@@ -518,7 +518,7 @@ public class SupplementaryIndex implements Printable, ActionListener
 					g.setFont(new Font("SERIF", Font.BOLD, 10));
 					g.drawString("SAT SANDESH - INDEX REGISTER (Suppl) w.e.f. "+d+"-"+m+"-"+y1, (int)pf.getWidth()/2-120,y);
                                         g.drawString("( - "+(pageIndex+1)+" - )", (int)pf.getWidth()/2+150,y);
-                                        g.drawString("("+SamsAddons.getCurrentDate()+")  (TR: "+NumberOfRecords+")",(int)pf.getWidth()/2+200 , y);
+                                        g.drawString("("+SamsUtilities.getCurrentDateString()+")  (TR: "+NumberOfRecords+")",(int)pf.getWidth()/2+200 , y);
 				}
 				
 				g.setFont(new Font("SERIF", Font.PLAIN, 8));

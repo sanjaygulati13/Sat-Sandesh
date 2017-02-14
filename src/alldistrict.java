@@ -494,7 +494,7 @@ public class alldistrict implements Printable, ActionListener
 					g.setFont(new Font("SERIF", Font.BOLD, 10));
 					g.drawString("LIST OF SAT-SANDESH MEMBERS - "+dist.toUpperCase() +" ("+state.toUpperCase()+") ", (int)pf.getWidth()/2-200,y);
                                         g.drawString("( - "+(pageIndex+1)+" - )", (int)pf.getWidth()/2+150,y);
-                                        g.drawString("("+SamsAddons.getCurrentDate()+")  (TR: "+NumberOfRecords+")",(int)pf.getWidth()/2+230 , y);
+                                        g.drawString("("+SamsUtilities.getCurrentDateString()+")  (TR: "+NumberOfRecords+")",(int)pf.getWidth()/2+230 , y);
 				}
 				
 				

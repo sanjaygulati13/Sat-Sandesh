@@ -187,7 +187,8 @@ public class despatch implements Printable, ActionListener {
                 }
 
             }
-            comp.st.close();
+            //comp.st.close();
+            comp.closeAll();
 
             i = 0;
             int l = start;
@@ -339,6 +340,7 @@ public class despatch implements Printable, ActionListener {
                         c4.rs = c4.st.executeQuery("select district, state from despcode where dno=" + dno);
                         c4.rs.next();
                         dnum = " D# - " + dno + " ," + c4.rs.getString(1) + " , " + c4.rs.getString(2);
+                        c4.closeAll();
                     } else {
                         dnum = "";
                     }
@@ -369,9 +371,7 @@ public class despatch implements Printable, ActionListener {
                 }
             }
 
-            c3.st.close();
-
-            c3.con.close();
+            c3.closeAll();
             i = 0;
             connect c2 = new connect();
             for (i = 0; i < x; i++) {
@@ -384,9 +384,10 @@ public class despatch implements Printable, ActionListener {
                 }
             }
 
-            c2.st.close();
+            //c2.st.close();
 
-            c2.con.close();
+            //c2.con.close();
+            c2.closeAll();
             i = 0;
             connect c4 = new connect();
             for (i = 0; i < x; i++) {
@@ -410,9 +411,7 @@ public class despatch implements Printable, ActionListener {
                 }
             }
 
-            c4.st.close();
-
-            c4.con.close();
+            c4.closeAll();
             i = 0;
         } catch (Exception e) {
             new except(e, this.getClass().toString());

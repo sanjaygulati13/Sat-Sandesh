@@ -58,7 +58,6 @@ public class sams extends JFrame implements ActionListener {
     
     public sams() {
 
-
         try {
             //For Mac
             //Application.getApplication().setDockIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("skrm.jpg")));
@@ -665,7 +664,7 @@ public class sams extends JFrame implements ActionListener {
         while(SamsUtilities.getUserName().isEmpty())
         {
             String userName= JOptionPane.showInputDialog("Please enter your name ");
-            //System.out.println(userName);
+            if(userName.isEmpty()) userName = "Temp";
             SamsUtilities.setUserName(userName);
             userLabel.setText("User: "+SamsUtilities.getUserName());
             if(SamsUtilities.getUserName().isEmpty() == false)JOptionPane.showMessageDialog(this, "Welcome "+SamsUtilities.getUserName()+" !!");

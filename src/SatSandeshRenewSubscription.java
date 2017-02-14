@@ -918,17 +918,17 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
                 //database query for payment fragment
                 
                 connect c5=new connect();
-                c5.a=c5.st.executeUpdate("update payment set payt='"+payt+"', chno="+chno+", datd="+date1+", datm="+dat2+", daty="+dat3+", amt="+amt+", startm="+startm+", starty="+starty+", endm="+endm+", endy="+endy+", InsertionDate='"+SamsAddons.getCurrentSqlDate()+"', subscription_type='Renew' where asn="+asn);
+                c5.a=c5.st.executeUpdate("update payment set payt='"+payt+"', chno="+chno+", datd="+date1+", datm="+dat2+", daty="+dat3+", amt="+amt+", startm="+startm+", starty="+starty+", endm="+endm+", endy="+endy+", InsertionDate='"+SamsUtilities.getCurrentSqlDate()+"', subscription_type='Renew' where asn="+asn);
                 if(c5.a==1)
                     flag=flag+1;
                 
                 
                 //database query for other details fragment
                 
-                String sqlQuery = "insert into receipt_book_details values ('"+seriesName+"',"+rcpt+","+asn+",'"+payt+"','"+dat3+"-"+dat2+"-"+date1+"',"+amt+",'"+history+"')";
+                String sqlQuery = "insert into receipt_book_details values ('"+seriesName+"',"+rcpt+","+asn+",'"+payt+"','"+dat3+"-"+dat2+"-"+date1+"',"+amt+",'"+history+"','0')";
                 c5.a=c5.st.executeUpdate(sqlQuery);
-                if(c5.a != 1)
-                    flag--;
+                if(c5.a == 1)
+                    flag++;
                 c5.closeAll();
                 System.out.println(sqlQuery);
                 
@@ -937,11 +937,25 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
                 
                 if(c6.a==1)
                     flag=flag+1;
-                c6.st.close();
-                c6.con.close();
+                
+                String mainTableQuery = "update subscribers_primary_details set subscription_code='"
+                                        +subno1+"', subscription_number="+subno+" , membership_status='Active', receipt_number="
+                                        +rcpt+", distribution_type='"+dist+"', bulk_despatch_code="+dno+", subscription_period='"
+                                        +subt+"', language='"+lang+"', series_name = '"+seriesName+"', payment_type='"
+                                        +payt+"', instrument_number="+chno+", receipt_date = '"
+                                        +dat3+"-"+dat2+"-"+date1+"', amount="+amt+", starting_period='"
+                                        +starty+"-"+startm+"-1', ending_period='"+endy+"-"+endm+"-28', entry_date='"
+                                        +SamsUtilities.getCurrentSqlDate()+"', subscription_type='Renew', counter_name = '"
+                                        +history+"' where asn="+asn;
+                System.out.println(mainTableQuery);
+                c6.a=c6.st.executeUpdate(mainTableQuery);
+                
+                if(c6.a==1)
+                    flag=flag+1;
+                c6.closeAll();
                 
                 
-                if(flag==3)
+                if(flag==5)
                 {
                     JOptionPane.showMessageDialog(this, "RENEWAL DONE SUCCESSFULLY", "SUCCESS", JOptionPane.INFORMATION_MESSAGE);
                     flag=0;

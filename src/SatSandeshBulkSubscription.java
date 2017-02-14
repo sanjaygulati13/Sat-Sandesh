@@ -587,19 +587,23 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
                 int flag = 0;
                 
                 
+                connect c2 = new connect();
+                Savepoint save1;
                 try
                 {
-                    connect c2 = new connect();
-                    Savepoint save1 = c2.con.setSavepoint();
+                    //c2 = new connect();
+                    save1 = c2.con.setSavepoint();
                     c2.con.setAutoCommit(false);
                     
                     for(int i = 0 ; i < numItems; i++ )
                     {
+                        int page_number = 0;
+                        String subscription_type = "New";
                         
                         c2.a=c2.st.executeUpdate("insert into basic values("+asnNumbers[i]+",'BD',"+
                                 subNumbers[i]+",'Active',"+rcptNum+",'"+
                                 distributionType+"',"+distributionNumber+",'"+subscriptionType+"','"+language+"','"+
-                                seriesName+"',0)");
+                                seriesName+"',"+page_number+")");
                         
                         if(c2.a==1)
                             flag=flag+1;
@@ -615,11 +619,12 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
                         
                         //database query for payment fragment
                         
+                        int chequeNumber = 0;
                         //connect c3=new connect();
                         c2.a=c2.st.executeUpdate("insert into payment values("+asnNumbers[i]+",'"+
-                                paymentType+"',0,"+entryDate+","+entryMonth+","+entryYear+","+amount+","+
+                                paymentType+"',"+chequeNumber+","+entryDate+","+entryMonth+","+entryYear+","+amount+","+
                                 startMonth+","+startYear+","+endingMonth+","+endingYear+" , '"+
-                                SamsAddons.getCurrentSqlDate()+"', 'New')");
+                                SamsUtilities.getCurrentSqlDate()+"', '"+subscription_type+"')");
                         
                         if(c2.a==1)
                             flag=flag+1;
@@ -650,16 +655,30 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
                                 +rcptNum+","+asnNumbers[i]+",'"
                                 +paymentType+"','"+entryYear+"-"
                                 +entryMonth+"-"+entryDate+"',"
-                                +amount+",'"+history+"')";
+                                +amount+",'"+history+"','0')";
                         
                         c2.a=c2.st.executeUpdate(sqlQuery);
                         
                         if(c2.a==1)
-                            flag=flag-1;
+                            flag++;
+                        
+                        String mainTableQuery = "insert into subscribers_primary_details values("
+                                                +asnNumbers[i]+",'BD',"+subNumbers[i]+",'Active',"+rcptNum+",'"
+                                                +distributionType+"',"+distributionNumber+",'"+subscriptionType+"','"
+                                                +language+"','"+seriesName+"','"+paymentType+"',"+chequeNumber+",'"
+                                                +entryYear+"-"+entryMonth+"-"+entryDate+"',"+amount+",'"+startYear+"-"+startMonth+"-1','"
+                                                +endingYear+"-"+endingMonth+"-28','"+title+"','"+firstNames[i]+"','"+lastNames[i]+"','"
+                                                +addressPart1+"','"+addressPart2+"','"+addressPart3+"','"+district+"','"+state+"',"
+                                                +pin+",'"+phone+"','"+history+"','"+email+"',"+page_number+",'"+subscription_type+"' ,'"
+                                                +SamsUtilities.getCurrentSqlDate()+"',"+returnBack+",'"+remarks+"','','','')";
+                        //System.out.println(mainTableQuery);
+                        c2.a=c2.st.executeUpdate(mainTableQuery);
+                        
+                        if(c2.a==1) flag++;
                         //c5.closeAll();
                     }
                     
-                    if(flag == 4*numItems){
+                    if(flag == 6*numItems){
                         int z;
                         z = globalAsn + numItems;
                         connect c6=new connect();
@@ -669,6 +688,9 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
                         JOptionPane.showMessageDialog(satSandeshBulkSubscriptionWindow, numItems + " entries successfully added", "Done", JOptionPane.INFORMATION_MESSAGE);
                         saveButton.setEnabled(false);
                         c2.con.commit();
+                        
+                        //new sams();
+                        //this.dispose()
                     }
                     else
                         c2.con.rollback(save1);
@@ -678,6 +700,9 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
                     
                 }
                 catch(Exception e){
+                    //c2.con.rollback(save1);
+                    //c2.cloaseAll;
+                    c2.closeAll();  
                     e.printStackTrace();
                     
                 }

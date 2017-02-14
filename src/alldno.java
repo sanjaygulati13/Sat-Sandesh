@@ -519,7 +519,7 @@ public class alldno implements Printable, ActionListener
                     //g.drawString("LIST OF ALL SAT-SANDESH MEMBERS SERVICED BY DISTRIBUTOR CODE # "+dno+" ( "+dist+", "+stat+" )" , (int)pf.getWidth()/2-300,y);
                     g.drawString("LIST OF ALL SAT-SANDESH MEMBERS FOR M/O "+SamsUtilities.getCurrentMonth()+"/"+SamsUtilities.getCurrentYear()+" FOR DISTRIBUTOR CODE # "+dno+" ( "+dist+" , "+stat+" ) ("+distributionType+")", (int)pf.getWidth()/2-300,y);
                     g.drawString("( - "+(pageIndex+1)+" - )", (int)pf.getWidth()/2+200,y);
-                    g.drawString("("+SamsAddons.getCurrentDate()+")  (TR: "+NumberOfRecords+")",(int)pf.getWidth()/2+240 , y);
+                    g.drawString("("+SamsUtilities.getCurrentDateString()+")  (TR: "+NumberOfRecords+")",(int)pf.getWidth()/2+240 , y);
                     
                 }
                 

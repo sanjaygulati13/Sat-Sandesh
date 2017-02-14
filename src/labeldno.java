@@ -519,7 +519,7 @@ public class labeldno implements Printable, ActionListener
                     g.setFont(new Font("SERIF", Font.BOLD, 9));
                     g.drawString("LIST OF SAT-SANDESH MEMBERS FOR M/O "+m1+"/"+y1+" FOR DISTRIBUTOR CODE # "+dno+" ( "+dist+" , "+state+" ) ("+distributionType+")", (int)pf.getWidth()/2-320,y);
                     g.drawString("( - "+(pageIndex+1)+" - )", (int)pf.getWidth()/2+220,y);
-                    g.drawString("("+SamsAddons.getCurrentDate()+")  (TR: "+NumberOfRecords+")",(int)pf.getWidth()/2+260 , y);
+                    g.drawString("("+SamsUtilities.getCurrentDateString()+")  (TR: "+NumberOfRecords+")",(int)pf.getWidth()/2+260 , y);
                 }
                 
                 

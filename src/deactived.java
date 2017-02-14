@@ -504,7 +504,7 @@ public class deactived implements Printable, ActionListener
                     g.setFont(new Font("SERIF", Font.BOLD, 9));
                     g.drawString("Detailed List Of Deactive Sat Sandesh Members Whose Period Has Ended B/W "+(month-1)+"-"+(year-1)+" & "+(md-1)+"-"+yd, (int)pf.getWidth()/2-350,y);
                     g.drawString("( - "+(pageIndex+1)+" - )", (int)pf.getWidth()/2+250,y);
-                    g.drawString("("+SamsAddons.getCurrentDate()+")  (TR: "+NumberOfRecords+")",(int)pf.getWidth()/2+290 , y);
+                    g.drawString("("+SamsUtilities.getCurrentDateString()+")  (TR: "+NumberOfRecords+")",(int)pf.getWidth()/2+290 , y);
                 }
                 
                 
