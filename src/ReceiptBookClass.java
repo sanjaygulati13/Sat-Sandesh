@@ -177,7 +177,7 @@ public class ReceiptBookClass implements ActionListener {
                 catch(Exception e)
                 {
                     JOptionPane.showMessageDialog(null, "Data Already Exists");
-                    //e.printStackTrace();
+                    e.printStackTrace();
                     //System.exit(0);
                 }
                 startingNum += numReceipts;

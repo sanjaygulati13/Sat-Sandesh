@@ -3,11 +3,11 @@ import java.awt.event.*;
 import javax.swing.*;
 
 
-public class moddesp extends JFrame implements ActionListener
+public class SatSandeshSelectDistributorCodeDetails extends JFrame implements ActionListener
 {
     public static void main(String args[])
     {
-        new moddesp();
+        new SatSandeshSelectDistributorCodeDetails();
     }
     
     JLabel code;
@@ -22,7 +22,7 @@ public class moddesp extends JFrame implements ActionListener
         int y = (screenSize.height - frameSize.height) / 2;
         setLocation(x, y);
     }
-    public moddesp()
+    public SatSandeshSelectDistributorCodeDetails()
     {
         
         
@@ -96,7 +96,7 @@ public class moddesp extends JFrame implements ActionListener
         if(ae.getSource()==ok)
         {
             
-            new modd(Integer.parseInt((String)codet.getSelectedItem()));
+            new SatSandeshModifyDistributorCode(Integer.parseInt((String)codet.getSelectedItem()));
             this.dispose();
             
         }

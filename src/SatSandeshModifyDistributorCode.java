@@ -3,21 +3,21 @@ import java.awt.event.*;
 import javax.swing.*;
 
 
-public class modd extends JFrame implements ActionListener
+public class SatSandeshModifyDistributorCode extends JFrame implements ActionListener,ItemListener
 {
     
     public static void main(String args[])
     {
-        new modd(2);
+        new SatSandeshModifyDistributorCode(2);
     }
     
     JLabel nam, phno, moddcd, email, add1, rem, hist, dist, stat, pin, distributionTypeLabel;
     JTextField  remt, histt, distt;
-    TextFieldWithLimit namt, lnamt, phnot, moddcdt, addt11, addt12, addt13, statt, pint, emailt;
-    JComboBox distributionTypeDropDown;
+    TextFieldWithLimit namt, lnamt, phnot, moddcdt, addt11, addt12, addt13, pint, emailt;
+    JComboBox distributionTypeDropDown, stateCodeDropDown, stateNameDropDown;
     JButton mod, back;
     int dno;
-    public modd(int d)
+    public SatSandeshModifyDistributorCode(int d)
     {
         //JFrame.setDefaultLookAndFeelDecorated(true);
         dno=d;
@@ -63,7 +63,11 @@ public class modd extends JFrame implements ActionListener
         addt11=new TextFieldWithLimit(33,32);
         addt12=new TextFieldWithLimit(33,32);
         addt13=new TextFieldWithLimit(33,32);
-        statt=new TextFieldWithLimit(4,3);
+        //stateCodeDropDown=new TextFieldWithLimit(4,3);
+        stateNameDropDown = new JComboBox(SamsUtilities.fillStateNameList());
+        stateCodeDropDown = new JComboBox(SamsUtilities.fillStateCodeList());
+        stateCodeDropDown.setEnabled(false);
+        
         pint=new TextFieldWithLimit(7,6);
         
         histt=new JTextField(20);
@@ -133,12 +137,16 @@ public class modd extends JFrame implements ActionListener
             remt.setText(c2.rs.getString(9));
             histt.setText(c2.rs.getString(10));
             distt.setText(c2.rs.getString(11));
-            statt.setText(c2.rs.getString(12));
+            String stateCode = c2.rs.getString(12);
+            //System.out.println("state: " + stateCode);
+            stateCodeDropDown.setSelectedItem(stateCode);
+            stateNameDropDown.setSelectedItem(SamsUtilities.getStateNameForStateCode(stateCode));
             pint.setText(c2.rs.getString(13));
             distributionTypeDropDown.setSelectedItem(c2.rs.getString(14));
         }
         catch(Exception e)
         {
+            e.printStackTrace();
             new except(e, this.getClass().toString());
             
         }
@@ -177,8 +185,12 @@ public class modd extends JFrame implements ActionListener
         distt.setBounds(100,270,200,20);
         add(distt);
         
-        statt.setBounds(480,270,40,20);
-        add(statt);
+        stateNameDropDown.setBounds(480,270,140,20);
+        add(stateNameDropDown);
+        stateNameDropDown.addItemListener(this);
+
+        stateCodeDropDown.setBounds(640,270,80,20);
+        add(stateCodeDropDown);
         
         pint.setBounds(100,310,60,20);
         pint.setText("0");
@@ -217,7 +229,7 @@ public class modd extends JFrame implements ActionListener
             remarks=remt.getText();
             history=histt.getText();
             district=distt.getText();
-            state=statt.getText();
+            state=(String)stateCodeDropDown.getSelectedItem();
             pinno=Integer.parseInt(pint.getText());
             distributionTypeText = (String)(distributionTypeDropDown.getSelectedItem());
             //System.out.println(""+dno+name1+phone+email+add1+add2+add3+remarks+history+district+state+pinno);
@@ -232,7 +244,7 @@ public class modd extends JFrame implements ActionListener
                 if(c1.a==1)
                 {
                     JOptionPane.showMessageDialog(this, "Modification Done SuccessFully", "SUCCESS", JOptionPane.INFORMATION_MESSAGE);
-                    new moddesp();
+                    new SatSandeshSelectDistributorCodeDetails();
                     this.dispose();
                 }
                 c1.st.close();
@@ -249,9 +261,19 @@ public class modd extends JFrame implements ActionListener
         
         if(ae.getSource()==back)
         {
-            new moddesp();
+            new SatSandeshSelectDistributorCodeDetails();
             this.dispose();
             
+        }
+    }
+
+    @Override
+    public void itemStateChanged(ItemEvent ie) {
+        if(ie.getSource() == stateNameDropDown)
+        {
+            String selectedState = (String)stateNameDropDown.getSelectedItem();
+            if(selectedState.isEmpty() == false)
+                stateCodeDropDown.setSelectedItem(SamsUtilities.getStateCodeForStateName(selectedState));
         }
     }
 }

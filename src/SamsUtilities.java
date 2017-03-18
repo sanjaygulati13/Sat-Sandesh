@@ -1,6 +1,8 @@
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.io.File;
+import java.io.PrintStream;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -25,6 +27,9 @@ public class SamsUtilities {
     static Object[] stateNameArray = null;
     static Object[] stateCodeArray = null;
     static Object[] subCodeArray = null;
+    static Object[] languageArray = null;
+    static PrintStream ps;
+    static final Object month[]={"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
     
     static HashMap<String, Pair<String, String>> stateDetailsHash;
     static HashMap<String, String> stateNameToStateCodeHash;
@@ -35,6 +40,7 @@ public class SamsUtilities {
     {
         return okButtonName;
     }
+    
     
     public static String getCancelButtonName()
     {
@@ -65,6 +71,7 @@ public class SamsUtilities {
     }
     
     public static String getUserName(){
+        if(userName.isEmpty())userName = "Unknown";
         return userName;
     }
     
@@ -100,6 +107,10 @@ public class SamsUtilities {
         return subCodeArray;
     }
     
+    public static Object[] getMonthNames()
+    {
+        return month;
+    }
     private static void fillStateDetailsInMap()
     {
         connect fillStateDetailsConnection = new connect();
@@ -156,8 +167,9 @@ public class SamsUtilities {
     public static String getStateCodeForStateName(String stateName)
     {
         if(stateName.isEmpty()) return "";
-        if(stateNameToStateCodeHash.isEmpty())
+        if(stateNameToStateCodeHash == null)
             fillStateDetailsInMap();
+        
         
         return stateNameToStateCodeHash.get(stateName);
     }
@@ -165,7 +177,7 @@ public class SamsUtilities {
     public static String getStateCodeForSubCode(String subCode)
     {
         if(subCode.isEmpty()) return "";
-        if(stateDetailsHash.isEmpty())
+        if(stateDetailsHash == null)
             fillStateDetailsInMap();
         
         Pair<String, String> retPair = stateDetailsHash.get(subCode);
@@ -175,7 +187,7 @@ public class SamsUtilities {
     public static String getStateNameForSubCode(String subCode)
     {
         if(subCode.isEmpty()) return "";
-        if(stateDetailsHash.isEmpty())
+        if(stateDetailsHash == null)
             fillStateDetailsInMap();
         
         Pair<String, String> retPair = stateDetailsHash.get(subCode);
@@ -187,7 +199,7 @@ public class SamsUtilities {
     public static String getStateNameForStateCode(String subCode)
     {
         if(subCode.isEmpty()) return "";
-        if(stateCodeToStateNameHash.isEmpty())
+        if(stateCodeToStateNameHash == null)
             fillStateDetailsInMap();
         
         return stateCodeToStateNameHash.get(subCode);
@@ -211,6 +223,20 @@ public class SamsUtilities {
         
         return CurrentDate;
     }
+      
+      public static PrintStream getExceptionLogStream()
+      {
+          File file = new File("test.log");
+          
+          try {
+               ps = new PrintStream(file);
+               return ps;
+          }
+          catch (Exception ex) {
+              ex.printStackTrace();
+          }
+          return ps;
+      }
     
     public static String getCurrentSqlDate()
     {
@@ -250,6 +276,45 @@ public class SamsUtilities {
         return CurrentDate;
     }
     
+    public static void fillLanguageDetails()
+    {
+        connect fillLanguageDetailsConnection = new connect();
+        try
+        {
+            String query = "select distinct(language) from amountdet";
+            String countQuery = "select count(distinct(language)) from amountdet";
+            int arraySize = 0;
+            
+            fillLanguageDetailsConnection.rs = fillLanguageDetailsConnection.st.executeQuery(countQuery);
+            if(fillLanguageDetailsConnection.rs.next())
+                arraySize = fillLanguageDetailsConnection.rs.getInt(1);
+                
+            if(arraySize > 0){
+                languageArray = new Object[arraySize];
+                int i = 0;
+                fillLanguageDetailsConnection.rs = fillLanguageDetailsConnection.st.executeQuery(query);
+                while(fillLanguageDetailsConnection.rs.next())
+                {
+                    languageArray[i++] = fillLanguageDetailsConnection.rs.getString(1);
+                }
+            }
+            
+            fillLanguageDetailsConnection.closeAll();
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            fillLanguageDetailsConnection.closeAll();
+        }
+    }
+    
+    public static Object[] getLanguagesAvailable()
+    {
+        if(languageArray == null)
+            fillLanguageDetails();
+        
+        return languageArray;
+    }
     
     public static Object[] fillSeriesInformation() 
     {

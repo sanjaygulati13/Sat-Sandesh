@@ -9,7 +9,7 @@ public class labelcross extends JFrame implements Printable, ActionListener
 {
     public static void main(String args[])
     {
-        new labelcross("2015",50, 100);
+        new labelcross("2015",4001, 4050);
     }
     
     int[] pageBreak;
@@ -34,7 +34,7 @@ public class labelcross extends JFrame implements Printable, ActionListener
         
         
         try
-        {   
+        {
             this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("skrm.jpg")));
             String cn = UIManager.getSystemLookAndFeelClassName();
             UIManager.setLookAndFeel(cn); // Use the native L&F
@@ -45,7 +45,7 @@ public class labelcross extends JFrame implements Printable, ActionListener
             //cnf.printStackTrace();
         }
         
-        this.setTitle("Print Crosss Checkin Report");
+        this.setTitle("Print Cross Checking Report");
         this.setVisible(true);
         this.setLayout(null);
         this.setSize(300,100);
@@ -138,7 +138,7 @@ public class labelcross extends JFrame implements Printable, ActionListener
                 
                 c4.rs=c4.st.executeQuery("select * from subdetails where asn="+asn[i]);
                 c4.rs.next();
-                String string1, s2, s3, s4, s5,s6, s7;
+                String string1, s2, s3, s4, s5,s6, stateCode;
                 
                 string1=c4.rs.getString(3);
                 s2=c4.rs.getString(4);
@@ -146,7 +146,7 @@ public class labelcross extends JFrame implements Printable, ActionListener
                 s4=c4.rs.getString(6);
                 s5=c4.rs.getString(7);
                 s6=c4.rs.getString(8);
-                s7=c4.rs.getString(9);
+                stateCode=c4.rs.getString(9);
                 
                 textLines[i][1]="";
                 textLines[i][2]="";
@@ -175,14 +175,22 @@ public class labelcross extends JFrame implements Printable, ActionListener
                 if(s6!=null)
                     textLines[i][5]= s6;
                 
-                if(s7!=null)
-                    textLines[i][6]+=s7;
+                if(stateCode!=null)
+                    textLines[i][6]+=stateCode;
                 
-                int c=Integer.parseInt(c4.rs.getString(10));
-                if(c>0)
+                int pinCode=Integer.parseInt(c4.rs.getString(10));
+                if(pinCode>0)
                 {
-                    textLines[i][6]+=" - "+c;
+                    textLines[i][6]+=" - "+pinCode;
                 }
+                c4.rs=c4.st.executeQuery("select dno from basic where asn="+asn[i]);
+                c4.rs.next();
+                int despatchCode = c4.rs.getInt(1);
+                if(despatchCode > 0)
+                    textLines[i][6]+="\t\t(D# "+despatchCode+")";
+                //System.out.println(textLines[i][6]);
+                
+                
             }
             
             c4.st.close();

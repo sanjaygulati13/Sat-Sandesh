@@ -123,7 +123,7 @@ public class refresh {
              */
             //====================================================================
             if (mi2 < mi) {
-                System.out.println("Hello");
+                //System.out.println("Hello");
 //                c3.a = c3.st.executeUpdate("update basic set basic.status='Inactive' where basic.asn in (select asn from payment where (endm>="+mi+" and endm<=" + mi2 + ") and endy=" + yi + " ) and basic.status not in ('STOPPED')");
                 System.out.println("update basic set basic.status='Inactive' where basic.asn in (select asn from payment where (endm<=" + mi2 + " and endy=" + y + ") or (endm>=" + mi + " and endy=" + (y-1) + ")) and basic.status not in ('STOPPED')");
                 c3.a = c3.st.executeUpdate("update basic set basic.status='Inactive' where basic.asn in (select asn from payment where (endm<=" + mi2 + " and endy=" + y + ") or (endm>=" + mi + " and endy=" + (y-1) + ")) and basic.status not in ('STOPPED')");

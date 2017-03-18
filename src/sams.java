@@ -28,7 +28,7 @@ public class sams extends JFrame implements ActionListener {
     JMenuBar mbar;
     JMenu subscription_menu, labels_top_menu, registers_menu, subscriber_report_menu, track_data_menu,   inventory_management_menu, inventory_report_menu;
     //JMenu search_menu;
-    JMenuItem newSubscriptionMenuItem, renewSubscriptionMenuItem,bulknewEntry,bulkRenewEntry, despatchRegisterMenuItem, distributorRemindersMenuItem, despatchRemindersMenuItem, crossCheckingReportMenuItem, detailedMemberStatusMenuItem, summaryMemberStatusMenuItem, centerLabelsMenuItem, despatchLabelsMenuItem, centerListMenuItem, distributorLabelsMenuItem, reminderStatusMenuItem, distributorStatusMenuItem, leftoutsMenuItem;
+    JMenuItem newSubscriptionMenuItem, renewSubscriptionMenuItem,bulknewEntry,bulkRenewEntry, despatchRegisterMenuItem, distributorRemindersMenuItem, despatchRemindersMenuItem, crossCheckingReportMenuItem, detailedMemberStatusMenuItem, summaryMemberStatusMenuItem, periodWiseMemberStatusMenuItem,centerLabelsMenuItem, despatchLabelsMenuItem, centerListMenuItem, distributorLabelsMenuItem, reminderStatusMenuItem, distributorStatusMenuItem, leftoutsMenuItem;
     
     
     JMenu freeze, inactive, deactive, account_book_details_menu, petty_menu;
@@ -179,6 +179,10 @@ public class sams extends JFrame implements ActionListener {
         
         summaryMemberStatusMenuItem = new JMenuItem("Member Status - Summary");
         summaryMemberStatusMenuItem.setMnemonic('y');
+        
+        periodWiseMemberStatusMenuItem = new JMenuItem("Member Status - Period Wise");
+        periodWiseMemberStatusMenuItem.setMnemonic('W');
+        
         
         oldPeriodReportMenuItem = new JMenuItem("Old Period Report");
         oldPeriodReportMenuItem.setMnemonic('p');
@@ -499,6 +503,7 @@ public class sams extends JFrame implements ActionListener {
         subscriber_report_menu.add(districtSubscriberReportMenuItem);
         subscriber_report_menu.add(detailedMemberStatusMenuItem);
         subscriber_report_menu.add(summaryMemberStatusMenuItem);
+        subscriber_report_menu.add(periodWiseMemberStatusMenuItem);
         subscriber_report_menu.add(oldPeriodReportMenuItem);
         subscriber_report_menu.add(reminderStatusMenuItem);
         subscriber_report_menu.add(returnBackListMenuItem);
@@ -587,6 +592,7 @@ public class sams extends JFrame implements ActionListener {
         detailedMemberStatusMenuItem.addActionListener(this);
         leftoutsMenuItem.addActionListener(this);
         summaryMemberStatusMenuItem.addActionListener(this);
+        periodWiseMemberStatusMenuItem.addActionListener(this);
         oldPeriodReportMenuItem.addActionListener(this);
         reminderStatusMenuItem.addActionListener(this);
         distributorStatusMenuItem.addActionListener(this);
@@ -661,9 +667,10 @@ public class sams extends JFrame implements ActionListener {
         new refresh();
         
         
-        while(SamsUtilities.getUserName().isEmpty())
+        if(SamsUtilities.getUserName().isEmpty() || SamsUtilities.getUserName().equals("Unknown"))
         {
-            String userName= JOptionPane.showInputDialog("Please enter your name ");
+            String userName= "Temp";
+            userName = JOptionPane.showInputDialog("Please enter your name ");
             if(userName.isEmpty()) userName = "Temp";
             SamsUtilities.setUserName(userName);
             userLabel.setText("User: "+SamsUtilities.getUserName());
@@ -845,6 +852,12 @@ public class sams extends JFrame implements ActionListener {
             new memsum();
             this.dispose();
         }
+        
+        if(ae.getSource() == periodWiseMemberStatusMenuItem)
+        {
+            new SatSandeshMemberStatusPeriodWise();
+            this.dispose();
+        }
 
 
         //miscellaneous
@@ -856,12 +869,12 @@ public class sams extends JFrame implements ActionListener {
 
 
         if (ae.getSource() == addDistributorCodeMenuItem) {
-            new desp();
+            new SatSandeshAddDistributorCode();
             this.dispose();
         }
 
         if (ae.getSource() == accnt) {
-            new accnt();
+            new SatSandeshAccountBookDetails();
             this.dispose();
         }
 
@@ -990,7 +1003,7 @@ public class sams extends JFrame implements ActionListener {
         }
 
         if (ae.getSource() == alterDistributorCodeMenuItem) {
-            new moddesp();
+            new SatSandeshSelectDistributorCodeDetails();
             this.dispose();
         }
         

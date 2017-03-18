@@ -260,7 +260,7 @@ public class SatSandeshAccountBookPosting  implements ActionListener, Printable 
                             status &= 0;
                             continue;
                         }
-                        int rcptNum = Integer.parseInt(rcptNumStr);    
+                        int rcptNum = Integer.parseInt(rcptNumStr);
                         
                         if(rcptNum < 1)
                         {
@@ -270,9 +270,13 @@ public class SatSandeshAccountBookPosting  implements ActionListener, Printable 
                         }
                         
                         {
-                            String sqlQuery = "update basic set page_number = "+pageNumber+" where rcpt = "+rcptNum+" and series_name = '"+seriesName+"'";
+                            String sqlQuery = "update basic set page_number = "+pageNumber+", updated_by = '"+SamsUtilities.getUserName()+"' where rcpt = "+rcptNum+" and series_name = '"+seriesName+"'";
+                            String rcptBookDetailsQuery = "update receipt_book_details set page_number = "+pageNumber+", updated_by = '"+SamsUtilities.getUserName()+"' where receipt_number = "+rcptNum+" and series_name = '"+seriesName+"'";
+                            String mainTableQuery = "update subscribers_primary_details set instrument_number = "+pageNumber+", updated_by = '"+SamsUtilities.getUserName()+"' where receipt_number = "+rcptNum+" and series_name = '"+seriesName+"'";
                             //System.out.println(sqlQuery);
                             queryVec.addElement(sqlQuery);
+                            queryVec.addElement(rcptBookDetailsQuery);
+                            queryVec.addElement(mainTableQuery);
                         }
                     }
                     else
@@ -287,6 +291,7 @@ public class SatSandeshAccountBookPosting  implements ActionListener, Printable 
                 int option = JOptionPane.showConfirmDialog(satSandeshAccountBookPostingWindow, "Are you sure ?");
                 if(option == 0)
                 {
+                    connect updateconnection = new connect();
                     for(int i = 0; i < queryVec.size(); i++)
                     {
                         //int option = JOptionPane.showConfirmDialog(satSandeshAccountBookPostingWindow, "Are you sure ?");
@@ -294,7 +299,7 @@ public class SatSandeshAccountBookPosting  implements ActionListener, Printable 
                         //if(option == 0)
                         String sqlQuery = queryVec.elementAt(i);
                         {
-                            connect updateconnection = new connect();
+                            
                             try
                             {
                                 //System.out.println(sqlQuery);
@@ -304,14 +309,12 @@ public class SatSandeshAccountBookPosting  implements ActionListener, Printable 
                             {
                                 e.printStackTrace();
                             }
-                            updateconnection.closeAll();
-                            
-                            
                             rcptText[i].setText("");
                             seriesDropDown[i].setSelectedItem("");
                             pageNumberText.setText("");
                         }
                     }
+                    updateconnection.closeAll();
                     
                 }
                 
@@ -336,15 +339,15 @@ public class SatSandeshAccountBookPosting  implements ActionListener, Printable 
         {
             PrinterJob job = PrinterJob.getPrinterJob();
             job.setPrintable(this);
-            
-            int res = JOptionPane.showConfirmDialog(null,"You want to configure your print ","** PRINTING **", JOptionPane.YES_NO_OPTION);
+            PageFormat format;
+            int res = JOptionPane.showConfirmDialog(null,"Do you want to configure your print?","** PRINTING **", JOptionPane.YES_NO_OPTION);
             if( res == JOptionPane.YES_OPTION ) {
                 //if (res == JOptionPane.YES_OPTION) (
                 //	PageFormat format = job.pageDialog(job.defaultPage());
-                PageFormat format = job.pageDialog (job.defaultPage ());
+                format = job.pageDialog (job.defaultPage ());
             } //)
-            if( res == JOptionPane.NO_OPTION ) {
-                PageFormat format =new PageFormat();
+            else {
+                format =new PageFormat();
                 format.setOrientation(PageFormat.LANDSCAPE);
             }
             
@@ -367,46 +370,11 @@ public class SatSandeshAccountBookPosting  implements ActionListener, Printable 
         
     }
     
-
+    
     public static void main(String args[])
     {
         new SatSandeshAccountBookPosting();
     }
-    
-    
-    
-    
-    /*static public Object[] fillSeriesNameInformation()
-    {
-        connect fillSerieConnection = new connect();
-        Object[] seriesNameArray = null;
-        try
-        {
-            String query = "select distinct series_name from receipt_book_inventory";
-            String countQuery = "select count(distinct series_name) from receipt_book_inventory";
-            
-            fillSerieConnection.rs = fillSerieConnection.st.executeQuery(countQuery);
-            fillSerieConnection.rs.next();
-            int ArrayCount = fillSerieConnection.rs.getInt(1);
-            //System.out.println(ArrayCount+1);
-            seriesNameArray = new Object[ArrayCount + 1];
-            seriesNameArray[0] = "";
-            fillSerieConnection.rs = fillSerieConnection.st.executeQuery(query);
-            //CodeChooser.addItem("");
-            int i = 1;
-            while (fillSerieConnection.rs.next()) {
-                seriesNameArray[i] = fillSerieConnection.rs.getString(1);
-                i++;
-            }
-            
-            fillSerieConnection.closeAll();
-        } catch (Exception exc) {
-            //exc.printStackTrace();
-            //Except.except(exc, "ADD JOB CARD--Raw Material Thread Error");
-            fillSerieConnection.closeAll();
-        }
-        return seriesNameArray;
-    }*/
     
     @Override
     public int print(Graphics graphics, PageFormat pf, int page) throws
