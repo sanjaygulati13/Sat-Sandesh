@@ -812,13 +812,14 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
                     flag=flag+1;
                 c2.closeAll();
                 
-                
+                /*
                 if(dno>0)
                 {
                     connect c10=new connect();
                     c10.a=c10.st.executeUpdate("insert into d"+dno+" values ("+asn+")");
                     c10.closeAll();
                 }
+                */
                 
                 //database query for payment fragment
                 

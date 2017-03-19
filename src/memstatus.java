@@ -11,7 +11,7 @@ public class memstatus extends JFrame implements ActionListener
 	}	
 		
 	JLabel month, year, lang;
-	JButton ok, back;
+	JButton ok, ok_new, back;
 	JTextField montht, yeart;
 	JComboBox langt;
 		
@@ -46,6 +46,7 @@ public class memstatus extends JFrame implements ActionListener
 		langt=new JComboBox();
 		
 		ok=new JButton("OK");
+                ok_new = new JButton("OK New");
 		back=new JButton("Back");
 		
 		langt.addItem("Hindi");
@@ -83,6 +84,11 @@ public class memstatus extends JFrame implements ActionListener
 		back.setMnemonic('B');
 		add(back);
 		
+                ok_new.setBounds(210,170,70,25);
+		ok_new.addActionListener(this);
+		ok_new.setMnemonic('O');
+		add(ok_new);
+                
 		setVisible(true);
 	
 	}
@@ -99,7 +105,20 @@ public class memstatus extends JFrame implements ActionListener
 			//System.out.println(month1+lang1+year1);
 			
 			//new join(month1, year1);
-			new record(month1,year1,lang1);
+			new SatSandeshMemberStatusDetailed(month1,year1,lang1);
+			this.dispose();
+		}
+                
+                if(ae.getSource()==ok_new)
+		{
+			int month1=Integer.parseInt(montht.getText());
+			int year1=Integer.parseInt(yeart.getText());
+			String lang1=(String)langt.getSelectedItem();
+			
+			//System.out.println(month1+lang1+year1);
+			
+			//new join(month1, year1);
+			new SatSandeshMemberStatusDetailed_New(month1,year1,lang1);
 			this.dispose();
 		}
 		

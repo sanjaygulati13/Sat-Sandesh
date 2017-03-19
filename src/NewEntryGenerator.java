@@ -372,13 +372,13 @@ public class NewEntryGenerator {
                 flag++;
             c2.closeAll();
             
-            
+            /*
             if( this.getDistributorNumber() > 0)
             {
                 connect c10=new connect();
                 c10.a=c10.st.executeUpdate("insert into d"+this.getDistributorNumber()+" values ("+this.getAsn()+")");
                 c10.closeAll();
-            }
+            }*/
             
             //database query for payment fragment
             

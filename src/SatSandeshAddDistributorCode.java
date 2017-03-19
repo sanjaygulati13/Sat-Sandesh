@@ -237,10 +237,11 @@ public class SatSandeshAddDistributorCode extends JFrame implements ActionListen
                     }
                     c1.st.close();
                     c1.con.close();
-                    connect c2=new connect();
+                    
+                    /*connect c2=new connect();
                     c2.a=c2.st.executeUpdate("create table d"+dno+" (asn int)");
                     c2.st.close();
-                    c2.con.close();
+                    c2.con.close();*/
                 }
                 else
                 {

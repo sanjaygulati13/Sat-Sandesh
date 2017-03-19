@@ -687,7 +687,9 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
                         //if(distributionNumber>0)
                         
                         //connect c10=new connect();
+                        /*
                         c2.a=c2.st.executeUpdate("insert into d"+distributionNumber+" values ("+asnNumbers[i]+")");
+                        */
                         //c2.closeAll();
                     
                         

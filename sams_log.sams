@@ -1,0 +1,22 @@
+15/02/2017 20:55:38
+java.sql.SQLException: Column Index out of range, 14 > 13.  % class modd
+15/02/2017 20:57:43
+java.sql.SQLException: Column Index out of range, 14 > 13.  % class modd
+15/02/2017 20:57:55
+java.sql.SQLException: Column Index out of range, 14 > 13.  % class modd
+25/02/2017 13:39:03
+java.sql.SQLException: Column Index out of range, 14 > 13.  % class modd
+25/02/2017 13:45:29
+java.lang.NullPointerException % class SatSandeshModifyDistributorCode
+25/02/2017 13:46:32
+java.lang.NullPointerException % class SatSandeshModifyDistributorCode
+25/02/2017 13:47:38
+java.lang.NullPointerException % class SatSandeshModifyDistributorCode
+25/02/2017 13:48:02
+java.lang.NullPointerException % class SatSandeshModifyDistributorCode
+25/02/2017 13:48:18
+java.lang.NullPointerException % class SatSandeshModifyDistributorCode
+25/02/2017 13:48:49
+java.sql.SQLException: Column Index out of range, 14 > 13.  % class SatSandeshModifyDistributorCode
+25/02/2017 13:49:20
+java.sql.SQLException: Column Index out of range, 14 > 13.  % class SatSandeshModifyDistributorCode
