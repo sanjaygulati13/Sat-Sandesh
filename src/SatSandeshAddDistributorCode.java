@@ -12,7 +12,8 @@ public class SatSandeshAddDistributorCode extends JFrame implements ActionListen
     }
     
     JLabel nam, phno, despcd, email, add1, rem, hist, dist, stat, pin, distributionTypeLabel;
-    JTextField remt, histt, distt;
+    JTextField remt, histt;
+    TextFieldWithLimit distt;
     TextFieldWithLimit namt, lnamt, phnot, despcdt, addt11, addt12, addt13, pint, emailt;
     JComboBox stateCodeDropDown, stateNameDropDown;
     JComboBox distributionTypeDropDown;
@@ -71,7 +72,7 @@ public class SatSandeshAddDistributorCode extends JFrame implements ActionListen
         
         histt=new JTextField(20);
         emailt=new TextFieldWithLimit(32,32);
-        distt=new JTextField(20);
+        distt = new TextFieldWithLimit(22,22);
         remt=new JTextField(20);
         
         saveButton=new JButton("Save");
@@ -246,7 +247,9 @@ public class SatSandeshAddDistributorCode extends JFrame implements ActionListen
                 else
                 {
                     JOptionPane.showMessageDialog(this, "D# entry Already Exist", "ERROR", JOptionPane.ERROR_MESSAGE);
-                    namt.setText("");
+                    despcdt.setText("");
+                    despcdt.requestFocus();
+                    /*namt.setText("");
                     lnamt.setText("");
                     phnot.setText("");
                     despcdt.setText("");
@@ -259,7 +262,7 @@ public class SatSandeshAddDistributorCode extends JFrame implements ActionListen
                     distt.setText("");
                     stateCodeDropDown.setSelectedIndex(0);
                     pint.setText("");
-                    distributionTypeDropDown.setSelectedIndex(0);
+                    distributionTypeDropDown.setSelectedIndex(0);*/
                     
                 }
             }

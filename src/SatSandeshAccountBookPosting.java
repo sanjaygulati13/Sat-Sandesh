@@ -304,6 +304,8 @@ public class SatSandeshAccountBookPosting  implements ActionListener, Printable 
                             {
                                 //System.out.println(sqlQuery);
                                 updateconnection.a = updateconnection.st.executeUpdate(sqlQuery);
+                                if(updateconnection.a == 0)
+                                    System.out.println(sqlQuery);
                             }
                             catch(Exception e)
                             {

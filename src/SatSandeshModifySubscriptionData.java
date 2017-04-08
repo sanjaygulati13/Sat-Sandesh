@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.Savepoint;
 import javax.swing.*;
 //done till sub no, nd status
 
@@ -20,8 +21,8 @@ public class SatSandeshModifySubscriptionData extends JFrame implements ActionLi
     JPanel p1, p2, p3, p4,p5;
     
     
-    JTextField asnt1, statust1 /*, distributionTypeDropDown, subtt1 , langt1*/;						//subscription details
-    private final JComboBox distributionCodeDropDown, distributionTypeDropDown, subNumberCodeDropDown, subtt1, langt1;
+    JTextField asnt1, statust1 /*, distributionTypeDropDown, subtt1 , languageDropDown*/;						//subscription details
+    private final JComboBox distributionCodeDropDown, distributionTypeDropDown, subNumberCodeDropDown, subtt1, languageDropDown;
     TextFieldWithLimit subt21, receiptNumberText ;
     
     
@@ -127,7 +128,7 @@ public class SatSandeshModifySubscriptionData extends JFrame implements ActionLi
         
         distributionCodeDropDown=new JComboBox();
         subtt1=new JComboBox();
-        langt1=new JComboBox();
+        languageDropDown=new JComboBox();
         
         try
         {
@@ -232,10 +233,10 @@ public class SatSandeshModifySubscriptionData extends JFrame implements ActionLi
         subtt1.addItem("Comp");
         
         
-        langt1.addItem("Hindi");
-        langt1.addItem("English");
-        langt1.addItem("Urdu");
-        langt1.addItem("Punjabi");
+        languageDropDown.addItem("Hindi");
+        languageDropDown.addItem("English");
+        languageDropDown.addItem("Urdu");
+        languageDropDown.addItem("Punjabi");
         
         paytt1.addItem("Cash");
         paytt1.addItem("CH/DD/MO");
@@ -273,7 +274,7 @@ public class SatSandeshModifySubscriptionData extends JFrame implements ActionLi
             d=c1.rs.getInt(7);
             distributionCodeDropDown.setSelectedItem(""+d);
             subtt1.setSelectedItem(c1.rs.getString(8));
-            langt1.setSelectedItem(c1.rs.getString(9));
+            languageDropDown.setSelectedItem(c1.rs.getString(9));
             originalSeriesName = c1.rs.getString(10);
             seriesNameDropDown.setSelectedItem(originalSeriesName);
             
@@ -346,11 +347,11 @@ public class SatSandeshModifySubscriptionData extends JFrame implements ActionLi
         p1.add(lang1);
         lang1.setBounds(480,75,110,20);
         
-        p1.add(langt1);
-        langt1.setBounds(600,75,80,20);
-        langt1.addItemListener(this);
-        langt1.setEnabled(false);
-        langt1.setFont(f);
+        p1.add(languageDropDown);
+        languageDropDown.setBounds(600,75,80,20);
+        languageDropDown.addItemListener(this);
+        languageDropDown.setEnabled(false);
+        languageDropDown.setFont(f);
         
         p1.add(subt1);
         subt1.setBounds(730,75,120,20);
@@ -684,7 +685,7 @@ setVisible(true);
                 /*
                 
                 subt=subtt1.getSelectedItem();
-                lang=langt1.getSelectedItem();
+                lang=languageDropDown.getSelectedItem();
                 status=statust1.getText();
                 
                 
@@ -785,6 +786,13 @@ setVisible(true);
                 state = (String)stateCodeDropDown.getSelectedItem();
                 pin=Integer.parseInt(pint1.getText());
                 
+                
+                if(state.isEmpty())
+                {
+                    JOptionPane.showMessageDialog(this, "Please select state", "ERROR", JOptionPane.ERROR_MESSAGE);
+                    stateNameDropDown.requestFocus();
+                    return;
+                }
                 //other details
                 
                 int return1;
@@ -810,51 +818,43 @@ setVisible(true);
                 
                 String basicQuery = "update basic set subnos='"+subno1+"', subno="+subno+" ,rcpt="+rcpt+", dist='"+dist+"', dno="+dno+", series_name='"+seriesName+"', updated_by = '"+SamsUtilities.getUserName()+"'  where asn="+asn;
                 connect c14=new connect();
+                
+                Savepoint save1;
+                save1 = c14.con.setSavepoint();
+                c14.con.setAutoCommit(false);
                 //System.out.println(basicQuery);
                 c14.a=c14.st.executeUpdate(basicQuery);
                 
-                if(c14.a==1)
-                    flag=flag+1;
-                c14.closeAll();
+                if(c14.a == 1) flag++;
+                else
+                    System.out.println(basicQuery);
                 
-                
-                /*
-                //database query for payment fragment
-                
-                connect c5=new connect();
-                c5.a=c5.st.executeUpdate("update payment set payt='"+payt+"', chno="+chno+", datd="+dat1+", datm="+dat2+", daty="+dat3+", amt="+amt+", startm="+startm+", starty="+starty+", endm="+endm+", endy="+endy+" where asn="+asn);
-                if(c5.a==1)
-                flag=flag+1;
-                c5.st.close();
-                c5.con.close();
-                */
                 
                 //database query for subscription details fragment
+                String subDetailsQuery = "update subdetails set title='"+title+"', fname='"+fname+"', lname='"+lname+"', add1='"+add1+"', add2='"+add2+"',add3='"+add3+"',dist='"+dist2+"', state='"+state+"',pin="+pin+" where asn="+asn;
+                c14.a=c14.st.executeUpdate(subDetailsQuery);
                 
-                connect c4=new connect();
-                c4.a=c4.st.executeUpdate("update subdetails set title='"+title+"', fname='"+fname+"', lname='"+lname+"', add1='"+add1+"', add2='"+add2+"',add3='"+add3+"',dist='"+dist2+"', state='"+state+"',pin="+pin+" where asn="+asn);
-                
-                if(c4.a==1)
-                    flag=flag+1;
-                
-                c4.st.close();
-                c4.con.close();
+                if(c14.a == 1) flag++;
+                else
+                    System.out.println(subDetailsQuery);
                 
                 //database query for other details fragment
                 
-                connect c5=new connect();
                 //System.out.println("update otherdet set phone='"+phone+"', history='"+history+"', email='"+email+"', remarks='"+remarks+"' where asn="+asn);
-                c5.a=c5.st.executeUpdate("update otherdet set phone='"+phone+"', history='"+history+"', email='"+email+"', remarks='"+remarks+"' where asn="+asn);
+                String otherDetQuery = "update otherdet set phone='"+phone+"', history='"+history+"', email='"+email+"', remarks='"+remarks+"' where asn="+asn;
+                c14.a=c14.st.executeUpdate(otherDetQuery);
                 //System.out.println(c5.a);
                 
-                if(c5.a==1)
-                    flag=flag+1;
+                if(c14.a == 1) flag++;
+                else
+                    System.out.println(otherDetQuery);
                 
                 String sqlQuery = "update receipt_book_details set series_name = '"+seriesName+"', receipt_number = "+rcpt+", updated_by = '"+SamsUtilities.getUserName()+"' where asn ="+asn;
                 //System.out.println(sqlQuery);
-                c5.a=c5.st.executeUpdate(sqlQuery);
-                if(c5.a == 1)
-                    flag++;
+                c14.a=c14.st.executeUpdate(sqlQuery);
+                if(c14.a == 1) flag++;
+                else
+                    System.out.println(sqlQuery);
                 
                 String mainTableQuery = "update subscribers_primary_details set subscription_code='"
                         +subno1+"', subscription_number="+subno+" ,receipt_number="
@@ -867,20 +867,28 @@ setVisible(true);
                         +remarks+"', updated_by = '"+SamsUtilities.getUserName()+"' where asn="+asn;
                 
                 //System.out.println(mainTableQuery);
-                c5.a=c5.st.executeUpdate(mainTableQuery);
+                c14.a=c14.st.executeUpdate(mainTableQuery);
                 //System.out.println(c5.a);
                 
-                if(c5.a==1)
-                    flag=flag+1;
-                
-                c5.closeAll();
-                
+                if(c14.a == 1) flag=flag+1;
+                else
+                    System.out.println(mainTableQuery);
                 
                 if(flag==5)
                 {
                     JOptionPane.showMessageDialog(this, "RECORD MODIFIED SUCCESSFULLY", "SUCCESS", JOptionPane.INFORMATION_MESSAGE);
                     flag=0;
+                    c14.con.commit();
+                    c14.con.setAutoCommit(true);
                 }
+                else{
+                    System.out.println("flag: "+ flag);
+                    c14.con.rollback(save1);
+                    c14.con.setAutoCommit(true);
+                }
+                
+                
+                c14.closeAll();
                 
                 this.dispose();
                 new sams();
@@ -1026,6 +1034,7 @@ setVisible(true);
         if(ie.getSource()==subNumberCodeDropDown)
         {
             districtText.setText("");
+            boolean flag = false;
             for(int stateCode = 0 ; stateCode != items.length ; ++stateCode)
             {
                 if(subNumberCodeDropDown.getSelectedItem() == items[stateCode])
@@ -1033,8 +1042,10 @@ setVisible(true);
                     String sub_code_str = (String)(items[stateCode]);
                     String state_code_text = SamsUtilities.getStateCodeForSubCode(sub_code_str);
                     String state_name_text = SamsUtilities.getStateNameForStateCode(state_code_text);
-                    //System.out.println("'"+sub_code_str+ "' '" +state_name_text + "' '" + state_code_text+"'" );
-                    
+                    System.out.println("'"+sub_code_str+ "' '" +state_name_text + "' '" + state_code_text+"'" );
+                    languageDropDown.setSelectedItem("Hindi");
+                    languageDropDown.setEnabled(false);
+                    flag = true;
                     
                     if(state_name_text.isEmpty() == false)
                     {
@@ -1074,6 +1085,7 @@ setVisible(true);
                     String selectedItem = (String)subNumberCodeDropDown.getSelectedItem();
                     if(selectedItem.equals("BH") || selectedItem.equals("LH") || selectedItem.equals("EN") || selectedItem.equals("PJ") || selectedItem.equals("UR") )
                     {
+                        flag = false;
                         stateCodeDropDown.setSelectedIndex(0);
                         stateCodeDropDown.setEnabled(true);
                         distributionTypeDropDown.setSelectedItem("By Hand");
@@ -1087,6 +1099,8 @@ setVisible(true);
                     }
                     
                 }
+                if(!flag)
+                    languageDropDown.setEnabled(true);
             }
         }
             
@@ -1138,7 +1152,7 @@ setVisible(true);
                 try
                 {
                     connect c7=new connect();
-                    c7.rs=c7.st.executeQuery("select * from amountdet where language='"+langt1.getSelectedItem()+"' and duration='"+subtt1.getSelectedItem()+"'");
+                    c7.rs=c7.st.executeQuery("select * from amountdet where language='"+languageDropDown.getSelectedItem()+"' and duration='"+subtt1.getSelectedItem()+"'");
                     
                     while(c7.rs.next())
                     {
@@ -1164,13 +1178,13 @@ setVisible(true);
                 
             }
             
-            if(ie.getSource()==langt1)
+            if(ie.getSource()==languageDropDown)
             {
                 try
                 {
                     connect c8=new connect();
                     
-                    c8.rs=c8.st.executeQuery("select * from amountdet where language='"+langt1.getSelectedItem()+"'");
+                    c8.rs=c8.st.executeQuery("select * from amountdet where language='"+languageDropDown.getSelectedItem()+"'");
                     
                     subtt1.removeAll();
                     while(c8.rs.next())

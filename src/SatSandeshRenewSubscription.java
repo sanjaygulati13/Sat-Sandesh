@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.Savepoint;
 import javax.swing.*;
 import java.util.*;
 //done till sub no, nd status
@@ -35,7 +36,7 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
     
     
     JTextField /*paytt1,*/ chddt1;											//payment details
-    TextFieldWithLimit dateText, monthText, yearText, amt1, endt1, newRenewText;
+    TextFieldWithLimit dateText, monthText, yearText, amt1, endingPeriodText, newRenewText;
     JComboBox paytt1, startm1, starty1;
     
     
@@ -151,7 +152,7 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
         monthText=new TextFieldWithLimit(2,2);
         yearText=new TextFieldWithLimit(4,4);
         amt1=new TextFieldWithLimit(4,4);
-        endt1=new TextFieldWithLimit(10,10);
+        endingPeriodText=new TextFieldWithLimit(10,10);
         newRenewText = new TextFieldWithLimit(6, 6);
         titt1=new TextFieldWithLimit(3,3);
         namt1=new TextFieldWithLimit(16,16);
@@ -219,7 +220,7 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
         
         s2=cal.get(Calendar.YEAR);
         
-        for(int s1=(s2-2);s1<(s2+10);s1++)
+        for(int s1=(s2-2);s1<(s2+25);s1++)
         {
             starty1.addItem(""+s1);
         }
@@ -503,10 +504,10 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
         p2.add(end1);
         end1.setBounds(30,75,100,20);
         
-        p2.add(endt1);
-        endt1.setBounds(130,75,70,20);
-        endt1.setEnabled(false);
-        endt1.setFont(f);
+        p2.add(endingPeriodText);
+        endingPeriodText.setBounds(130,75,70,20);
+        endingPeriodText.setEnabled(false);
+        endingPeriodText.setFont(f);
         
         p2.add(newRenewLabel);
         newRenewLabel.setBounds(320,75,80,20);
@@ -913,35 +914,27 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
                 //database query for basic fragment
                 
                 connect c4=new connect();
+                Savepoint save1;
+                save1 = c4.con.setSavepoint();
+                c4.con.setAutoCommit(false);
+                
                 c4.a=c4.st.executeUpdate("update basic set subnos='"+subno1+"', subno="+subno+" , status='Active', rcpt="+rcpt+", dist='"+dist+"', dno="+dno+", subt='"+subt+"', lang='"+lang+"', series_name = '"+seriesName+"', updated_by = '"+SamsUtilities.getUserName()+"' where asn="+asn);
                 
-                if(c4.a==1)
-                    flag=flag+1;
-                c4.st.close();
-                c4.con.close();
-                
+                if(c4.a == 1) flag++;
                 //database query for payment fragment
                 
-                connect c5=new connect();
-                c5.a=c5.st.executeUpdate("update payment set payt='"+payt+"', chno="+chno+", datd="+date1+", datm="+dat2+", daty="+dat3+", amt="+amt+", startm="+startm+", starty="+starty+", endm="+endm+", endy="+endy+", InsertionDate='"+SamsUtilities.getCurrentSqlDate()+"', subscription_type='Renew' where asn="+asn);
-                if(c5.a==1)
-                    flag=flag+1;
                 
-                
+                c4.a=c4.st.executeUpdate("update payment set payt='"+payt+"', chno="+chno+", datd="+date1+", datm="+dat2+", daty="+dat3+", amt="+amt+", startm="+startm+", starty="+starty+", endm="+endm+", endy="+endy+", InsertionDate='"+SamsUtilities.getCurrentSqlDate()+"', subscription_type='Renew' where asn="+asn);
+                if(c4.a == 1) flag++;
                 //database query for other details fragment
                 
                 String sqlQuery = "insert into receipt_book_details values ('"+seriesName+"',"+rcpt+","+asn+",'"+payt+"','"+dat3+"-"+dat2+"-"+date1+"',"+amt+",'"+history+"','0','"+SamsUtilities.getUserName()+"')";
-                c5.a=c5.st.executeUpdate(sqlQuery);
-                if(c5.a == 1)
-                    flag++;
-                c5.closeAll();
-                System.out.println(sqlQuery);
+                c4.a=c4.st.executeUpdate(sqlQuery);
+                if(c4.a == 1) flag++;
                 
-                connect c6=new connect();
-                c6.a=c6.st.executeUpdate("update otherdet set history='"+history+"' where asn="+asn);
+                c4.a=c4.st.executeUpdate("update otherdet set history='"+history+"' where asn="+asn);
                 
-                if(c6.a==1)
-                    flag=flag+1;
+                if(c4.a == 1) flag++;
                 
                 String mainTableQuery = "update subscribers_primary_details set subscription_code='"
                                         +subno1+"', subscription_number="+subno+" , membership_status='Active', receipt_number="
@@ -952,19 +945,21 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
                                         +starty+"-"+startm+"-1', ending_period='"+endy+"-"+endm+"-28', entry_date='"
                                         +SamsUtilities.getCurrentSqlDate()+"', subscription_type='Renew', counter_name = '"
                                         +history+"' , updated_by = '"+SamsUtilities.getUserName()+"' where asn="+asn;
-                System.out.println(mainTableQuery);
-                c6.a=c6.st.executeUpdate(mainTableQuery);
+                //System.out.println(mainTableQuery);
+                c4.a=c4.st.executeUpdate(mainTableQuery);
+                if(c4.a == 1) flag++;
                 
-                if(c6.a==1)
-                    flag=flag+1;
-                c6.closeAll();
-                
-                
-                if(flag==5)
+                if(flag == 5)
                 {
                     JOptionPane.showMessageDialog(this, "RENEWAL DONE SUCCESSFULLY", "SUCCESS", JOptionPane.INFORMATION_MESSAGE);
                     flag=0;
+                    c4.con.commit();
                 }
+                else
+                    c4.con.rollback(save1);
+                
+                c4.con.setAutoCommit(true);
+                c4.closeAll();
                 
                 new SatSandeshRenewSubNumSelection();
                 this.dispose();
@@ -1062,7 +1057,7 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
             }
             
             
-            endt1.setText(""+endm2+"/"+endy2);
+            endingPeriodText.setText(""+endm2+"/"+endy2);
             
         }
         

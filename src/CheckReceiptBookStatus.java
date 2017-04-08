@@ -95,7 +95,7 @@ public class CheckReceiptBookStatus extends JFrame implements ActionListener
                 k=0;
                 //String searchQuery = "select count(asn) from receipt_book_details where series_name = '"+series+"' and rcpt = "+count;
                 String searchQuery = "select count(asn) from receipt_book_details where series_name = '"+series+"' and receipt_number = "+count;
-                System.out.println(searchQuery);
+                //System.out.println(searchQuery);
                 c2.rs=c2.st.executeQuery(searchQuery);
                 //flag=0;
                 if(c2.rs.next())
@@ -232,7 +232,7 @@ public class CheckReceiptBookStatus extends JFrame implements ActionListener
                     k = c2.rs.getInt(1);
                 //System.out.println(k);
                 
-                if(k == 1)
+                if(k != 0)
                 {
                     //unaccountedReceipts[j] = count;
                     set.add(count);
