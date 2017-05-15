@@ -146,7 +146,7 @@ public class SatSandeshAccountBookDetails extends JFrame implements ActionListen
                 String startDate = y1+"-"+m1+"-"+d1;
                 String endDate = y1+"-"+m1+"-"+d2;
                 String countQuery = "select count(asn) from receipt_book_details where date_issued between '"+startDate+"' and '"+endDate+"'";
-                System.out.println(countQuery);
+                //System.out.println(countQuery);
                 connect c1=new connect();
                 c1.rs=c1.st.executeQuery(countQuery);
                 if(c1.rs.next()) i = c1.rs.getInt(1);
@@ -162,7 +162,7 @@ public class SatSandeshAccountBookDetails extends JFrame implements ActionListen
                     Object data[][]= new Object[i+1][col.length];
                     connect c2=new connect();
                     connect subscriberDetailsFetchConnection = new connect();
-                    String dataQuery ="select asn,series_name,receipt_number,amount,date_issued from receipt_book_details where date_issued between '"+startDate+"' and '"+endDate+"'";
+                    String dataQuery ="select asn,series_name,receipt_number,amount,date_issued,ending_period from receipt_book_details where date_issued between '"+startDate+"' and '"+endDate+"'";
                     //System.out.println(dataQuery);
                     //c2.rs=c2.st.executeQuery("select b.subnos, b.subno, b.dno , b.rcpt, p.amt, p.datd, p.datm, p.daty, p.endm,p.endy, s.fname, s.lname, s.state from basic b, subdetails s , payment p where b.asn=s.asn and p.asn=b.asn and (p.datd>"+(d1-1)+" and p.datd<"+(d2+1)+") and (p.datm>"+(m1-1)+" and p.datm<"+(m2+1)+") and (p.daty>"+(y1-1)+" and p.daty<"+(y2+1)+" ) order by p.datd, b.rcpt");
                     c2.rs = c2.st.executeQuery(dataQuery);
@@ -188,7 +188,7 @@ public class SatSandeshAccountBookDetails extends JFrame implements ActionListen
                             total+=amt;
                             data[j][5]=amt;
                             data[j][6]=c2.rs.getDate(5);
-                            data[j][7]= subscriberDetailsFetchConnection.rs.getDate(4);
+                            data[j][7]= c2.rs.getDate(6);
                             data[j][8]=subscriberDetailsFetchConnection.rs.getString(5)+" "+subscriberDetailsFetchConnection.rs.getString(6);
                             data[j][9]=subscriberDetailsFetchConnection.rs.getString(7);
                             j++;

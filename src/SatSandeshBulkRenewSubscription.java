@@ -1,4 +1,3 @@
-
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
@@ -10,6 +9,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Date;
+import java.util.Properties;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -26,6 +27,9 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 import net.miginfocom.swing.MigLayout;
+import org.jdatepicker.impl.JDatePanelImpl;
+import org.jdatepicker.impl.JDatePickerImpl;
+import org.jdatepicker.impl.UtilDateModel;
 
 
 public class SatSandeshBulkRenewSubscription implements ActionListener, ItemListener, FocusListener, TableModelListener
@@ -43,7 +47,7 @@ public class SatSandeshBulkRenewSubscription implements ActionListener, ItemList
     
     JButton addDataButton, cancelButton, saveButton;
     
-    JTextField receiptNumberText, dateText,monthText, yearText;
+    JTextField receiptNumberText/*, dateText,monthText, yearText*/;
     JTextField numberOfRecordsText, amountText, endingPeriodText,subIssueCounterText;
     JComboBox distributionNumberDropDown, seriesDropDown , startingPeriodMonthDropDown, startingPeriodYearDropDown, languageDropDown, subscriptionDurationDropDown, counterDropDown;
     
@@ -54,11 +58,18 @@ public class SatSandeshBulkRenewSubscription implements ActionListener, ItemList
     JTable bulkEntryTable;
     JScrollPane scrollPane;
     
+    TextFieldWithLimit chequeDDText;
+    JComboBox paymentTypeDropDown;
+    
     boolean entriesUpdated = false;
     
     Object col[]={"S No","Sub code","Sub Number", "First name","Last Name"};
     
     MigLayout mLayout= new MigLayout( "insets 30");
+    UtilDateModel model = new UtilDateModel();
+    Properties prop;
+    JDatePanelImpl datePanel;
+    JDatePickerImpl datePicker;
     
     public SatSandeshBulkRenewSubscription()
     {
@@ -125,9 +136,18 @@ public class SatSandeshBulkRenewSubscription implements ActionListener, ItemList
         
         seriesDropDown = new JComboBox(SamsUtilities.fillSeriesInformation());
         receiptNumberText = new TextFieldWithLimit(5,5);
-        dateText = new TextFieldWithLimit(2,2);
+        /*dateText = new TextFieldWithLimit(2,2);
         monthText=new TextFieldWithLimit(2,2);
         yearText=new TextFieldWithLimit(4,4);
+        */
+        {
+            prop = new Properties();
+            prop.put("text.today", "Today");
+            prop.put("text.month", "Month");
+            prop.put("text.year", "Year");
+            datePanel = new JDatePanelImpl(model, prop);
+            datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+        }
         startingPeriodMonthDropDown = new JComboBox();
         startingPeriodYearDropDown = new JComboBox();
         subIssueCounterText = new JTextField();
@@ -155,8 +175,16 @@ public class SatSandeshBulkRenewSubscription implements ActionListener, ItemList
         numberOfRecordsText  = new TextFieldWithLimit(5,5);
         amountText = new TextFieldWithLimit(4,5);
         amountText.setText("100");
+        amountText.setEnabled(false);
         endingPeriodText  = new TextFieldWithLimit(7,7);
         endingPeriodText.setEnabled(false);
+        
+        paymentTypeDropDown = new JComboBox();
+        paymentTypeDropDown.addItem("Cash");
+        paymentTypeDropDown.addItem("CH/DD/MO");
+        
+        chequeDDText = new TextFieldWithLimit(10,10);
+    
         
         
         //Object[] items={"BH","BD","CM","DL","EN","HR","LF","LH","MH","MP","MS","PB","PJ","RJ","UK","UP","UR"};
@@ -171,7 +199,7 @@ public class SatSandeshBulkRenewSubscription implements ActionListener, ItemList
         //histt1.addItem("Sawan Ashram");
         //histt1.addItem("Darshan Dham");
         //histt1.addItem("Tours/Function");
-        Object[] languages={"Hindi", "English", "Urdu", "Punjabi"};
+        Object[] languages={"Hindi"/*, "English", "Urdu", "Punjabi"*/};
         languageDropDown = new JComboBox(languages);
         languageDropDown.addItemListener(this);
         
@@ -182,6 +210,7 @@ public class SatSandeshBulkRenewSubscription implements ActionListener, ItemList
         counterDropDown.addItem("Kirpal Bagh");
         counterDropDown.addItem("Kirpal Ashram");
         counterDropDown.addItem("Sawan Ashram");
+        counterDropDown.setEnabled(false);
         
         addDataButton = new JButton("Add Data");
         cancelButton =new JButton("Back");
@@ -237,17 +266,21 @@ public class SatSandeshBulkRenewSubscription implements ActionListener, ItemList
         
         satSandeshBulkRenewSubscriptionWindow.add(receiptNumberLabel);
         satSandeshBulkRenewSubscriptionWindow.add(seriesDropDown);
-        satSandeshBulkRenewSubscriptionWindow.add(seriesLabel);
+        //satSandeshBulkRenewSubscriptionWindow.add(seriesLabel);
         satSandeshBulkRenewSubscriptionWindow.add(receiptNumberText);
         
         satSandeshBulkRenewSubscriptionWindow.add(dateLabel);
-        satSandeshBulkRenewSubscriptionWindow.add(dateText);
+        satSandeshBulkRenewSubscriptionWindow.add(datePicker, "w 140!");
+        /*satSandeshBulkRenewSubscriptionWindow.add(dateText);
         satSandeshBulkRenewSubscriptionWindow.add(monthText);
-        satSandeshBulkRenewSubscriptionWindow.add(yearText);
+        satSandeshBulkRenewSubscriptionWindow.add(yearText);*/
+        
+        satSandeshBulkRenewSubscriptionWindow.add(paymentTypeDropDown);
+        satSandeshBulkRenewSubscriptionWindow.add(chequeDDText,"wrap 30px ,w 70!");
        
         
         satSandeshBulkRenewSubscriptionWindow.add(numberOfRecordsLabel);
-        satSandeshBulkRenewSubscriptionWindow.add(numberOfRecordsText,"wrap 30px");
+        satSandeshBulkRenewSubscriptionWindow.add(numberOfRecordsText);
         
         
         satSandeshBulkRenewSubscriptionWindow.add(subscriptionTypeLabel);
@@ -258,12 +291,12 @@ public class SatSandeshBulkRenewSubscription implements ActionListener, ItemList
         
         satSandeshBulkRenewSubscriptionWindow.add(startingPeriodLabel);
         satSandeshBulkRenewSubscriptionWindow.add(startingPeriodMonthDropDown);
-        satSandeshBulkRenewSubscriptionWindow.add(startingPeriodYearDropDown);
+        satSandeshBulkRenewSubscriptionWindow.add(startingPeriodYearDropDown,"wrap 30px");
         
         satSandeshBulkRenewSubscriptionWindow.add(endingPeriodLabel);
         satSandeshBulkRenewSubscriptionWindow.add(endingPeriodText);
         satSandeshBulkRenewSubscriptionWindow.add(counterLabel);
-        satSandeshBulkRenewSubscriptionWindow.add(counterDropDown,"wrap 30px");
+        satSandeshBulkRenewSubscriptionWindow.add(counterDropDown);
         
         satSandeshBulkRenewSubscriptionWindow.add(subIssueCounterLabel);
         satSandeshBulkRenewSubscriptionWindow.add(subIssueCounterText,"w 100!");
@@ -450,6 +483,60 @@ public class SatSandeshBulkRenewSubscription implements ActionListener, ItemList
                 
             }
             
+            {
+                if(true)
+                {
+                    int startm2=Integer.parseInt((String)startingPeriodMonthDropDown.getSelectedItem());
+                    int starty2=Integer.parseInt((String)startingPeriodYearDropDown.getSelectedItem());
+                    
+                    int period2=0, period12=0;
+                    try
+                    {
+                        
+                        connect c22=new connect();
+                        c22.rs=c22.st.executeQuery("select * from amountdet where duration='"+subscriptionDurationDropDown.getSelectedItem()+"'");
+                        while(c22.rs.next())
+                        {
+                            period2=c22.rs.getInt(4);
+                            period12=c22.rs.getInt(5);
+                            
+                            //System.out.println("year : "+period2+" month : "+period12);
+                        }
+                        
+                        c22.st.close();
+                        c22.con.close();
+                    }
+                    catch(Exception e)
+                    {
+                        JOptionPane.showMessageDialog(satSandeshBulkRenewSubscriptionWindow, "ERROR : "+e, "ERROR", JOptionPane.ERROR_MESSAGE);
+                    }
+                    
+                    endingMonth=((startm2-1)+period12)%12;
+                    //int endingYear;
+                    int tempFlag=0;
+                    if(endingMonth==0)
+                        endingMonth=12;
+                    if(endingMonth>0 && endingMonth <period12)
+                        tempFlag++;
+                    if(endingMonth<12)
+                        endingYear=starty2+period2+tempFlag;
+                    else
+                        endingYear=starty2+period2-1+tempFlag;
+                    
+                    if(endingMonth==12 && period12>0)
+                    {
+                        endingYear++;
+                    }
+                    String endingPeriod  = ""+endingMonth+"/"+endingYear;
+                    //endingPeriodText.setText(endingPeriod);
+                    int res = JOptionPane.showConfirmDialog(satSandeshBulkRenewSubscriptionWindow, "Updating with ending period: " + endingPeriod, "Confirm", JOptionPane.YES_NO_OPTION);
+                    if( res == JOptionPane.NO_OPTION ) {
+                        startingPeriodMonthDropDown.requestFocus();
+                        return;
+                    }
+                    
+                }
+            }
             
             
             //boolean allFine = true;
@@ -566,9 +653,15 @@ public class SatSandeshBulkRenewSubscription implements ActionListener, ItemList
                 subscriptionType = (String)(subscriptionDurationDropDown.getSelectedItem());
                 /*  =================== */
                 String paymentType = "Cash";
-                String entryDate = dateText.getText();
+                
+                Date selectedDate = (Date) datePicker.getModel().getValue();
+                String entryDate =  ""+(selectedDate.getDate());
+                String entryMonth = ""+(selectedDate.getMonth()+1);
+                String entryYear  = ""+(selectedDate.getYear()+1900);
+                
+                /*String entryDate = dateText.getText();
                 String entryMonth = monthText.getText();
-                String entryYear = yearText.getText();
+                String entryYear = yearText.getText();*/
                 String amountString = amountText.getText();
                 String startMonthString = (String)(startingPeriodMonthDropDown.getSelectedItem());
                 String startYearString = (String)(startingPeriodYearDropDown.getSelectedItem());
@@ -655,12 +748,13 @@ public class SatSandeshBulkRenewSubscription implements ActionListener, ItemList
                         if(c2.a==1)
                             flag++;
                         
+                        String endDate = endingYear+"-"+endingMonth+"-28";
                         String sqlQuery = "insert into receipt_book_details values ('"
                                 +seriesName+"',"
                                 +rcptNum+","+asnNumbers[i]+",'"
                                 +paymentType+"','"+entryYear+"-"
                                 +entryMonth+"-"+entryDate+"',"
-                                +amount+",'"+history+"','0','"+SamsUtilities.getUserName()+"')";
+                                +amount+",'"+history+"','0','"+SamsUtilities.getUserName()+"','"+endDate+"')";
                         
                         c2.a=c2.st.executeUpdate(sqlQuery);
                         
@@ -674,7 +768,7 @@ public class SatSandeshBulkRenewSubscription implements ActionListener, ItemList
                                                 +paymentType+"',instrument_number = 0,receipt_date='"
                                                 +entryYear+"-"+entryMonth+"-"+entryDate+"',amount="
                                                 +amount+",starting_period='"+startYear+"-"+startMonth+"-1',ending_period='"
-                                                +endingYear+"-"+endingMonth+"-28', title='"+ title+"',first_name='"
+                                                +endDate+"', title='"+ title+"',first_name='"
                                                 +firstNames[i]+"',last_name='"+lastNames[i]+"',address_line1='"
                                                 +addressPart1+"',address_line2='"+addressPart2+"',address_line3='"
                                                 +addressPart3+"',district='"+district+"',state='"+state+"',pin_code="
@@ -766,6 +860,21 @@ public class SatSandeshBulkRenewSubscription implements ActionListener, ItemList
                 JOptionPane.showMessageDialog(satSandeshBulkRenewSubscriptionWindow, "ERROR : "+e1, "ERROR", JOptionPane.ERROR_MESSAGE);
             }
             
+        }
+        
+        if(ie.getSource() == paymentTypeDropDown)
+        {
+            if(paymentTypeDropDown.getSelectedItem()=="Cash")
+            {
+                chequeDDText.setText("0");
+                chequeDDText.setEnabled(false);
+            }
+            
+            if(paymentTypeDropDown.getSelectedItem()=="CH/DD/MO")
+            {
+                chequeDDText.setText("");
+                chequeDDText.setEnabled(true);
+            }
         }
         
         if(ie.getSource()==subscriptionDurationDropDown)
@@ -893,7 +1002,9 @@ public class SatSandeshBulkRenewSubscription implements ActionListener, ItemList
                 }
                 String countQuery = "select count(book_num) from receipt_book_inventory where end_rcpt_num > "+(rcptNum-1)+" and start_rcpt_num < "+(rcptNum+1)+" and series_name='"+seriesNameText+"'";
                 String sqlQuery = "select issued_to,book_num, start_rcpt_num, end_rcpt_num from receipt_book_inventory where series_name = '"+seriesNameText+"' and end_rcpt_num > "+(rcptNum-1)+" and start_rcpt_num < "+(rcptNum+1);
-                String alreadyIssuedRcptCheckQuery = "select count(asn) from basic where rcpt = "+rcptNum +" and series_name = '"+seriesNameText+"'";
+                //String alreadyIssuedRcptCheckQuery = "select count(asn) from basic where rcpt = "+rcptNum +" and series_name = '"+seriesNameText+"'";
+                String alreadyIssuedRcptCheckQuery = "select count(asn) from receipt_book_details where receipt_number = "+rcptNum +" and series_name = '"+seriesNameText+"'";
+                
                 connect fillSeriesConnection = new connect();
                 try
                 {

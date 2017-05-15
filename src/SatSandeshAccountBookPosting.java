@@ -272,7 +272,7 @@ public class SatSandeshAccountBookPosting  implements ActionListener, Printable 
                         {
                             String sqlQuery = "update basic set page_number = "+pageNumber+", updated_by = '"+SamsUtilities.getUserName()+"' where rcpt = "+rcptNum+" and series_name = '"+seriesName+"'";
                             String rcptBookDetailsQuery = "update receipt_book_details set page_number = "+pageNumber+", updated_by = '"+SamsUtilities.getUserName()+"' where receipt_number = "+rcptNum+" and series_name = '"+seriesName+"'";
-                            String mainTableQuery = "update subscribers_primary_details set instrument_number = "+pageNumber+", updated_by = '"+SamsUtilities.getUserName()+"' where receipt_number = "+rcptNum+" and series_name = '"+seriesName+"'";
+                            String mainTableQuery = "update subscribers_primary_details set account_book_page_number = "+pageNumber+", updated_by = '"+SamsUtilities.getUserName()+"' where receipt_number = "+rcptNum+" and series_name = '"+seriesName+"'";
                             //System.out.println(sqlQuery);
                             queryVec.addElement(sqlQuery);
                             queryVec.addElement(rcptBookDetailsQuery);
@@ -304,8 +304,8 @@ public class SatSandeshAccountBookPosting  implements ActionListener, Printable 
                             {
                                 //System.out.println(sqlQuery);
                                 updateconnection.a = updateconnection.st.executeUpdate(sqlQuery);
-                                if(updateconnection.a == 0)
-                                    System.out.println(sqlQuery);
+                                //if(updateconnection.a == 0)
+                                //    System.out.println("\tFailed");
                             }
                             catch(Exception e)
                             {

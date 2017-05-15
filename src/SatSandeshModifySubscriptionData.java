@@ -9,7 +9,7 @@ public class SatSandeshModifySubscriptionData extends JFrame implements ActionLi
 {
     public static void main(String args[])
     {
-        new SatSandeshModifySubscriptionData(21149);
+        new SatSandeshModifySubscriptionData(26408);
     }
     
     JLabel  subd1, asn1, sub1, status1, rec1, dist1, d1, subt1, lang1;				//subscription details
@@ -23,12 +23,12 @@ public class SatSandeshModifySubscriptionData extends JFrame implements ActionLi
     
     JTextField asnt1, statust1 /*, distributionTypeDropDown, subtt1 , languageDropDown*/;						//subscription details
     private final JComboBox distributionCodeDropDown, distributionTypeDropDown, subNumberCodeDropDown, subtt1, languageDropDown;
-    TextFieldWithLimit subt21, receiptNumberText ;
+    TextFieldWithLimit subNumberText, receiptNumberText ;
     
     
-    JTextField /*paytt1,*/ chddt1;											//payment details
-    TextFieldWithLimit datt1, datt2, datt3, amt1,starty1, startm1, endt1;
-    JComboBox paytt1;
+    //JTextField /*paymentTypeDropDown,*/ ;											//payment details
+    TextFieldWithLimit datt1, datt2, datt3, amt1,starty1, startm1, endt1, chequeInstrumentNumberText;
+    JComboBox paymentTypeDropDown;
     
     
     TextFieldWithLimit titt1, namt1, lnamt1, pint1,addt11,addt21,addt31,districtText;	//member details
@@ -47,7 +47,7 @@ public class SatSandeshModifySubscriptionData extends JFrame implements ActionLi
     
     Object[] items;
     
-    String originalRcptNumber, originalSeriesName;
+    String originalRcptNumber, originalSeriesName, originalSubNumberCode, originalSubNumber;
     
     
     public SatSandeshModifySubscriptionData(int num)
@@ -119,7 +119,7 @@ public class SatSandeshModifySubscriptionData extends JFrame implements ActionLi
         
         
         asnt1=new JTextField(8);
-        subt21=new TextFieldWithLimit(5,5);
+        subNumberText=new TextFieldWithLimit(5,5);
         statust1=new JTextField(20);
         receiptNumberText=new TextFieldWithLimit(5,5);
         distributionTypeDropDown=new JComboBox();
@@ -150,9 +150,9 @@ public class SatSandeshModifySubscriptionData extends JFrame implements ActionLi
             e.printStackTrace();
         }
         
-        paytt1=new JComboBox();
+        paymentTypeDropDown=new JComboBox();
         
-        chddt1=new JTextField(9);
+        chequeInstrumentNumberText = new TextFieldWithLimit(10,10);
         datt1=new TextFieldWithLimit(2,2);
         datt2=new TextFieldWithLimit(2,2);
         datt3=new TextFieldWithLimit(4,4);
@@ -238,9 +238,8 @@ public class SatSandeshModifySubscriptionData extends JFrame implements ActionLi
         languageDropDown.addItem("Urdu");
         languageDropDown.addItem("Punjabi");
         
-        paytt1.addItem("Cash");
-        paytt1.addItem("CH/DD/MO");
-        
+        paymentTypeDropDown.addItem("Cash");
+        paymentTypeDropDown.addItem("CH/DD/MO");
         
         
         p1.add(subd1);
@@ -257,11 +256,16 @@ public class SatSandeshModifySubscriptionData extends JFrame implements ActionLi
             connect c1=new connect();
             c1.rs=c1.st.executeQuery("select * from basic where asn="+num);
             c1.rs.next();
-            subNumberCodeDropDown.setSelectedItem(c1.rs.getString(2));
-            subt21.setText(c1.rs.getString(3));
+            originalSubNumberCode = c1.rs.getString(2);
+            originalSubNumber = c1.rs.getString(3);
+            
+            subNumberCodeDropDown.setSelectedItem(originalSubNumberCode);
+            subNumberText.setText(originalSubNumber);
+            
             statust1.setText(c1.rs.getString(4));
             originalRcptNumber = ""+c1.rs.getInt(5);
             receiptNumberText.setText(originalRcptNumber);
+            
             String s1=""+c1.rs.getString(6);
             if(s1.equals("BY POST") || s1.equals("by post"))
                 s1="By Post";
@@ -271,6 +275,14 @@ public class SatSandeshModifySubscriptionData extends JFrame implements ActionLi
                 s1="Distributor";
             
             distributionTypeDropDown.setSelectedItem(s1);
+            if(s1.equals("Distributor"))
+            {
+                //JOptionPane.showMessageDialog(this, "", "Info", , );
+                districtText.setEnabled(false);
+                stateCodeDropDown.setEnabled(false);
+                stateNameDropDown.setEnabled(false);
+            }
+            
             d=c1.rs.getInt(7);
             distributionCodeDropDown.setSelectedItem(""+d);
             subtt1.setSelectedItem(c1.rs.getString(8));
@@ -303,9 +315,10 @@ public class SatSandeshModifySubscriptionData extends JFrame implements ActionLi
         //subt22.setEnabled(false);
         
         
-        p1.add(subt21);
+        p1.add(subNumberText);
         //subt21.setEnabled(false);
-        subt21.setBounds(380,45,60,20);
+        subNumberText.setBounds(380,45,60,20);
+        subNumberText.addFocusListener(this);
         
         p1.add(status1);
         status1.setBounds(480,45,40,20);
@@ -320,7 +333,7 @@ public class SatSandeshModifySubscriptionData extends JFrame implements ActionLi
         
         p1.add(seriesNameDropDown);
         seriesNameDropDown.setBounds(810,45,90,20);
-                
+        
         p1.add(receiptNumberText);
         receiptNumberText.setBounds(910,45,60,20);
         //rect1.setEnabled(false);
@@ -341,7 +354,7 @@ public class SatSandeshModifySubscriptionData extends JFrame implements ActionLi
         if(d==0) distributionCodeDropDown.setEnabled(false);
         distributionCodeDropDown.setFont(f);
         
-        distributionCodeDropDown.setBounds(330,75,50,20);
+        distributionCodeDropDown.setBounds(330,75,60,20);
         distributionCodeDropDown.addItemListener(this);
         
         p1.add(lang1);
@@ -369,8 +382,8 @@ public class SatSandeshModifySubscriptionData extends JFrame implements ActionLi
             c10.rs=c10.st.executeQuery("select * from payment where asn="+x);
             c10.rs.next();
             
-            paytt1.setSelectedItem(c10.rs.getString(2));
-            chddt1.setText(""+c10.rs.getInt(3));
+            paymentTypeDropDown.setSelectedItem(c10.rs.getString(2));
+            chequeInstrumentNumberText.setText(""+c10.rs.getInt(3));
             datt1.setText(""+c10.rs.getInt(4));
             datt2.setText(""+c10.rs.getInt(5));
             datt3.setText(""+c10.rs.getInt(6));
@@ -397,20 +410,20 @@ public class SatSandeshModifySubscriptionData extends JFrame implements ActionLi
         payt1.setBounds(30,45,130,20);
         
         
-        p2.add(paytt1);
-        paytt1.setBounds(130,45,100,20);
-        paytt1.addItemListener(this);
-        paytt1.setEnabled(false);
-        paytt1.setFont(f);
+        p2.add(paymentTypeDropDown);
+        paymentTypeDropDown.setBounds(130,45,100,20);
+        paymentTypeDropDown.addItemListener(this);
+        //paymentTypeDropDown.setEnabled(false);
+        paymentTypeDropDown.setFont(f);
         
         p2.add(chdd1);
         chdd1.setBounds(250,45,100,20);
         
-        p2.add(chddt1);
-        chddt1.setBounds(350,45,60,20);
-        chddt1.setEnabled(false);
-        chddt1.setFont(f);
-        chddt1.setText("0");
+        p2.add(chequeInstrumentNumberText);
+        chequeInstrumentNumberText.setBounds(350,45,60,20);
+        //chequeInstrumentNumberText.setEnabled(true);
+        chequeInstrumentNumberText.setFont(f);
+        chequeInstrumentNumberText.setText("0");
         
         p2.add(dat1);
         dat1.setBounds(430,45, 30,20);
@@ -602,7 +615,7 @@ p4.add(hist1);
 hist1.setBounds(240,45,60,20);
 
 p4.add(counterDropDown);
-//histt1.setEnabled(false);
+counterDropDown.setEnabled(false);
 counterDropDown.setFont(f);
 counterDropDown.setBounds(300,45,150,20);
 
@@ -676,11 +689,12 @@ setVisible(true);
                 asn=x;
                 //rcpt=Integer.parseInt(receiptNumberText.getText());
                 subno1=(String)subNumberCodeDropDown.getSelectedItem();
-                subno=Integer.parseInt(subt21.getText());
+                subno=Integer.parseInt(subNumberText.getText());
                 dist=(String)distributionTypeDropDown.getSelectedItem();
                 dno=Integer.parseInt((String)distributionCodeDropDown.getSelectedItem());
                 
-                rcpt=Integer.parseInt(receiptNumberText.getText());
+                String rcptText = receiptNumberText.getText();
+                rcpt=Integer.parseInt(rcptText);
                 
                 /*
                 
@@ -694,10 +708,10 @@ setVisible(true);
                 int chno, amt, dat1, dat2, dat3, startm, starty, endm, endy;
                 String payt;
                 
-                chno=Integer.parseInt(chddt1.getText());
+                chno=Integer.parseInt(chequeInstrumentNumberText.getText());
                 amt=Integer.parseInt(amt1.getText());
                 
-                payt=paytt1.getSelectedItem();
+                payt=paymentTypeDropDown.getSelectedItem();
                 dat1=Integer.parseInt(datt1.getText());
                 dat2=Integer.parseInt(datt2.getText());
                 dat3=Integer.parseInt(datt3.getText());
@@ -826,17 +840,12 @@ setVisible(true);
                 c14.a=c14.st.executeUpdate(basicQuery);
                 
                 if(c14.a == 1) flag++;
-                else
-                    System.out.println(basicQuery);
-                
                 
                 //database query for subscription details fragment
                 String subDetailsQuery = "update subdetails set title='"+title+"', fname='"+fname+"', lname='"+lname+"', add1='"+add1+"', add2='"+add2+"',add3='"+add3+"',dist='"+dist2+"', state='"+state+"',pin="+pin+" where asn="+asn;
                 c14.a=c14.st.executeUpdate(subDetailsQuery);
                 
                 if(c14.a == 1) flag++;
-                else
-                    System.out.println(subDetailsQuery);
                 
                 //database query for other details fragment
                 
@@ -846,15 +855,16 @@ setVisible(true);
                 //System.out.println(c5.a);
                 
                 if(c14.a == 1) flag++;
-                else
-                    System.out.println(otherDetQuery);
                 
-                String sqlQuery = "update receipt_book_details set series_name = '"+seriesName+"', receipt_number = "+rcpt+", updated_by = '"+SamsUtilities.getUserName()+"' where asn ="+asn;
-                //System.out.println(sqlQuery);
-                c14.a=c14.st.executeUpdate(sqlQuery);
-                if(c14.a == 1) flag++;
+                if( seriesName.equals(originalSeriesName) == false || rcptText.equals(originalRcptNumber) == false ){
+                    String sqlQuery = "update receipt_book_details set series_name = '"+seriesName+"', receipt_number = "+rcpt+", updated_by = '"+SamsUtilities.getUserName()+"' where asn ="+asn+" and series_name = '"+originalSeriesName+"' and receipt_number = "+originalRcptNumber+"";
+                    //System.out.println(sqlQuery);
+                    c14.a=c14.st.executeUpdate(sqlQuery);
+                    if(c14.a >= 1) flag++;
+                }
                 else
-                    System.out.println(sqlQuery);
+                    flag++;
+                
                 
                 String mainTableQuery = "update subscribers_primary_details set subscription_code='"
                         +subno1+"', subscription_number="+subno+" ,receipt_number="
@@ -871,8 +881,6 @@ setVisible(true);
                 //System.out.println(c5.a);
                 
                 if(c14.a == 1) flag=flag+1;
-                else
-                    System.out.println(mainTableQuery);
                 
                 if(flag==5)
                 {
@@ -882,7 +890,7 @@ setVisible(true);
                     c14.con.setAutoCommit(true);
                 }
                 else{
-                    System.out.println("flag: "+ flag);
+                    //System.out.println("flag: "+ flag);
                     c14.con.rollback(save1);
                     c14.con.setAutoCommit(true);
                 }
@@ -917,10 +925,10 @@ setVisible(true);
         if(fe.getSource() == receiptNumberText)
         {
             seriesNameText = (String)(seriesNameDropDown.getSelectedItem());
-            //System.out.println("Gained " + seriesName);   
+            //System.out.println("Gained " + seriesName);
         }
     }
-
+    
     @Override
     public void focusLost(FocusEvent fe) {
         if(fe.getSource() == receiptNumberText)
@@ -940,7 +948,8 @@ setVisible(true);
                 rcptNum = (Integer.parseInt(rcpt));
                 String countQuery = "select count(book_num) from receipt_book_inventory where end_rcpt_num > "+(rcptNum-1)+" and start_rcpt_num < "+(rcptNum+1)+" and series_name='"+seriesNameText+"'";
                 String sqlQuery = "select issued_to,book_num, start_rcpt_num, end_rcpt_num from receipt_book_inventory where series_name = '"+seriesNameText+"' and end_rcpt_num > "+(rcptNum-1)+" and start_rcpt_num < "+(rcptNum+1);
-                String alreadyIssuedRcptCheckQuery = "select count(asn) from basic where rcpt = "+rcptNum +" and series_name = '"+seriesNameText+"'";
+                //String alreadyIssuedRcptCheckQuery = "select count(asn) from basic where rcpt = "+rcptNum +" and series_name = '"+seriesNameText+"'";
+                String alreadyIssuedRcptCheckQuery = "select count(asn) from receipt_book_details where receipt_number = "+rcptNum +" and series_name = '"+seriesNameText+"'";
                 
                 connect fillSeriesConnection = new connect();
                 try
@@ -986,9 +995,9 @@ setVisible(true);
                     //System.out.println(subCounterQuery);
                     fillSeriesConnection.rs = fillSeriesConnection.st.executeQuery(subCounterQuery);
                     if(fillSeriesConnection.rs.next()){
-                        String subCounter = fillSeriesConnection.rs.getString(1);
-                        //System.out.println(subCounter);
-                        //subIssueCounterText.setText(subCounter);
+                    String subCounter = fillSeriesConnection.rs.getString(1);
+                    //System.out.println(subCounter);
+                    //subIssueCounterText.setText(subCounter);
                     }*/
                     
                     fillSeriesConnection.rs = fillSeriesConnection.st.executeQuery(alreadyIssuedRcptCheckQuery);
@@ -1002,11 +1011,14 @@ setVisible(true);
                     {
                         //System.out.println(originalSeriesName + " " + seriesNameText + " " + originalRcptNumber + " " + rcpt);
                         if( seriesNameText.equals(originalSeriesName) == false || rcpt.equals(originalRcptNumber) == false ){
-                            JOptionPane.showMessageDialog(this,"Already used receipt number", "Invalid receipt number", JOptionPane.ERROR_MESSAGE);
-                            receiptNumberText.setText("");
-                            receiptNumberText.requestFocus();
-                            fillSeriesConnection.closeAll();
-                            return;
+                            String distributionType = (String)distributionTypeDropDown.getSelectedItem();
+                            if( distributionType.equals("Distributor")){
+                                JOptionPane.showMessageDialog(this,"Already used receipt number", "Invalid receipt number", JOptionPane.ERROR_MESSAGE);
+                                receiptNumberText.setText("");
+                                receiptNumberText.requestFocus();
+                                fillSeriesConnection.closeAll();
+                                return;
+                            }
                         }
                     }
                     
@@ -1018,8 +1030,51 @@ setVisible(true);
                     fillSeriesConnection.closeAll();
                 }
             }
-            //System.out.println("Lost");
         }
+        
+        if(fe.getSource() == subNumberText)
+        {
+            String subNumber = subNumberText.getText();
+            int subNum;
+            String subNumberCode = (String)subNumberCodeDropDown.getSelectedItem();
+            if(subNumberCode.isEmpty() && subNumber.isEmpty() == false)
+            {
+                JOptionPane.showMessageDialog(this,"Please fill subscription number details", "Please fill subscription details", JOptionPane.ERROR_MESSAGE);
+                subNumberText.requestFocus();
+                return;
+            }
+            if(subNumberCode.isEmpty() == false && subNumber.isEmpty() == false)
+            {
+                subNum  = Integer.parseInt(subNumber);
+                if(subNumber.equals(originalSubNumber) == false && subNumberCode.equals(originalSubNumberCode) == false)
+                {
+                    String countQuery = "select count(asn) from basic where subnos = '"+subNumberCode+"' and subno = "+subNum;
+                    //String sqlQuery = "select count(asn) from basic where subnos = '"+subNumberCode+"' and subno = "+subNum;
+                    //System.out.println(countQuery);
+                    connect fillSeriesConnection = new connect();
+                    try
+                    {
+                        fillSeriesConnection.rs = fillSeriesConnection.st.executeQuery(countQuery);
+                        fillSeriesConnection.rs.next();
+                        
+                        int ArrayCount = fillSeriesConnection.rs.getInt(1);
+                        if(ArrayCount > 0)
+                        {
+                            JOptionPane.showMessageDialog(this,"Subscription number "+subNumberCode+" "+subNumber+" already exists", "Subscription number already exists", JOptionPane.ERROR_MESSAGE);
+                            subNumberText.setText("");
+                            statust1.setText("Active");
+                            subNumberText.requestFocus();
+                        }
+                        fillSeriesConnection.closeAll();
+                    } catch (Exception exc) {
+                        exc.printStackTrace();
+                        fillSeriesConnection.closeAll();
+                    }
+                }
+            }
+        }
+        //System.out.println("Lost");
+        
     }
     
     public void itemStateChanged(ItemEvent ie)
@@ -1033,7 +1088,7 @@ setVisible(true);
         
         if(ie.getSource()==subNumberCodeDropDown)
         {
-            districtText.setText("");
+            //districtText.setText("");
             boolean flag = false;
             for(int stateCode = 0 ; stateCode != items.length ; ++stateCode)
             {
@@ -1042,7 +1097,7 @@ setVisible(true);
                     String sub_code_str = (String)(items[stateCode]);
                     String state_code_text = SamsUtilities.getStateCodeForSubCode(sub_code_str);
                     String state_name_text = SamsUtilities.getStateNameForStateCode(state_code_text);
-                    System.out.println("'"+sub_code_str+ "' '" +state_name_text + "' '" + state_code_text+"'" );
+                    //System.out.println("'"+sub_code_str+ "' '" +state_name_text + "' '" + state_code_text+"'" );
                     languageDropDown.setSelectedItem("Hindi");
                     languageDropDown.setEnabled(false);
                     flag = true;
@@ -1080,19 +1135,22 @@ setVisible(true);
                         distributionCodeDropDown.setEnabled(true);
                         
                     }
-                   
+                    
                     
                     String selectedItem = (String)subNumberCodeDropDown.getSelectedItem();
                     if(selectedItem.equals("BH") || selectedItem.equals("LH") || selectedItem.equals("EN") || selectedItem.equals("PJ") || selectedItem.equals("UR") )
                     {
-                        flag = false;
+                        
                         stateCodeDropDown.setSelectedIndex(0);
                         stateCodeDropDown.setEnabled(true);
                         distributionTypeDropDown.setSelectedItem("By Hand");
                         if(selectedItem.equals("BH") || selectedItem.equals("LH"))
                             distributionTypeDropDown.setEnabled(false);
                         else
+                        {
                             distributionTypeDropDown.setEnabled(true);
+                            flag = false;
+                        }
                         
                         distributionCodeDropDown.setEnabled(false);
                         
@@ -1103,349 +1161,349 @@ setVisible(true);
                     languageDropDown.setEnabled(true);
             }
         }
-            
-            
-            if(ie.getSource()==distributionCodeDropDown)
+        
+        
+        if(ie.getSource()==distributionCodeDropDown)
+        {
+            try
             {
-                try
+                connect c14=new connect();
+                String sqlQuery = "select district, state from despcode where dno="+Integer.parseInt((String)distributionCodeDropDown.getSelectedItem());
+                c14.rs=c14.st.executeQuery(sqlQuery);
+                //System.out.println(sqlQuery);
+                if(c14.rs.next()){
+                    //System.out.println(c14.rs.getString(1));
+                    districtText.setText(""+c14.rs.getString(1));
+                    districtText.setEnabled(false);
+                    stateCodeDropDown.setSelectedItem(c14.rs.getString(2));
+                    stateCodeDropDown.setEnabled(false);
+                    stateNameDropDown.setSelectedItem(SamsUtilities.getStateNameForStateCode((String)stateCodeDropDown.getSelectedItem()));
+                    stateNameDropDown.setEnabled(false);
+                }
+                c14.closeAll();
+            }
+            catch(Exception e1)
+            {
+                e1.printStackTrace();
+                
+            }
+            
+        }
+        if(ie.getSource()==distributionTypeDropDown)
+        {
+            if(distributionTypeDropDown.getSelectedItem()=="Distributor")
+            {
+                distributionCodeDropDown.setEnabled(true);
+                distributionCodeDropDown.setSelectedIndex(0);
+            }
+            
+            if(distributionTypeDropDown.getSelectedItem()=="By Hand"||distributionTypeDropDown.getSelectedItem()=="By Post")
+            {
+                distributionCodeDropDown.setEnabled(false);
+                distributionCodeDropDown.setSelectedItem("0");
+            }
+            
+        }
+        
+        if(ie.getSource()==subtt1)
+        {
+            try
+            {
+                connect c7=new connect();
+                c7.rs=c7.st.executeQuery("select * from amountdet where language='"+languageDropDown.getSelectedItem()+"' and duration='"+subtt1.getSelectedItem()+"'");
+                
+                while(c7.rs.next())
                 {
-                    connect c14=new connect();
-                    String sqlQuery = "select district, state from despcode where dno="+Integer.parseInt((String)distributionCodeDropDown.getSelectedItem());
-                    c14.rs=c14.st.executeQuery(sqlQuery);
-                    //System.out.println(sqlQuery);
-                    if(c14.rs.next()){
-                        //System.out.println(c14.rs.getString(1));
-                        districtText.setText(""+c14.rs.getString(1));
-                        districtText.setEnabled(false);
-                        stateCodeDropDown.setSelectedItem(c14.rs.getString(2));
-                        stateCodeDropDown.setEnabled(false);
-                        stateNameDropDown.setSelectedItem(SamsUtilities.getStateNameForStateCode((String)stateCodeDropDown.getSelectedItem()));
+                    amount=c7.rs.getInt(3);
+                }
+                
+                amt1.setText(""+amount);
+                
+                c7.st.close();
+                c7.con.close();
+                
+                if(subtt1.getSelectedItem()=="Urdu"||subtt1.getSelectedItem()=="Punjabi")
+                {
+                    amt1.setEnabled(true);
+                    amt1.setText("");
+                }
+            }
+            
+            catch(Exception e)
+            {
+                
+            }
+            
+        }
+        
+        if(ie.getSource()==languageDropDown)
+        {
+            try
+            {
+                connect c8=new connect();
+                
+                c8.rs=c8.st.executeQuery("select * from amountdet where language='"+languageDropDown.getSelectedItem()+"'");
+                
+                subtt1.removeAll();
+                while(c8.rs.next())
+                {
+                    subtt1.addItem(c8.rs.getString(2));
+                }
+                
+                c8.st.close();
+                c8.con.close();
+                
+                
+            }
+            catch(Exception e)
+            {
+                
+            }
+        }
+        
+        if(ie.getSource()==paymentTypeDropDown)
+        {
+            if(paymentTypeDropDown.getSelectedItem()=="Cash")
+            {
+                chequeInstrumentNumberText.setText("0");
+                chequeInstrumentNumberText.setEnabled(false);
+            }
+            
+            if(paymentTypeDropDown.getSelectedItem()=="CH/DD/MO")
+            {
+                chequeInstrumentNumberText.setText("");
+                chequeInstrumentNumberText.setEnabled(true);
+            }
+        }
+        
+        if(ie.getSource()==subNumberCodeDropDown)
+        {
+            districtText.setEnabled(true);
+            
+            for(int stateCode = 0 ; stateCode != items.length ; ++stateCode)
+            {
+                if(subNumberCodeDropDown.getSelectedItem() == items[stateCode])
+                {
+                    String sub_code_str = (String)(items[stateCode]);
+                    String state_code_text = SamsUtilities.getStateCodeForSubCode(sub_code_str);
+                    String state_name_text = SamsUtilities.getStateNameForSubCode(sub_code_str);
+                    //System.out.println("'"+sub_code_str+ "' '" +state_name_text + "' '" + state_code_text+"'" );
+                    
+                    
+                    if(state_name_text.isEmpty() == false)
+                    {
                         stateNameDropDown.setEnabled(false);
+                        stateCodeDropDown.setEnabled(false);
+                        //stateCodeDropDown.setSelectedItem(state_code_text);
+                        stateNameDropDown.setSelectedItem(state_name_text);
+                        //stateNameDropDown.setSelectedItem(state_name_text);
+                        distributionTypeDropDown.setSelectedItem("By Post");
+                        distributionTypeDropDown.setEnabled(false);
                     }
-                    c14.closeAll();
-                }
-                catch(Exception e1)
-                {
-                    e1.printStackTrace();
-                    
-                }
-                
-            }
-            if(ie.getSource()==distributionTypeDropDown)
-            {
-                if(distributionTypeDropDown.getSelectedItem()=="Distributor")
-                {
-                    distributionCodeDropDown.setEnabled(true);
-                    distributionCodeDropDown.setSelectedIndex(1);
-                }
-                
-                if(distributionTypeDropDown.getSelectedItem()=="By Hand"||distributionTypeDropDown.getSelectedItem()=="By Post")
-                {
-                    distributionCodeDropDown.setEnabled(false);
-                    distributionCodeDropDown.setSelectedItem("0");
-                }
-                
-            }
-            
-            if(ie.getSource()==subtt1)
-            {
-                try
-                {
-                    connect c7=new connect();
-                    c7.rs=c7.st.executeQuery("select * from amountdet where language='"+languageDropDown.getSelectedItem()+"' and duration='"+subtt1.getSelectedItem()+"'");
-                    
-                    while(c7.rs.next())
+                    else
                     {
-                        amount=c7.rs.getInt(3);
-                    }
-                    
-                    amt1.setText(""+amount);
-                    
-                    c7.st.close();
-                    c7.con.close();
-                    
-                    if(subtt1.getSelectedItem()=="Urdu"||subtt1.getSelectedItem()=="Punjabi")
-                    {
-                        amt1.setEnabled(true);
-                        amt1.setText("");
-                    }
-                }
-                
-                catch(Exception e)
-                {
-                    
-                }
-                
-            }
-            
-            if(ie.getSource()==languageDropDown)
-            {
-                try
-                {
-                    connect c8=new connect();
-                    
-                    c8.rs=c8.st.executeQuery("select * from amountdet where language='"+languageDropDown.getSelectedItem()+"'");
-                    
-                    subtt1.removeAll();
-                    while(c8.rs.next())
-                    {
-                        subtt1.addItem(c8.rs.getString(2));
-                    }
-                    
-                    c8.st.close();
-                    c8.con.close();
-                    
-                    
-                }
-                catch(Exception e)
-                {
-                    
-                }
-            }
-            
-            if(ie.getSource()==paytt1)
-            {
-                if(paytt1.getSelectedItem()=="Cash")
-                {
-                    chddt1.setText("0");
-                    chddt1.setEnabled(false);
-                }
-                
-                if(paytt1.getSelectedItem()=="CH/DD/MO")
-                {
-                    chddt1.setText("");
-                    chddt1.setEnabled(true);
-                }
-            }
-            
-            if(ie.getSource()==subNumberCodeDropDown)
-            {
-                districtText.setEnabled(true);
-                
-                for(int stateCode = 0 ; stateCode != items.length ; ++stateCode)
-                {
-                    if(subNumberCodeDropDown.getSelectedItem() == items[stateCode])
-                    {
-                        String sub_code_str = (String)(items[stateCode]);
-                        String state_code_text = SamsUtilities.getStateCodeForSubCode(sub_code_str);
-                        String state_name_text = SamsUtilities.getStateNameForSubCode(sub_code_str);
-                        //System.out.println("'"+sub_code_str+ "' '" +state_name_text + "' '" + state_code_text+"'" );
+                        stateNameDropDown.setSelectedIndex(0);
+                        stateNameDropDown.setEnabled(true);
+                        stateCodeDropDown.setSelectedIndex(0);
+                        stateCodeDropDown.setEnabled(true);
+                        distributionTypeDropDown.setSelectedItem("By Post");
+                        distributionTypeDropDown.setEnabled(false);
                         
+                    }
+                    
+                    if(sub_code_str.equals("BD"))
+                    {
                         
-                        if(state_name_text.isEmpty() == false)
-                        {
-                            stateNameDropDown.setEnabled(false);
-                            stateCodeDropDown.setEnabled(false);
-                            //stateCodeDropDown.setSelectedItem(state_code_text);
-                            stateNameDropDown.setSelectedItem(state_name_text);
-                            //stateNameDropDown.setSelectedItem(state_name_text);
-                            distributionTypeDropDown.setSelectedItem("By Post");
+                        stateCodeDropDown.setSelectedIndex(0);
+                        stateCodeDropDown.setEnabled(true);
+                        distributionTypeDropDown.setSelectedItem("Distributor");
+                        distributionTypeDropDown.setEnabled(false);
+                        
+                    }
+                    
+                    String selectedItem = (String)subNumberCodeDropDown.getSelectedItem();
+                    if(selectedItem.equals("BH") || selectedItem.equals("LH") || selectedItem.equals("EN") || selectedItem.equals("PJ") || selectedItem.equals("UR") )
+                    {
+                        stateCodeDropDown.setSelectedIndex(0);
+                        stateCodeDropDown.setEnabled(true);
+                        distributionTypeDropDown.setSelectedItem("By Hand");
+                        if(selectedItem.equals("BH") || selectedItem.equals("LH"))
                             distributionTypeDropDown.setEnabled(false);
-                        }
                         else
-                        {
-                            stateNameDropDown.setSelectedIndex(0);
-                            stateNameDropDown.setEnabled(true);
-                            stateCodeDropDown.setSelectedIndex(0);
-                            stateCodeDropDown.setEnabled(true);
-                            distributionTypeDropDown.setSelectedItem("By Post");
-                            distributionTypeDropDown.setEnabled(false);
-                            
-                        }
-                        
-                        if(sub_code_str.equals("BD"))
-                        {
-                            
-                            stateCodeDropDown.setSelectedIndex(0);
-                            stateCodeDropDown.setEnabled(true);
-                            distributionTypeDropDown.setSelectedItem("Distributor");
-                            distributionTypeDropDown.setEnabled(false);
-                            
-                        }
-                        
-                        String selectedItem = (String)subNumberCodeDropDown.getSelectedItem();
-                        if(selectedItem.equals("BH") || selectedItem.equals("LH") || selectedItem.equals("EN") || selectedItem.equals("PJ") || selectedItem.equals("UR") )
-                        {
-                            stateCodeDropDown.setSelectedIndex(0);
-                            stateCodeDropDown.setEnabled(true);
-                            distributionTypeDropDown.setSelectedItem("By Hand");
-                            if(selectedItem.equals("BH") || selectedItem.equals("LH"))
-                                distributionTypeDropDown.setEnabled(false);
-                            else
-                                distributionTypeDropDown.setEnabled(true);
-                            
-                        }
+                            distributionTypeDropDown.setEnabled(true);
                         
                     }
+                    
                 }
-                
-                /*
-                if(subt22.getSelectedItem()=="DL")
-                {
-                statt1.setText("DL");
-                statt1.setEnabled(false);
-                distributionTypeDropDown.setSelectedItem("By Post");
-                distributionTypeDropDown.setEnabled(false);
-                districtText.setText("");
-                
-                }
-                
-                
-                if(subt22.getSelectedItem()=="HR")
-                {
-                statt1.setText("HAR");
-                statt1.setEnabled(false);
-                distributionTypeDropDown.setSelectedItem("By Post");
-                distributionTypeDropDown.setEnabled(false);
-                districtText.setText("");
-                }
-                
-                if(subt22.getSelectedItem()=="MH")
-                {
-                statt1.setText("MAH");
-                statt1.setEnabled(false);
-                distributionTypeDropDown.setSelectedItem("By Post");
-                distributionTypeDropDown.setEnabled(false);
-                districtText.setText("");
-                }
-                
-                if(subt22.getSelectedItem()=="MP")
-                {
-                statt1.setText("MP");
-                statt1.setEnabled(false);
-                distributionTypeDropDown.setSelectedItem("By Post");
-                distributionTypeDropDown.setEnabled(false);
-                districtText.setText("");
-                }
-                
-                
-                if(subt22.getSelectedItem()=="PB")
-                {
-                statt1.setText("PJB");
-                statt1.setEnabled(false);
-                distributionTypeDropDown.setSelectedItem("By Post");
-                distributionTypeDropDown.setEnabled(false);
-                districtText.setText("");
-                }
-                
-                if(subt22.getSelectedItem()=="RJ")
-                {	statt1.setText("RAJ");
-                statt1.setEnabled(false);
-                distributionTypeDropDown.setSelectedItem("By Post");
-                distributionTypeDropDown.setEnabled(false);
-                districtText.setText("");
-                }
-                
-                if(subt22.getSelectedItem()=="UK")
-                {
-                statt1.setText("UK");
-                statt1.setEnabled(false);
-                distributionTypeDropDown.setSelectedItem("By Post");
-                distributionTypeDropDown.setEnabled(false);
-                districtText.setText("");
-                }
-                
-                if(subt22.getSelectedItem()=="UP")
-                {
-                statt1.setText("UP");
-                statt1.setEnabled(false);
-                distributionTypeDropDown.setSelectedItem("By Post");
-                distributionTypeDropDown.setEnabled(false);
-                districtText.setText("");
-                }
-                
-                
-                
-                if(subt22.getSelectedItem()=="LF")
-                {
-                statt1.setText("");
-                statt1.setEnabled(true);
-                distributionTypeDropDown.setSelectedItem("By Post");
-                distributionTypeDropDown.setEnabled(false);
-                districtText.setText("");
-                
-                }
-                
-                if(subt22.getSelectedItem()=="BH")
-                {
-                statt1.setText("");
-                statt1.setEnabled(true);
-                distributionTypeDropDown.setSelectedItem("By Hand");
-                distributionTypeDropDown.setEnabled(false);
-                districtText.setText("");
-                
-                }
-                
-                if(subt22.getSelectedItem()=="MS")
-                {
-                statt1.setText("");
-                statt1.setEnabled(true);
-                distributionTypeDropDown.setSelectedItem("By Post");
-                distributionTypeDropDown.setEnabled(false);
-                districtText.setText("");
-                
-                }
-                
-                if(subt22.getSelectedItem()=="LH")
-                {
-                statt1.setText("");
-                statt1.setEnabled(true);
-                distributionTypeDropDown.setSelectedItem("By Hand");
-                distributionTypeDropDown.setEnabled(false);
-                districtText.setText("");
-                
-                }
-                
-                if(subt22.getSelectedItem()=="CM")
-                {
-                statt1.setText("");
-                statt1.setEnabled(true);
-                distributionTypeDropDown.setSelectedItem("By Post");
-                distributionTypeDropDown.setEnabled(false);
-                districtText.setText("");
-                
-                }
-                
-                if(subt22.getSelectedItem()=="EN")
-                {
-                statt1.setText("");
-                statt1.setEnabled(true);
-                distributionTypeDropDown.setSelectedItem("By Hand");
-                distributionTypeDropDown.setEnabled(true);
-                districtText.setText("");
-                
-                }
-                
-                if(subt22.getSelectedItem()=="UR")
-                {
-                statt1.setText("");
-                statt1.setEnabled(true);
-                distributionTypeDropDown.setSelectedItem("By Hand");
-                distributionTypeDropDown.setEnabled(true);
-                
-                }
-                
-                if(subt22.getSelectedItem()=="BD")
-                {
-                
-                statt1.setText("");
-                statt1.setEnabled(true);
-                distributionTypeDropDown.setSelectedItem("Distributor");
-                distributionTypeDropDown.setEnabled(false);
-                
-                }
-                
-                if(subt22.getSelectedItem()=="PJ")
-                {
-                statt1.setText("");
-                statt1.setEnabled(true);
-                distributionTypeDropDown.setSelectedItem("By Hand");
-                distributionTypeDropDown.setEnabled(true);
-                districtText.setText("");
-                
-                }
-                */
             }
+            
+            /*
+            if(subt22.getSelectedItem()=="DL")
+            {
+            statt1.setText("DL");
+            statt1.setEnabled(false);
+            distributionTypeDropDown.setSelectedItem("By Post");
+            distributionTypeDropDown.setEnabled(false);
+            districtText.setText("");
+            
+            }
+            
+            
+            if(subt22.getSelectedItem()=="HR")
+            {
+            statt1.setText("HAR");
+            statt1.setEnabled(false);
+            distributionTypeDropDown.setSelectedItem("By Post");
+            distributionTypeDropDown.setEnabled(false);
+            districtText.setText("");
+            }
+            
+            if(subt22.getSelectedItem()=="MH")
+            {
+            statt1.setText("MAH");
+            statt1.setEnabled(false);
+            distributionTypeDropDown.setSelectedItem("By Post");
+            distributionTypeDropDown.setEnabled(false);
+            districtText.setText("");
+            }
+            
+            if(subt22.getSelectedItem()=="MP")
+            {
+            statt1.setText("MP");
+            statt1.setEnabled(false);
+            distributionTypeDropDown.setSelectedItem("By Post");
+            distributionTypeDropDown.setEnabled(false);
+            districtText.setText("");
+            }
+            
+            
+            if(subt22.getSelectedItem()=="PB")
+            {
+            statt1.setText("PJB");
+            statt1.setEnabled(false);
+            distributionTypeDropDown.setSelectedItem("By Post");
+            distributionTypeDropDown.setEnabled(false);
+            districtText.setText("");
+            }
+            
+            if(subt22.getSelectedItem()=="RJ")
+            {	statt1.setText("RAJ");
+            statt1.setEnabled(false);
+            distributionTypeDropDown.setSelectedItem("By Post");
+            distributionTypeDropDown.setEnabled(false);
+            districtText.setText("");
+            }
+            
+            if(subt22.getSelectedItem()=="UK")
+            {
+            statt1.setText("UK");
+            statt1.setEnabled(false);
+            distributionTypeDropDown.setSelectedItem("By Post");
+            distributionTypeDropDown.setEnabled(false);
+            districtText.setText("");
+            }
+            
+            if(subt22.getSelectedItem()=="UP")
+            {
+            statt1.setText("UP");
+            statt1.setEnabled(false);
+            distributionTypeDropDown.setSelectedItem("By Post");
+            distributionTypeDropDown.setEnabled(false);
+            districtText.setText("");
+            }
+            
+            
+            
+            if(subt22.getSelectedItem()=="LF")
+            {
+            statt1.setText("");
+            statt1.setEnabled(true);
+            distributionTypeDropDown.setSelectedItem("By Post");
+            distributionTypeDropDown.setEnabled(false);
+            districtText.setText("");
+            
+            }
+            
+            if(subt22.getSelectedItem()=="BH")
+            {
+            statt1.setText("");
+            statt1.setEnabled(true);
+            distributionTypeDropDown.setSelectedItem("By Hand");
+            distributionTypeDropDown.setEnabled(false);
+            districtText.setText("");
+            
+            }
+            
+            if(subt22.getSelectedItem()=="MS")
+            {
+            statt1.setText("");
+            statt1.setEnabled(true);
+            distributionTypeDropDown.setSelectedItem("By Post");
+            distributionTypeDropDown.setEnabled(false);
+            districtText.setText("");
+            
+            }
+            
+            if(subt22.getSelectedItem()=="LH")
+            {
+            statt1.setText("");
+            statt1.setEnabled(true);
+            distributionTypeDropDown.setSelectedItem("By Hand");
+            distributionTypeDropDown.setEnabled(false);
+            districtText.setText("");
+            
+            }
+            
+            if(subt22.getSelectedItem()=="CM")
+            {
+            statt1.setText("");
+            statt1.setEnabled(true);
+            distributionTypeDropDown.setSelectedItem("By Post");
+            distributionTypeDropDown.setEnabled(false);
+            districtText.setText("");
+            
+            }
+            
+            if(subt22.getSelectedItem()=="EN")
+            {
+            statt1.setText("");
+            statt1.setEnabled(true);
+            distributionTypeDropDown.setSelectedItem("By Hand");
+            distributionTypeDropDown.setEnabled(true);
+            districtText.setText("");
+            
+            }
+            
+            if(subt22.getSelectedItem()=="UR")
+            {
+            statt1.setText("");
+            statt1.setEnabled(true);
+            distributionTypeDropDown.setSelectedItem("By Hand");
+            distributionTypeDropDown.setEnabled(true);
+            
+            }
+            
+            if(subt22.getSelectedItem()=="BD")
+            {
+            
+            statt1.setText("");
+            statt1.setEnabled(true);
+            distributionTypeDropDown.setSelectedItem("Distributor");
+            distributionTypeDropDown.setEnabled(false);
+            
+            }
+            
+            if(subt22.getSelectedItem()=="PJ")
+            {
+            statt1.setText("");
+            statt1.setEnabled(true);
+            distributionTypeDropDown.setSelectedItem("By Hand");
+            distributionTypeDropDown.setEnabled(true);
+            districtText.setText("");
+            
+            }
+            */
+        }
         
     }
 }

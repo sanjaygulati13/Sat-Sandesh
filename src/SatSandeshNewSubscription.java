@@ -10,7 +10,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.print.PageFormat;
+//import java.awt.print.PageFormat;
 import java.sql.Savepoint;
 import java.util.Date;
 import java.util.Calendar;
@@ -57,8 +57,8 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
     
     int currMonth, currYear;
     
-    JTextField /*paytt1,*/ chddt1;											//payment details
-    TextFieldWithLimit /*dateText, monthText, yearText,*/ amt1, endingPeriodText, newRenewText;//starty1, startm1,
+    //JTextField /*paytt1,*/ ;											//payment details
+    TextFieldWithLimit /*dateText, monthText, yearText,*/ amt1, endingPeriodText, newRenewText, chddt1;//starty1, startm1,
     JComboBox paytt1, starty1, startm1, stateCodeDropDown;
     
     
@@ -192,7 +192,7 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
         seriesDropDown = new JComboBox(SamsUtilities.fillSeriesInformation());
         
         
-        chddt1=new JTextField(9);
+        chddt1=new TextFieldWithLimit(10,10);
         //dateText=new TextFieldWithLimit(2,2);
         //monthText=new TextFieldWithLimit(2,2);
         //yearText=new TextFieldWithLimit(4,4);
@@ -741,9 +741,6 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
                 startm=Integer.parseInt((String)startm1.getSelectedItem());
                 starty=Integer.parseInt((String)starty1.getSelectedItem());
                 
-                endm=endm2;
-                endy=endy2;
-                //subscriber details
                 
                 String title, fname, lname, address1, add2, add3, dist2, state;
                 int pin;
@@ -772,58 +769,65 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
                     return;
                 }
                 
-                if(true)
                 {
-                    int startm2=Integer.parseInt((String)startm1.getSelectedItem());
-                    int starty2=Integer.parseInt((String)starty1.getSelectedItem());
-                    
-                    int period2=0, period12=0;
-                    try
+                    if(true)
                     {
+                        int startm2=Integer.parseInt((String)startm1.getSelectedItem());
+                        int starty2=Integer.parseInt((String)starty1.getSelectedItem());
                         
-                        connect c22=new connect();
-                        c22.rs=c22.st.executeQuery("select * from amountdet where duration='"+subscriptionDurationDropDown.getSelectedItem()+"'");
-                        while(c22.rs.next())
+                        int period2=0, period12=0;
+                        try
                         {
-                            period2=c22.rs.getInt(4);
-                            period12=c22.rs.getInt(5);
                             
-                            //System.out.println("year : "+period2+" month : "+period12);
+                            connect c22=new connect();
+                            c22.rs=c22.st.executeQuery("select * from amountdet where duration='"+subscriptionDurationDropDown.getSelectedItem()+"'");
+                            while(c22.rs.next())
+                            {
+                                period2=c22.rs.getInt(4);
+                                period12=c22.rs.getInt(5);
+                                
+                                //System.out.println("year : "+period2+" month : "+period12);
+                            }
+                            
+                            c22.st.close();
+                            c22.con.close();
+                        }
+                        catch(Exception e)
+                        {
+                            JOptionPane.showMessageDialog(this, "ERROR : "+e, "ERROR", JOptionPane.ERROR_MESSAGE);
                         }
                         
-                        c22.st.close();
-                        c22.con.close();
-                    }
-                    catch(Exception e)
-                    {
-                        JOptionPane.showMessageDialog(this, "ERROR : "+e, "ERROR", JOptionPane.ERROR_MESSAGE);
-                    }
-                    
-                    endm2=((startm2-1)+period12)%12;
-                    //endy2;
-                    int tempFlag=0;
-                    if(endm2==0)
-                        endm2=12;
-                    if(endm2>0 && endm2 <period12)
-                        tempFlag++;
-                    if(endm2<12)
-                        endy2=starty2+period2+tempFlag;
-                    else
-                        endy2=starty2+period2-1+tempFlag;
-                    
-                    if(endm2==12 && period12>0)
-                    {
-                        endy2++;
-                    }
-                    String endingPeriod  = ""+endm2+"/"+endy2;
-                    //endingPeriodText.setText(endingPeriod);
-                    int res = JOptionPane.showConfirmDialog(this, "Updating with ending period: " + endingPeriod, "Confirm", JOptionPane.YES_NO_OPTION);
-                    if( res == JOptionPane.NO_OPTION ) {
-                        startm1.requestFocus();
-                        return;
+                        endm2=((startm2-1)+period12)%12;
+                        //endy2;
+                        int tempFlag=0;
+                        if(endm2==0)
+                            endm2=12;
+                        if(endm2>0 && endm2 <period12)
+                            tempFlag++;
+                        if(endm2<12)
+                            endy2=starty2+period2+tempFlag;
+                        else
+                            endy2=starty2+period2-1+tempFlag;
+                        
+                        if(endm2==12 && period12>0)
+                        {
+                            endy2++;
+                        }
+                        String endingPeriod  = ""+endm2+"/"+endy2;
+                        //endingPeriodText.setText(endingPeriod);
+                        int res = JOptionPane.showConfirmDialog(this, "Updating with ending period: " + endingPeriod, "Confirm", JOptionPane.YES_NO_OPTION);
+                        if( res == JOptionPane.NO_OPTION ) {
+                            startm1.requestFocus();
+                            return;
+                        }
+                        
                     }
                     
                 }
+                
+                endm=endm2;
+                endy=endy2;
+                //subscriber details
                 
                 
                 if(endm == 0 || endy == 0)
@@ -859,6 +863,7 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
                 String userName = SamsUtilities.getUserName();
                 int page_number = 0;
                 String subscription_type = "New";
+                String endingPeriod = endy+"-"+endm+"-28";
                 //database query for basic fragment
                 
                 connect c2=new connect();
@@ -889,11 +894,12 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
                 c2.a=c2.st.executeUpdate(otherDetailsQuery);
                 if(c2.a == 1) flag++;
                 
-                String sqlQuery = "insert into receipt_book_details values ('"+seriesName+"',"+rcpt+","+asn+",'"+payt+"','"+dat3+"-"+dat2+"-"+date1+"',"+amt+",'"+history+"','0','"+SamsUtilities.getUserName()+"')";
+                
+                String sqlQuery = "insert into receipt_book_details values ('"+seriesName+"',"+rcpt+","+asn+",'"+payt+"','"+dat3+"-"+dat2+"-"+date1+"',"+amt+",'"+history+"','0','"+SamsUtilities.getUserName()+"', '"+endingPeriod+"')";
                 c2.a=c2.st.executeUpdate(sqlQuery);
                 if(c2.a == 1) flag++;
                 
-                String mainTableQuery = "insert into subscribers_primary_details values("+asn+",'"+subscriptionCode+"',"+subno+",'"+status+"',"+rcpt+",'"+dist+"',"+dno+",'"+subt+"','"+lang+"','"+seriesName+"','"+payt+"',"+chno+",'"+dat3+"-"+dat2+"-"+date1+"',"+amt+",'"+starty+"-"+startm+"-1','"+endy+"-"+endm+"-28','"+title+"','"+fname+"','"+lname+"','"+address1+"','"+add2+"','"+add3+"','"+dist2+"','"+state+"',"+pin+",'"+phone+"','"+history+"','"+email+"',"+page_number+",'"+subscription_type+"' , '"+SamsUtilities.getCurrentSqlDate()+"','"+remarks+"','"+returnBackText+"','','','','"+userName+"')";
+                String mainTableQuery = "insert into subscribers_primary_details values("+asn+",'"+subscriptionCode+"',"+subno+",'"+status+"',"+rcpt+",'"+dist+"',"+dno+",'"+subt+"','"+lang+"','"+seriesName+"','"+payt+"',"+chno+",'"+dat3+"-"+dat2+"-"+date1+"',"+amt+",'"+starty+"-"+startm+"-1','"+endingPeriod+"','"+title+"','"+fname+"','"+lname+"','"+address1+"','"+add2+"','"+add3+"','"+dist2+"','"+state+"',"+pin+",'"+phone+"','"+history+"','"+email+"',"+page_number+",'"+subscription_type+"' , '"+SamsUtilities.getCurrentSqlDate()+"','"+remarks+"','"+returnBackText+"','','','','"+userName+"')";
                 //System.out.println(mainTableQuery);
                 c2.a=c2.st.executeUpdate(mainTableQuery);
                 if(c2.a == 1) flag++;
@@ -1202,7 +1208,8 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
                     {
                         
                         stateCodeDropDown.setSelectedIndex(0);
-                        stateCodeDropDown.setEnabled(true);
+                        stateCodeDropDown.setEnabled(false);
+                        stateNameDropDown.setEnabled(false);
                         distributionTypeDropDown.setSelectedItem("Distributor");
                         distributionTypeDropDown.setEnabled(false);
                         
@@ -1211,16 +1218,29 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
                     String selectedItem = (String)subNumberCodeDropDown.getSelectedItem();
                     if(selectedItem.equals("BH") || selectedItem.equals("LH") || selectedItem.equals("EN") || selectedItem.equals("PJ") || selectedItem.equals("UR") )
                     {
-                        flag = false;
+                        
                         stateCodeDropDown.setSelectedIndex(0);
                         stateCodeDropDown.setEnabled(true);
                         distributionTypeDropDown.setSelectedItem("By Hand");
                         if(selectedItem.equals("BH") || selectedItem.equals("LH"))
                             distributionTypeDropDown.setEnabled(false);
-                        else
+                        else{
+                            flag = false;
                             distributionTypeDropDown.setEnabled(true);
+                        }
                         
                     }
+                    if(selectedItem.equals("LF") || selectedItem.equals("LH") ){
+                        subscriptionDurationDropDown.setSelectedItem("Life");
+                        subscriptionDurationDropDown.setEnabled(false);
+                    }
+                    else if (selectedItem.equals("CM")){
+                        subscriptionDurationDropDown.setSelectedItem("Comp");
+                        subscriptionDurationDropDown.setEnabled(false);
+                    }
+                    else
+                        subscriptionDurationDropDown.setSelectedIndex(0);
+                    
                 }
                 if(!flag)
                     languageDropDown.setEnabled(true);
@@ -1427,7 +1447,8 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
                 rcptNum = (Integer.parseInt(rcpt));
                 String countQuery = "select count(book_num) from receipt_book_inventory where end_rcpt_num > "+(rcptNum-1)+" and start_rcpt_num < "+(rcptNum+1)+" and series_name='"+seriesNameText+"'";
                 String sqlQuery = "select issued_to,book_num, start_rcpt_num, end_rcpt_num from receipt_book_inventory where series_name = '"+seriesNameText+"' and end_rcpt_num > "+(rcptNum-1)+" and start_rcpt_num < "+(rcptNum+1);
-                String alreadyIssuedRcptCheckQuery = "select count(asn) from basic where rcpt = "+rcptNum +" and series_name = '"+seriesNameText+"'";
+                //String alreadyIssuedRcptCheckQuery = "select count(asn) from basic where rcpt = "+rcptNum +" and series_name = '"+seriesNameText+"'";
+                String alreadyIssuedRcptCheckQuery = "select count(asn) from receipt_book_details where receipt_number = "+rcptNum +" and series_name = '"+seriesNameText+"'";
                 
                 connect fillSeriesConnection = new connect();
                 try
@@ -1464,6 +1485,7 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
                     String subCounterQuery = "select issued_to from sub_issue_details where series_name='"+seriesNameText+"' and book_num="+bookNum+" and rcpt_num="+rcptNum;
                     //System.out.println(centre);
                     counterDropDown.setSelectedItem(centre);
+                    counterDropDown.setEnabled(false);
                     subIssueCounterText.setText("");
                     //System.out.println(subCounterQuery);
                     fillSeriesConnection.rs = fillSeriesConnection.st.executeQuery(subCounterQuery);
@@ -1529,35 +1551,6 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
                         JOptionPane.showMessageDialog(this,"Subscription number "+subNumberCode+" "+subNumber+" already exists", "Subscription number already exists", JOptionPane.ERROR_MESSAGE);
                         subNumberText.setText("");
                         statust1.setText("Active");
-                        /*receiptNumberText.setText("");
-                        //distributionTypeDropDown.setSelectedItem("By Hand");
-                        distributionCodeDropDown.setEnabled(false);
-                        distributionCodeDropDown.setSelectedItem("0");
-                        subscriptionDurationDropDown.setSelectedItem("1 year");
-                        languageDropDown.setSelectedItem("Hindi");
-                        paytt1.setSelectedItem("Cash");
-                        chddt1.setText("0");
-                        datePicker.getJFormattedTextField().setText("");
-                        amt1.setText("100");
-                        startm1.setSelectedItem("1");
-                        starty1.setSelectedItem("s2");
-                        endingPeriodText.setText("");
-                        titt1.setText("");
-                        namt1.setText("");
-                        lnamt1.setText("");
-                        dist21.setText("");
-                        //stateCodeDropDown.setSelectedItem("");
-                        //stateNameDropDown.setSelectedIndex(0);
-                        pint1.setText("0");
-                        telt1.setText("");
-                        counterDropDown.setSelectedIndex(1);
-                        emailt1.setText("");
-                        rett1.setText("0");
-                        rett1.setEnabled(false);
-                        remt1.setText("");
-                        addt11.setText("");
-                        addt21.setText("");
-                        addt31.setText("");*/
                         subNumberText.requestFocus();
                     }
                     fillSeriesConnection.closeAll();

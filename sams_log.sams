@@ -20,3 +20,11 @@ java.lang.NullPointerException % class SatSandeshModifyDistributorCode
 java.sql.SQLException: Column Index out of range, 14 > 13.  % class SatSandeshModifyDistributorCode
 25/02/2017 13:49:20
 java.sql.SQLException: Column Index out of range, 14 > 13.  % class SatSandeshModifyDistributorCode
+15/05/2017 23:12:25
+java.sql.SQLException: Illegal operation on empty result set. % class returnback
+15/05/2017 23:13:28
+java.sql.SQLException: Illegal operation on empty result set. % class returnback
+15/05/2017 23:14:25
+java.sql.SQLException: Illegal operation on empty result set. % class returnback
+15/05/2017 23:18:21
+com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: Unknown column 'return_issue_month' in 'field list' % class returnback

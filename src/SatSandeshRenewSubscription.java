@@ -3,6 +3,9 @@ import java.awt.event.*;
 import java.sql.Savepoint;
 import javax.swing.*;
 import java.util.*;
+import org.jdatepicker.impl.JDatePanelImpl;
+import org.jdatepicker.impl.JDatePickerImpl;
+import org.jdatepicker.impl.UtilDateModel;
 //done till sub no, nd status
 
 
@@ -30,13 +33,13 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
     
     Font f=new Font("ARIAL", Font.BOLD,12);
     
-    JTextField asnt1, statust1 /*, distt1, subtt1 , langt1*/;						//subscription details
-    JComboBox distributionCodeDropDown, distt1, subNumberCodeDropDown, subtt1, langt1, seriesDropDown;
+    JTextField asnt1, statust1 /*, distributionTypeDropDown, subscriptionDurationDropDown , languageDropDown*/;						//subscription details
+    JComboBox distributionCodeDropDown, distributionTypeDropDown, subNumberCodeDropDown, subscriptionDurationDropDown, languageDropDown, seriesDropDown;
     TextFieldWithLimit subt21, receiptNumberText;
     
     
-    JTextField /*paytt1,*/ chddt1;											//payment details
-    TextFieldWithLimit dateText, monthText, yearText, amt1, endingPeriodText, newRenewText;
+    //JTextField /*paytt1,*/ ;											//payment details
+    TextFieldWithLimit dateText, monthText, yearText, amt1, endingPeriodText, newRenewText, chddt1;
     JComboBox paytt1, startm1, starty1;
     
     
@@ -45,7 +48,7 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
     
     JTextField  rett1, remt1;											//other details
     TextFieldWithLimit telt1,emailt1,subIssueCounterText;
-    JComboBox histt1;
+    JComboBox counterDropDown;
     
     int currMonth, currYear; 
     
@@ -54,6 +57,12 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
     String str;
     int flag=0;
     Object[] items;
+    
+    UtilDateModel model = new UtilDateModel();
+    Properties prop;
+    JDatePanelImpl datePanel;
+    JDatePickerImpl datePicker;
+    
     
     public SatSandeshRenewSubscription(String stat,int num)
     {
@@ -107,7 +116,7 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
         pay1=new JLabel("PAYMENT AND PERIOD DETAILS");
         payt1=new JLabel("Payment Type");
         chdd1=new JLabel("CH/ DD/ MO No");
-        dat1=new JLabel("DATE");
+        dat1=new JLabel("Date");
         am1=new JLabel("Amount");
         starm1=new JLabel("Starting Period");
         stary1=new JLabel("/");
@@ -134,21 +143,21 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
         subt21=new TextFieldWithLimit(5,5);
         statust1=new JTextField(20);
         receiptNumberText=new TextFieldWithLimit(5,5);
-        distt1=new JComboBox();
+        distributionTypeDropDown=new JComboBox();
         items = SamsUtilities.getSubCodes();
         subNumberCodeDropDown=new JComboBox(items);
         
         
         //dt1=new TextFieldWithLimit(2,2);
-        subtt1=new JComboBox();
-        langt1=new JComboBox();
+        subscriptionDurationDropDown=new JComboBox();
+        languageDropDown=new JComboBox();
         
         
         paytt1=new JComboBox();
         seriesDropDown = new JComboBox(SamsUtilities.fillSeriesInformation());
         
-        chddt1=new JTextField(9);
-        dateText=new TextFieldWithLimit(2,2);
+        chddt1=new TextFieldWithLimit(10,10);
+        //dateText=new TextFieldWithLimit(2,2);
         monthText=new TextFieldWithLimit(2,2);
         yearText=new TextFieldWithLimit(4,4);
         amt1=new TextFieldWithLimit(4,4);
@@ -165,18 +174,19 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
         stateNameDropDown = new JComboBox(SamsUtilities.fillStateNameList());
         pint1=new TextFieldWithLimit(6,6);
         telt1=new TextFieldWithLimit(12,12);
-        histt1=new JComboBox();
+        counterDropDown=new JComboBox();
         emailt1=new TextFieldWithLimit(32,32);
         subIssueCounterText = new TextFieldWithLimit(32,32);
         rett1=new JTextField(5);
         remt1=new JTextField(50);
         
         
-        histt1.addItem("Kirpal Bagh");
-        histt1.addItem("Kirpal Ashram");
-        histt1.addItem("Sawan Ashram");
-        //		histt1.addItem("Dharshan Dham");
-        //		histt1.addItem("Tours/Function");
+        counterDropDown.addItem("Kirpal Bagh");
+        counterDropDown.addItem("Kirpal Ashram");
+        counterDropDown.addItem("Sawan Ashram");
+        counterDropDown.setEnabled(false);
+        //		counterDropDown.addItem("Dharshan Dham");
+        //		counterDropDown.addItem("Tours/Function");
         //
         
         
@@ -254,27 +264,28 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
         subCodeDropdown.addItem("BD");
         */
         
-        distt1.addItem("By Hand");
-        distt1.addItem("By Post");
-        distt1.addItem("Distributor");
+        distributionTypeDropDown.addItem("By Hand");
+        distributionTypeDropDown.addItem("By Post");
+        distributionTypeDropDown.addItem("Distributor");
+        distributionTypeDropDown.setEnabled(false);
         
         
+        subscriptionDurationDropDown.addItem("1 year");
+        subscriptionDurationDropDown.addItem("2 year");
+        subscriptionDurationDropDown.addItem("2 year plus");
+        subscriptionDurationDropDown.addItem("3 year");
+        subscriptionDurationDropDown.addItem("3 year plus");
+        subscriptionDurationDropDown.addItem("5 year");
+        subscriptionDurationDropDown.addItem("5 year plus");
+        subscriptionDurationDropDown.addItem("Life");
+        subscriptionDurationDropDown.addItem("Comp");
         
-        subtt1.addItem("1 year");
-        subtt1.addItem("2 year");
-        subtt1.addItem("2 year plus");
-        subtt1.addItem("3 year");
-        subtt1.addItem("3 year plus");
-        subtt1.addItem("5 year");
-        subtt1.addItem("5 year plus");
-        subtt1.addItem("Life");
-        subtt1.addItem("Comp");
         
-        
-        langt1.addItem("Hindi");
-        langt1.addItem("English");
-        langt1.addItem("Urdu");
-        langt1.addItem("Punjabi");
+        languageDropDown.addItem("Hindi");
+        languageDropDown.addItem("English");
+        languageDropDown.addItem("Urdu");
+        languageDropDown.addItem("Punjabi");
+        languageDropDown.setEnabled(false);
         
         paytt1.addItem("Cash");
         paytt1.addItem("CH/DD/MO");
@@ -310,11 +321,11 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
                 if(s1.equals("DISTRIBUTOR") || s1.equals("distributor"))
                     s1="Distributor";
                 
-                distt1.setSelectedItem(s1);
+                distributionTypeDropDown.setSelectedItem(s1);
                 
                 distributionCodeDropDown.setSelectedItem(""+c1.rs.getInt(7));
-                subtt1.setSelectedItem(c1.rs.getString(8));
-                langt1.setSelectedItem(c1.rs.getString(9));
+                //subscriptionDurationDropDown.setSelectedItem(c1.rs.getString(8));
+                languageDropDown.setSelectedItem(c1.rs.getString(9));
             }
             
             c1.st.close();
@@ -384,9 +395,9 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
         p1.add(dist1);
         dist1.setBounds(30,75,100,20);
         
-        p1.add(distt1);
-        distt1.addItemListener(this);
-        distt1.setBounds(140,75,100,20);
+        p1.add(distributionTypeDropDown);
+        distributionTypeDropDown.addItemListener(this);
+        distributionTypeDropDown.setBounds(140,75,100,20);
         //distt1.setEnabled(false);
         
         p1.add(d1);
@@ -401,16 +412,16 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
         p1.add(lang1);
         lang1.setBounds(480,75,110,20);
         
-        p1.add(langt1);
-        langt1.setBounds(600,75,80,20);
-        langt1.addItemListener(this);
+        p1.add(languageDropDown);
+        languageDropDown.setBounds(600,75,80,20);
+        languageDropDown.addItemListener(this);
         
         p1.add(subt1);
         subt1.setBounds(750,75,100,20);
         
-        p1.add(subtt1);
-        subtt1.setBounds(860,75,100,20);
-        subtt1.addItemListener(this);
+        p1.add(subscriptionDurationDropDown);
+        subscriptionDurationDropDown.setBounds(860,75,100,20);
+        subscriptionDurationDropDown.addItemListener(this);
         
         //_______________________________________________________________________________________
         
@@ -462,58 +473,68 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
         chddt1.setText("0");
         
         p2.add(dat1);
-        dat1.setBounds(430,45, 30,20);
+        dat1.setBounds(430,45, 40,20);
         
-        p2.add(dateText);
-        dateText.setBounds(470,45,25,20);
+        {
+            prop = new Properties();
+            prop.put("text.today", "Today");
+            prop.put("text.month", "Month");
+            prop.put("text.year", "Year");
+            datePanel = new JDatePanelImpl(model, prop);
+            datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+        }
         
-        p2.add(monthText);
+        datePicker.setBounds(480,45,165,25);
+        p2.add(datePicker);
+        
+        /*p2.add(monthText);
         monthText.setText(""+currMonth);
         monthText.setBounds(500,45,25,20);
         
         p2.add(yearText);
         yearText.setText(""+currYear);
-        yearText.setBounds(530,45,40,20);
+        yearText.setBounds(530,45,40,20);*/
         
         
         p2.add(am1);
-        am1.setBounds(580,45,50,20);
+        am1.setBounds(650,45,50,20);
         
         p2.add(amt1);
-        amt1.setBounds(640,45,40,20);
+        amt1.setBounds(740,45,60,20);
         amt1.setEnabled(false);
         amt1.setFont(f);
         amt1.setText("100");
         
         p2.add(starm1);
-        starm1.setBounds(700,45,100,20);
-        
-        p2.add(stary1);
-        stary1.setBounds(830,45,10,20);
+        starm1.setBounds(30,75,100,20);
         
         p2.add(startm1);
-        startm1.setBounds(780,45,45,20);
+        startm1.setBounds(130,75,75,20);
+        
+        p2.add(stary1);
+        stary1.setBounds(210,75,10,20);
+        
         
         p2.add(starty1);
-        starty1.setBounds(845,45,50,20);
+        starty1.setBounds(225,75,90,20);
         
         
         p2.add(end1);
-        end1.setBounds(30,75,100,20);
+        end1.setBounds(285,75,100,20);
         
         p2.add(end1);
-        end1.setBounds(30,75,100,20);
+        end1.setBounds(400,75,100,20);
         
         p2.add(endingPeriodText);
-        endingPeriodText.setBounds(130,75,70,20);
+        endingPeriodText.setBounds(510,75,70,20);
         endingPeriodText.setEnabled(false);
         endingPeriodText.setFont(f);
         
         p2.add(newRenewLabel);
-        newRenewLabel.setBounds(320,75,80,20);
+        newRenewLabel.setBounds(600,75,80,20);
         
         p2.add(newRenewText);
-        newRenewText.setBounds(410,75,60,20);
+        newRenewText.setBounds(690,75,60,20);
         newRenewText.setEnabled(false);
         newRenewText.setText("Renew");
         newRenewText.setFont(f);
@@ -573,12 +594,12 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
         namt1.setBounds(160,45,145,20);
         
         p3.add(lnam1);
-        lnam1.setBounds(310,45,40,20);
+        lnam1.setBounds(310,45,50,20);
         
         p3.add(lnamt1);
         lnamt1.setEnabled(false);
         lnamt1.setFont(f);
-        lnamt1.setBounds(350,45,145,20);
+        lnamt1.setBounds(360,45,145,20);
         
         p3.add(add1);
         add1.setBounds(520,45,60,20);
@@ -586,17 +607,17 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
         p3.add(addt11);
         addt11.setEnabled(false);
         addt11.setFont(f);
-        addt11.setBounds(600,35,240,20);
+        addt11.setBounds(600,45,340,20);
         
         p3.add(addt21);
         addt21.setEnabled(false);
         addt21.setFont(f);
-        addt21.setBounds(600,60,240,20);
+        addt21.setBounds(600,65,340,20);
         
         p3.add(addt31);
         addt31.setEnabled(false);
         addt31.setFont(f);
-        addt31.setBounds(600,85,240,20);
+        addt31.setBounds(600,85,340,20);
         
         p3.add(dis1);
         dis1.setBounds(30,115,60,20);
@@ -640,7 +661,7 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
             while(c3.rs.next())
             {
                 telt1.setText(c3.rs.getString(2));
-                histt1.setSelectedItem(c3.rs.getString(3));
+                counterDropDown.setSelectedItem(c3.rs.getString(3));
                 emailt1.setText(c3.rs.getString(4));
                 rett1.setText(""+c3.rs.getString(5));
                 remt1.setText(c3.rs.getString(6));
@@ -670,9 +691,9 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
         p4.add(hist1);
         hist1.setBounds(240,45,60,20);
         
-        p4.add(histt1);
+        p4.add(counterDropDown);
         //histt1.setEnabled(false);
-        histt1.setBounds(300,45,150,20);
+        counterDropDown.setBounds(300,45,150,20);
         
         p4.add(email1);
         //emailt1.setEnabled(false);
@@ -697,6 +718,7 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
         
         p4.add(subIssueCounterText);
         subIssueCounterText.setBounds(320,75,180,20);
+        subIssueCounterText.setEnabled(false);
         
         p4.add(rem1);
         rem1.setBounds(470,45,60,20);
@@ -781,9 +803,9 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
                 dno=Integer.parseInt((String)distributionCodeDropDown.getSelectedItem());
                 subno1=(String)subNumberCodeDropDown.getSelectedItem();
                 subno=Integer.parseInt(subt21.getText());
-                dist=(String)distt1.getSelectedItem() ;
-                subt=(String)subtt1.getSelectedItem();
-                lang=(String)langt1.getSelectedItem();
+                dist=(String)distributionTypeDropDown.getSelectedItem() ;
+                subt=(String)subscriptionDurationDropDown.getSelectedItem();
+                lang=(String)languageDropDown.getSelectedItem();
                 status=statust1.getText();
                 
                 
@@ -796,9 +818,14 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
                 amt=Integer.parseInt(amt1.getText());
                 
                 payt=(String)paytt1.getSelectedItem();
-                date1=Integer.parseInt(dateText.getText());
+                Date selectedDate = (Date) datePicker.getModel().getValue();
+                date1= selectedDate.getDate();
+                dat2=selectedDate.getMonth()+1;
+                dat3=selectedDate.getYear()+1900;
+                
+                /*date1=Integer.parseInt(dateText.getText());
                 dat2=Integer.parseInt(monthText.getText());
-                dat3=Integer.parseInt(yearText.getText());
+                dat3=Integer.parseInt(yearText.getText());*/
                 
                 startm=Integer.parseInt((String)startm1.getSelectedItem());
                 starty=Integer.parseInt((String)starty1.getSelectedItem());
@@ -809,7 +836,7 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
                 {
                     
                     connect c9=new connect();
-                    c9.rs=c9.st.executeQuery("select * from amountdet where duration='"+(String)subtt1.getSelectedItem()+"'");
+                    c9.rs=c9.st.executeQuery("select * from amountdet where duration='"+(String)subscriptionDurationDropDown.getSelectedItem()+"'");
                     while(c9.rs.next())
                     {
                         period=c9.rs.getInt(4);
@@ -876,6 +903,62 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
                 
                 endm=endm2;
                 endy=endy2;
+                
+                {
+                    if(true)
+                    {
+                        int startm2=Integer.parseInt((String)startm1.getSelectedItem());
+                        int starty2=Integer.parseInt((String)starty1.getSelectedItem());
+                        
+                        int period2=0, period12=0;
+                        try
+                        {
+                            
+                            connect c22=new connect();
+                            c22.rs=c22.st.executeQuery("select * from amountdet where duration='"+subscriptionDurationDropDown.getSelectedItem()+"'");
+                            while(c22.rs.next())
+                            {
+                                period2=c22.rs.getInt(4);
+                                period12=c22.rs.getInt(5);
+                                
+                                //System.out.println("year : "+period2+" month : "+period12);
+                            }
+                            
+                            c22.st.close();
+                            c22.con.close();
+                        }
+                        catch(Exception e)
+                        {
+                            JOptionPane.showMessageDialog(this, "ERROR : "+e, "ERROR", JOptionPane.ERROR_MESSAGE);
+                        }
+                        
+                        endm2=((startm2-1)+period12)%12;
+                        //endy2;
+                        int tempFlag=0;
+                        if(endm2==0)
+                            endm2=12;
+                        if(endm2>0 && endm2 <period12)
+                            tempFlag++;
+                        if(endm2<12)
+                            endy2=starty2+period2+tempFlag;
+                        else
+                            endy2=starty2+period2-1+tempFlag;
+                        
+                        if(endm2==12 && period12>0)
+                        {
+                            endy2++;
+                        }
+                        String endingPeriod  = ""+endm2+"/"+endy2;
+                        //endingPeriodText.setText(endingPeriod);
+                        int res = JOptionPane.showConfirmDialog(this, "Updating with ending period: " + endingPeriod, "Confirm", JOptionPane.YES_NO_OPTION);
+                        if( res == JOptionPane.NO_OPTION ) {
+                            startm1.requestFocus();
+                            return;
+                        }
+                        
+                    }
+                }
+                
                 //subscriber details
                 if(endm == 0 || endy == 0)
                 {
@@ -901,11 +984,12 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
                 
                 int return1;
                 String phone, history, email, remarks;
+                String endingPeriod = endy+"-"+endm+"-28";
                 
                 
                 phone=telt1.getText();
                 //System.out.println(phone);
-                history=(String)histt1.getSelectedItem();
+                history=(String)counterDropDown.getSelectedItem();
                 email=emailt1.getText();
                 return1=Integer.parseInt(rett1.getText());
                 remarks=remt1.getText();
@@ -928,7 +1012,7 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
                 if(c4.a == 1) flag++;
                 //database query for other details fragment
                 
-                String sqlQuery = "insert into receipt_book_details values ('"+seriesName+"',"+rcpt+","+asn+",'"+payt+"','"+dat3+"-"+dat2+"-"+date1+"',"+amt+",'"+history+"','0','"+SamsUtilities.getUserName()+"')";
+                String sqlQuery = "insert into receipt_book_details values ('"+seriesName+"',"+rcpt+","+asn+",'"+payt+"','"+dat3+"-"+dat2+"-"+date1+"',"+amt+",'"+history+"','0','"+SamsUtilities.getUserName()+"','"+endingPeriod+"')";
                 c4.a=c4.st.executeUpdate(sqlQuery);
                 if(c4.a == 1) flag++;
                 
@@ -942,7 +1026,7 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
                                         +subt+"', language='"+lang+"', series_name = '"+seriesName+"', payment_type='"
                                         +payt+"', instrument_number="+chno+", receipt_date = '"
                                         +dat3+"-"+dat2+"-"+date1+"', amount="+amt+", starting_period='"
-                                        +starty+"-"+startm+"-1', ending_period='"+endy+"-"+endm+"-28', entry_date='"
+                                        +starty+"-"+startm+"-1', ending_period='"+endingPeriod+"', entry_date='"
                                         +SamsUtilities.getCurrentSqlDate()+"', subscription_type='Renew', counter_name = '"
                                         +history+"' , updated_by = '"+SamsUtilities.getUserName()+"' where asn="+asn;
                 //System.out.println(mainTableQuery);
@@ -1021,7 +1105,7 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
             {
                 
                 connect c22=new connect();
-                c22.rs=c22.st.executeQuery("select * from amountdet where duration='"+subtt1.getSelectedItem()+"'");
+                c22.rs=c22.st.executeQuery("select * from amountdet where duration='"+subscriptionDurationDropDown.getSelectedItem()+"'");
                 while(c22.rs.next())
                 {
                     period2=c22.rs.getInt(4);
@@ -1064,15 +1148,15 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
         
         
         
-        if(ie.getSource()==distt1)
+        if(ie.getSource()==distributionTypeDropDown)
         {
-            if(distt1.getSelectedItem()=="Distributor")
+            if(distributionTypeDropDown.getSelectedItem()=="Distributor")
             {
                 distributionCodeDropDown.setEnabled(true);
                 distributionCodeDropDown.setSelectedItem("0");
             }
             
-            if(distt1.getSelectedItem()=="By Hand"||distt1.getSelectedItem()=="By Post")
+            if(distributionTypeDropDown.getSelectedItem()=="By Hand"||distributionTypeDropDown.getSelectedItem()=="By Post")
                 //else
             {
                 distributionCodeDropDown.setEnabled(false);
@@ -1081,12 +1165,12 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
             
         }
         
-        if(ie.getSource()==subtt1)
+        if(ie.getSource()==subscriptionDurationDropDown)
         {
             try
             {
                 connect c7=new connect();
-                c7.rs=c7.st.executeQuery("select * from amountdet where language='"+langt1.getSelectedItem()+"' and duration='"+subtt1.getSelectedItem()+"'");
+                c7.rs=c7.st.executeQuery("select * from amountdet where language='"+languageDropDown.getSelectedItem()+"' and duration='"+subscriptionDurationDropDown.getSelectedItem()+"'");
                 
                 while(c7.rs.next())
                 {
@@ -1098,7 +1182,7 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
                 c7.st.close();
                 c7.con.close();
                 
-                if(subtt1.getSelectedItem()=="Urdu"||subtt1.getSelectedItem()=="Punjabi")
+                if(subscriptionDurationDropDown.getSelectedItem()=="Urdu"||subscriptionDurationDropDown.getSelectedItem()=="Punjabi")
                 {
                     amt1.setEnabled(true);
                     amt1.setText("");
@@ -1112,18 +1196,18 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
             
         }
         
-        if(ie.getSource()==langt1)
+        if(ie.getSource()==languageDropDown)
         {
             try
             {
                 connect c8=new connect();
                 
-                c8.rs=c8.st.executeQuery("select * from amountdet where language='"+langt1.getSelectedItem()+"'");
+                c8.rs=c8.st.executeQuery("select * from amountdet where language='"+languageDropDown.getSelectedItem()+"'");
                 
-                subtt1.removeAll();
+                subscriptionDurationDropDown.removeAll();
                 while(c8.rs.next())
                 {
-                    subtt1.addItem(c8.rs.getString(2));
+                    subscriptionDurationDropDown.addItem(c8.rs.getString(2));
                 }
                 
                 c8.st.close();
@@ -1167,12 +1251,11 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
 
     @Override
     public void focusLost(FocusEvent fe) {
-        System.out.println(fe.getSource().toString());
         if(fe.getSource() == receiptNumberText)
         {
             int rcptNum;
             String rcpt = receiptNumberText.getText();
-            System.out.println(seriesNameText + " " + rcpt);
+            //System.out.println(seriesNameText + " " + rcpt);
             if(seriesNameText.isEmpty() && rcpt.isEmpty() == false)
             {
                 JOptionPane.showMessageDialog(this,"Please select series", "Please select series", JOptionPane.ERROR_MESSAGE);
@@ -1184,7 +1267,8 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
                 rcptNum = (Integer.parseInt(rcpt));
                 String countQuery = "select count(book_num) from receipt_book_inventory where series_name = '"+seriesNameText+"' and end_rcpt_num > "+(rcptNum-1)+" and start_rcpt_num < "+(rcptNum+1);
                 String sqlQuery = "select issued_to,book_num, start_rcpt_num, end_rcpt_num from receipt_book_inventory where  series_name = '"+seriesNameText+"' and end_rcpt_num > "+(rcptNum-1)+" and start_rcpt_num < "+(rcptNum+1);
-                String alreadyIssuedRcptCheckQuery = "select count(asn) from basic where rcpt = "+rcptNum +" and series_name = '"+seriesNameText+"'";
+                //String alreadyIssuedRcptCheckQuery = "select count(asn) from basic where rcpt = "+rcptNum +" and series_name = '"+seriesNameText+"'";
+                String alreadyIssuedRcptCheckQuery = "select count(asn) from receipt_book_details where receipt_number = "+rcptNum +" and series_name = '"+seriesNameText+"'";
                 
                 connect fillSeriesConnection = new connect();
                 try
@@ -1216,7 +1300,7 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
                     
                     String subCounterQuery = "select issued_to from sub_issue_details where series_name='"+seriesNameText+"' and book_num="+bookNum+" and rcpt_num="+rcptNum;
                     //System.out.println(centre);
-                    histt1.setSelectedItem(centre);
+                    counterDropDown.setSelectedItem(centre);
                     subIssueCounterText.setText("");
                     //System.out.println(subCounterQuery);
                     fillSeriesConnection.rs = fillSeriesConnection.st.executeQuery(subCounterQuery);

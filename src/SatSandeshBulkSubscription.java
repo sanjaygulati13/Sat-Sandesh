@@ -11,6 +11,11 @@ import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.Savepoint;
+import java.util.Date;
+
+
+import java.util.Properties;
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -25,6 +30,9 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.table.TableModel;
 import net.miginfocom.swing.MigLayout;
+import org.jdatepicker.impl.JDatePanelImpl;
+import org.jdatepicker.impl.JDatePickerImpl;
+import org.jdatepicker.impl.UtilDateModel;
 
 
 public class SatSandeshBulkSubscription implements ActionListener, ItemListener, FocusListener
@@ -37,14 +45,16 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
     int globalAsn;
     
     JFrame satSandeshBulkSubscriptionWindow;
-    JLabel  distributionNumberLabel, seriesLabel, receiptNumberLabel, dateLabel, startingPeriodLabel, nameLabel ;
+    JLabel  distributionNumberLabel, seriesLabel, receiptNumberLabel, dateLabel, startingPeriodLabel, nameLabel, paymentTypeLabel, chequeDDLabel ;
     JLabel numberOfRecordsLabel, amountLabel, subscriptionTypeLabel, endingPeriodLabel, counterLabel,subIssueCounterLabel;
     
     JButton addDataButton, cancelButton, saveButton;
     
-    JTextField receiptNumberText, dateText,monthText, yearText;
+    JTextField receiptNumberText/*,dateText,monthText, yearText*/;
     JTextField numberOfRecordsText, amountText, endingPeriodText,subIssueCounterText;
     JComboBox distributionNumberDropDown, seriesDropDown , startingPeriodMonthDropDown, startingPeriodYearDropDown, languageDropDown, subscriptionDurationDropDown, counterDropDown;
+    TextFieldWithLimit chequeDDText;
+    JComboBox paymentTypeDropDown;
     
     JRadioButton nameRadioButton;
     
@@ -56,6 +66,11 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
     Object col[]={"S No","ASN","Sub code","Sub Number", "First name","Last Name"};
     
     MigLayout mLayout= new MigLayout( "insets 30");
+    
+    UtilDateModel model = new UtilDateModel();
+    Properties prop;
+    JDatePanelImpl datePanel;
+    JDatePickerImpl datePicker;
     
     public SatSandeshBulkSubscription()
     {
@@ -110,6 +125,7 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
         numberOfRecordsLabel  = new JLabel("<html>No of Records</html>");
         amountLabel = new JLabel("<html>Amount</html>");
         subscriptionTypeLabel = new JLabel("<html>Subscription Type</html>");
+        
         endingPeriodLabel  = new JLabel("<html>Ending Period</html>");
         seriesLabel = new JLabel("<html><b>-</b></html>");
         counterLabel=new JLabel("<html>Counter</html>");
@@ -122,15 +138,30 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
         
         seriesDropDown = new JComboBox(SamsUtilities.fillSeriesInformation());
         receiptNumberText = new TextFieldWithLimit(5,5);
-        dateText = new TextFieldWithLimit(2,2);
-        monthText=new TextFieldWithLimit(2,2);
-        yearText=new TextFieldWithLimit(4,4);
+        //dateText = new TextFieldWithLimit(2,2);
+        {
+            prop = new Properties();
+            prop.put("text.today", "Today");
+            prop.put("text.month", "Month");
+            prop.put("text.year", "Year");
+            datePanel = new JDatePanelImpl(model, prop);
+            datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+        }
+        
+        //monthText=new TextFieldWithLimit(2,2);
+        //yearText=new TextFieldWithLimit(4,4);
         startingPeriodMonthDropDown = new JComboBox();
         startingPeriodYearDropDown = new JComboBox();
         subIssueCounterText = new JTextField();
+        paymentTypeDropDown = new JComboBox();
+        paymentTypeDropDown.addItem("Cash");
+        paymentTypeDropDown.addItem("CH/DD/MO");
+        paymentTypeDropDown.addItemListener(this);
         
-        monthText.setText(""+SamsUtilities.getCurrentMonth());
-        yearText.setText(""+SamsUtilities.getCurrentYear());
+        chequeDDText = new TextFieldWithLimit(10,10);
+        
+        //monthText.setText(""+SamsUtilities.getCurrentMonth());
+        //yearText.setText(""+SamsUtilities.getCurrentYear());
         
         for( int month =1; month <= 12 ; month++ )
             startingPeriodMonthDropDown.addItem(""+month);
@@ -155,6 +186,7 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
         numberOfRecordsText  = new TextFieldWithLimit(5,5);
         amountText = new TextFieldWithLimit(4,5);
         amountText.setText("100");
+        amountText.setEnabled(false);
         endingPeriodText  = new TextFieldWithLimit(7,7);
         endingPeriodText.setEnabled(false);
         
@@ -170,7 +202,7 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
         //histt1.addItem("Sawan Ashram");
         //histt1.addItem("Darshan Dham");
         //histt1.addItem("Tours/Function");
-        Object[] languages={"Hindi", "English", "Urdu", "Punjabi"};
+        Object[] languages={"Hindi"/*, "English", "Urdu", "Punjabi"*/};
         languageDropDown = new JComboBox(languages);
         languageDropDown.addItemListener(this);
         
@@ -181,6 +213,7 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
         counterDropDown.addItem("Kirpal Bagh");
         counterDropDown.addItem("Kirpal Ashram");
         counterDropDown.addItem("Sawan Ashram");
+        counterDropDown.setEnabled(false);
         
         addDataButton = new JButton("Add Data");
         cancelButton =new JButton("Back");
@@ -286,20 +319,21 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
         
         satSandeshBulkSubscriptionWindow.add(receiptNumberLabel);
         satSandeshBulkSubscriptionWindow.add(seriesDropDown);
-        satSandeshBulkSubscriptionWindow.add(seriesLabel);
+        //satSandeshBulkSubscriptionWindow.add(seriesLabel);
         satSandeshBulkSubscriptionWindow.add(receiptNumberText);
         
         satSandeshBulkSubscriptionWindow.add(dateLabel);
-        satSandeshBulkSubscriptionWindow.add(dateText);
-        satSandeshBulkSubscriptionWindow.add(monthText);
-        satSandeshBulkSubscriptionWindow.add(yearText);
+        //satSandeshBulkSubscriptionWindow.add(dateText, "w 80!");
+        satSandeshBulkSubscriptionWindow.add(datePicker, "w 140!");
+        //satSandeshBulkSubscriptionWindow.add(monthText);
+        //satSandeshBulkSubscriptionWindow.add(yearText);
         
-        
-        
+        satSandeshBulkSubscriptionWindow.add(paymentTypeDropDown);
+        satSandeshBulkSubscriptionWindow.add(chequeDDText,"wrap 30px ,w 70!");
         //satSandeshBulkSubscriptionWindow.add(nameLabel, "wrap 30px");
         
         satSandeshBulkSubscriptionWindow.add(numberOfRecordsLabel);
-        satSandeshBulkSubscriptionWindow.add(numberOfRecordsText,"wrap 30px");
+        satSandeshBulkSubscriptionWindow.add(numberOfRecordsText);
         
         
         satSandeshBulkSubscriptionWindow.add(subscriptionTypeLabel);
@@ -310,12 +344,12 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
         
         satSandeshBulkSubscriptionWindow.add(startingPeriodLabel);
         satSandeshBulkSubscriptionWindow.add(startingPeriodMonthDropDown);
-        satSandeshBulkSubscriptionWindow.add(startingPeriodYearDropDown);
+        satSandeshBulkSubscriptionWindow.add(startingPeriodYearDropDown,"wrap 30px");
         
         satSandeshBulkSubscriptionWindow.add(endingPeriodLabel);
         satSandeshBulkSubscriptionWindow.add(endingPeriodText);
         satSandeshBulkSubscriptionWindow.add(counterLabel);
-        satSandeshBulkSubscriptionWindow.add(counterDropDown,"wrap 30px");
+        satSandeshBulkSubscriptionWindow.add(counterDropDown);
         
         satSandeshBulkSubscriptionWindow.add(subIssueCounterLabel);
         satSandeshBulkSubscriptionWindow.add(subIssueCounterText,"w 100!");
@@ -532,9 +566,67 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
                 
             }
             
+            {
+                if(true)
+                {
+                    int startm2=Integer.parseInt((String)startingPeriodMonthDropDown.getSelectedItem());
+                    int starty2=Integer.parseInt((String)startingPeriodYearDropDown.getSelectedItem());
+                    
+                    int period2=0, period12=0;
+                    try
+                    {
+                        
+                        connect c22=new connect();
+                        c22.rs=c22.st.executeQuery("select * from amountdet where duration='"+subscriptionDurationDropDown.getSelectedItem()+"'");
+                        while(c22.rs.next())
+                        {
+                            period2=c22.rs.getInt(4);
+                            period12=c22.rs.getInt(5);
+                            
+                            //System.out.println("year : "+period2+" month : "+period12);
+                        }
+                        
+                        c22.st.close();
+                        c22.con.close();
+                    }
+                    catch(Exception e)
+                    {
+                        JOptionPane.showMessageDialog(satSandeshBulkSubscriptionWindow, "ERROR : "+e, "ERROR", JOptionPane.ERROR_MESSAGE);
+                    }
+                    
+                    endingMonth=((startm2-1)+period12)%12;
+                    //int endingYear;
+                    int tempFlag=0;
+                    if(endingMonth==0)
+                        endingMonth=12;
+                    if(endingMonth>0 && endingMonth <period12)
+                        tempFlag++;
+                    if(endingMonth<12)
+                        endingYear=starty2+period2+tempFlag;
+                    else
+                        endingYear=starty2+period2-1+tempFlag;
+                    
+                    if(endingMonth==12 && period12>0)
+                    {
+                        endingYear++;
+                    }
+                    String endingPeriod  = ""+endingMonth+"/"+endingYear;
+                    //endingPeriodText.setText(endingPeriod);
+                    int res = JOptionPane.showConfirmDialog(satSandeshBulkSubscriptionWindow, "Updating with ending period: " + endingPeriod, "Confirm", JOptionPane.YES_NO_OPTION);
+                    if( res == JOptionPane.NO_OPTION ) {
+                        startingPeriodMonthDropDown.requestFocus();
+                        return;
+                    }
+                    
+                    System.out.println(endingMonth + " " + endingYear);
+                }
+            }
+            
             
             
             //boolean allFine = true;
+            
+            
             
             for(int i = 0 ; i < numItems; i++ )
             {
@@ -635,10 +727,13 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
                 String seriesString = (String)(seriesDropDown.getSelectedItem());
                 subscriptionType = (String)(subscriptionDurationDropDown.getSelectedItem());
                 /*  =================== */
-                String paymentType = "Cash";
-                String entryDate = dateText.getText();
-                String entryMonth = monthText.getText();
-                String entryYear = yearText.getText();
+                String paymentType = (String)paymentTypeDropDown.getSelectedItem();
+                
+                Date selectedDate = (Date) datePicker.getModel().getValue();
+                String entryDate =  ""+(selectedDate.getDate());
+                String entryMonth = ""+(selectedDate.getMonth()+1);
+                String entryYear  = ""+(selectedDate.getYear()+1900);
+                
                 String amountString = amountText.getText();
                 String startMonthString = (String)(startingPeriodMonthDropDown.getSelectedItem());
                 String startYearString = (String)(startingPeriodYearDropDown.getSelectedItem());
@@ -647,8 +742,6 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
                 String title = "";
                 
                 String returnBack = "0";
-                
-                
                 
                 int rcptNum = Integer.parseInt(rcptNumString);
                 int seriesName = Integer.parseInt(seriesString);
@@ -695,12 +788,16 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
                         
                         //database query for payment fragment
                         
-                        int chequeNumber = 0;
+                        String chequeNumber = chequeDDText.getText();
+                        if(chequeNumber.isEmpty()) chequeNumber = "0";
+                        //int chequeNumber = Integer.parseInt();
                         //connect c3=new connect();
-                        c2.a=c2.st.executeUpdate("insert into payment values("+asnNumbers[i]+",'"+
+                        String paymentUpdate = "insert into payment values("+asnNumbers[i]+",'"+
                                 paymentType+"',"+chequeNumber+","+entryDate+","+entryMonth+","+entryYear+","+amount+","+
-                                startMonth+","+startYear+","+endingMonth+","+endingYear+" , '"+
-                                SamsUtilities.getCurrentSqlDate()+"', '"+subscription_type+"')");
+                                startMonth+","+startYear+","+endingMonth+","+endingYear+",'"+
+                                SamsUtilities.getCurrentSqlDate()+"','"+subscription_type+"')";
+                        //System.out.println(paymentUpdate);
+                        c2.a=c2.st.executeUpdate(paymentUpdate);
                         
                         if(c2.a==1)
                             flag=flag+1;
@@ -726,20 +823,21 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
                         if(c2.a==1)
                             flag=flag+1;
                         
+                        String startDate = startYear+"-"+startMonth+"-1";
+                        String endDate =  endingYear+"-"+endingMonth+"-28";
+                        
                         String sqlQuery = "insert into receipt_book_details values ('"
                                 +seriesName+"',"
                                 +rcptNum+","+asnNumbers[i]+",'"
                                 +paymentType+"','"+entryYear+"-"
                                 +entryMonth+"-"+entryDate+"',"
-                                +amount+",'"+history+"','0','"+SamsUtilities.getUserName()+"')";
+                                +amount+",'"+history+"','0','"+SamsUtilities.getUserName()+"','"+endDate+"')";
                         
                         c2.a=c2.st.executeUpdate(sqlQuery);
                         
                         if(c2.a==1)
                             flag++;
                         
-                        String startDate = startYear+"-"+startMonth+"-1";
-                        String endDate =  endingYear+"-"+endingMonth+"-28";
                         
                         String mainTableQuery = "insert into subscribers_primary_details values("
                                                 +asnNumbers[i]+",'BD',"+subNumbers[i]+",'Active',"+rcptNum+",'"
@@ -864,6 +962,22 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
             }
         }
         
+        if(ie.getSource() == paymentTypeDropDown)
+        {
+            if(paymentTypeDropDown.getSelectedItem()=="Cash")
+            {
+                chequeDDText.setText("0");
+                chequeDDText.setEnabled(false);
+            }
+            
+            if(paymentTypeDropDown.getSelectedItem()=="CH/DD/MO")
+            {
+                chequeDDText.setText("");
+                chequeDDText.setEnabled(true);
+            }
+        
+        }
+        
         if(ie.getSource()==startingPeriodMonthDropDown || ie.getSource()==startingPeriodYearDropDown || ie.getSource() == languageDropDown)
         {
             
@@ -960,6 +1074,8 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
                 }
                 String countQuery = "select count(book_num) from receipt_book_inventory where end_rcpt_num > "+(rcptNum-1)+" and start_rcpt_num < "+(rcptNum+1)+" and series_name='"+seriesNameText+"'";
                 String sqlQuery = "select issued_to,book_num, start_rcpt_num, end_rcpt_num from receipt_book_inventory where series_name = '"+seriesNameText+"' and end_rcpt_num > "+(rcptNum-1)+" and start_rcpt_num < "+(rcptNum+1);
+                //String alreadyIssuedRcptCheckQuery = "select count(asn) from basic where rcpt = "+rcptNum +" and series_name = '"+seriesNameText+"'";
+                String alreadyIssuedRcptCheckQuery = "select count(asn) from receipt_book_details where receipt_number = "+rcptNum +" and series_name = '"+seriesNameText+"'";
                 
                 connect fillSeriesConnection = new connect();
                 try
@@ -1005,6 +1121,20 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
                         subCounter = "";
                     //System.out.println(subCounter);
                     subIssueCounterText.setText(subCounter);
+                    
+                    fillSeriesConnection.rs = fillSeriesConnection.st.executeQuery(alreadyIssuedRcptCheckQuery);
+                    int existingAsnCount = 0;
+                    if(fillSeriesConnection.rs.next())
+                        existingAsnCount = fillSeriesConnection.rs.getInt(1);
+                    
+                    //System.out.println(existingAsnCount);
+                    if(existingAsnCount > 0 )
+                    {
+                        JOptionPane.showMessageDialog(satSandeshBulkSubscriptionWindow,"Already used receipt number", "Invalid receipt number", JOptionPane.ERROR_MESSAGE);
+                        receiptNumberText.setText("");
+                        receiptNumberText.requestFocus();
+                        return;
+                    }
                     fillSeriesConnection.closeAll();
                     
                 } catch (Exception exc) {
