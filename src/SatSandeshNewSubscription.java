@@ -1238,8 +1238,10 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
                         subscriptionDurationDropDown.setSelectedItem("Comp");
                         subscriptionDurationDropDown.setEnabled(false);
                     }
-                    else
+                    else{
                         subscriptionDurationDropDown.setSelectedIndex(0);
+                        subscriptionDurationDropDown.setEnabled(true);
+                    }
                     
                 }
                 if(!flag)

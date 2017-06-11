@@ -1,3 +1,4 @@
+import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,9 +20,21 @@ public class memsum extends JFrame implements ActionListener
     }
     
     JLabel l1,l2,l3, l4;
-    JTextField monthText,yearText;
+    JComboBox monthDropDown, yearDropDown;
     JButton b1, b2;
     JComboBox langt;
+    
+    protected void center() 
+    {
+        
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        //setSize(screenSize.width-300,screenSize.height-300);
+        Dimension frameSize = getSize();
+        int x = (screenSize.width - frameSize.width) / 2;
+        int y = (screenSize.height - frameSize.height) / 2;
+        
+        setLocation(x, y);
+    }
     
     public memsum()
     {
@@ -42,28 +55,44 @@ public class memsum extends JFrame implements ActionListener
         setLocation(10,10);
         setLayout(null);
         setTitle("Member Status Summary");
-        l1=new JLabel("Enter Month");
+        this.center();
+        /*l1=new JLabel("Enter Month");
         add(l1);
-        l1.setBounds(100,30,100,20);
+        l1.setBounds(30,30,100,20);*/
+        
         l2=new JLabel("Month");
         add(l2);
-        l2.setBounds(50,60,50,20);
-        monthText=new JTextField(10);
-        add(monthText);
-        monthText.setBounds(110,60,50,20);
-        monthText.setText(""+SamsUtilities.getCurrentMonth());
+        l2.setBounds(30,30,100,20);
+        
+        monthDropDown = new JComboBox();
+        yearDropDown = new JComboBox();
+        
+        for( int month =1; month <= 12 ; month++ )
+            monthDropDown.addItem(""+month);
+        
+        int currYear = SamsUtilities.getCurrentYear();
+        for( int year=(currYear) ; year>(currYear-10) ; year--)
+            yearDropDown.addItem(""+year);
+        
+        
+        //montht=new JTextField(20);
+        monthDropDown.setSelectedItem(""+SamsUtilities.getCurrentMonth());
+        //yeart=new JTextField(40);
+        yearDropDown.setSelectedItem(""+SamsUtilities.getCurrentYear());
+        
         l3=new JLabel("Year");
         add(l3);
-        l3.setBounds(50,90,50,20);
+        l3.setBounds(30,60,100,20);
         
         l4=new JLabel("Language");
         add(l4);
-        l4.setBounds(50,120,50,20);
+        l4.setBounds(30,90,100,20);
         
-        yearText=new JTextField(10);
-        add(yearText);
-        yearText.setBounds(110,90,50,20);
-        yearText.setText(""+SamsUtilities.getCurrentYear());
+        add(monthDropDown);
+        add(yearDropDown);
+        
+        monthDropDown.setBounds(150,30,100,20);
+        yearDropDown.setBounds(150,60,100,20);
         
         langt=new JComboBox();
         langt.addItem("Hindi");
@@ -71,7 +100,7 @@ public class memsum extends JFrame implements ActionListener
         langt.addItem("Punjabi");
         langt.addItem("Urdu");
         
-        langt.setBounds(110,120,100,20);
+        langt.setBounds(150,90,100,20);
         add(langt);
         
         b1=new JButton("Save/Ok");
@@ -94,7 +123,7 @@ public class memsum extends JFrame implements ActionListener
     {
         if(ae.getSource()==b1)
         {
-            new memsummary((Integer.parseInt(monthText.getText())),(Integer.parseInt(yearText.getText())), (String)langt.getSelectedItem());
+            new memsummary((Integer.parseInt(monthDropDown.getSelectedItem().toString())),(Integer.parseInt(yearDropDown.getSelectedItem().toString())), (String)langt.getSelectedItem());
             this.dispose();
         }
         if(ae.getSource()==b2)

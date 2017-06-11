@@ -12,7 +12,7 @@ public class labelsubno extends JFrame implements ActionListener
     
     JLabel month, year, lang;
     JButton ok, back, stickerLabelButton;
-    JTextField montht, yeart;
+    JComboBox monthDropDown, yearDropDown;
     JComboBox langt;
     
     
@@ -41,11 +41,23 @@ public class labelsubno extends JFrame implements ActionListener
         year=new JLabel("Year");
         lang=new JLabel("Language");
         
+        monthDropDown = new JComboBox();
+        yearDropDown = new JComboBox();
+       
         
-        montht=new JTextField(20);
-        montht.setText(""+SamsUtilities.getCurrentMonth());
-        yeart=new JTextField(40);
-        yeart.setText(""+SamsUtilities.getCurrentYear());
+        for( int month =1; month <= 12 ; month++ )
+            monthDropDown.addItem(""+month);
+        
+        int currYear = SamsUtilities.getCurrentYear();
+        for( int year=(currYear) ; year>(currYear-10) ; year--)
+        {
+            yearDropDown.addItem(""+year);
+        }
+        
+        //montht=new JTextField(20);
+        monthDropDown.setSelectedItem(""+SamsUtilities.getCurrentMonth());
+        //yeart=new JTextField(40);
+        yearDropDown.setSelectedItem(""+SamsUtilities.getCurrentYear());
         langt=new JComboBox();
         
         
@@ -67,11 +79,11 @@ public class labelsubno extends JFrame implements ActionListener
         lang.setBounds(30,110,80,20);
         add(lang);
         
-        montht.setBounds(110,30,50,20);
-        add(montht);
+        monthDropDown.setBounds(110,30,100,20);
+        add(monthDropDown);
         
-        yeart.setBounds(110,70,50,20);
-        add(yeart);
+        yearDropDown.setBounds(110,70,100,20);
+        add(yearDropDown);
         
         langt.setBounds(110,110,100,20);
         add(langt);
@@ -103,7 +115,7 @@ public class labelsubno extends JFrame implements ActionListener
             //                    System.out.println(""+Integer.parseInt(montht.getText()));
             //                    System.out.println(""+Integer.parseInt(yeart.getText()));
             //                    System.out.println(""+(String)langt.getSelectedItem());
-            new label(Integer.parseInt(montht.getText()),Integer.parseInt(yeart.getText()),(String)langt.getSelectedItem());
+            new label(Integer.parseInt(monthDropDown.getSelectedItem().toString()),Integer.parseInt(yearDropDown.getSelectedItem().toString()),(String)langt.getSelectedItem());
             this.dispose();
         }
         if(ae.getSource()== stickerLabelButton)
@@ -111,7 +123,7 @@ public class labelsubno extends JFrame implements ActionListener
             //                    System.out.println(""+Integer.parseInt(montht.getText()));
             //                    System.out.println(""+Integer.parseInt(yeart.getText()));
             //                    System.out.println(""+(String)langt.getSelectedItem());
-            new stickerLabels(Integer.parseInt(montht.getText()),Integer.parseInt(yeart.getText()),(String)langt.getSelectedItem());
+            new stickerLabels(Integer.parseInt(monthDropDown.getSelectedItem().toString()),Integer.parseInt(yearDropDown.getSelectedItem().toString()),(String)langt.getSelectedItem());
             this.dispose();
         }
         

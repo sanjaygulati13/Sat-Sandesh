@@ -158,8 +158,10 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
         paymentTypeDropDown.addItem("CH/DD/MO");
         paymentTypeDropDown.addItemListener(this);
         
-        chequeDDText = new TextFieldWithLimit(10,10);
         
+        chequeDDText = new TextFieldWithLimit(10,10);
+        chequeDDText.setText("0");
+        chequeDDText.setEnabled(false);
         //monthText.setText(""+SamsUtilities.getCurrentMonth());
         //yearText.setText(""+SamsUtilities.getCurrentYear());
         
@@ -346,8 +348,8 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
         satSandeshBulkSubscriptionWindow.add(startingPeriodMonthDropDown);
         satSandeshBulkSubscriptionWindow.add(startingPeriodYearDropDown,"wrap 30px");
         
-        satSandeshBulkSubscriptionWindow.add(endingPeriodLabel);
-        satSandeshBulkSubscriptionWindow.add(endingPeriodText);
+        //satSandeshBulkSubscriptionWindow.add(endingPeriodLabel);
+        //satSandeshBulkSubscriptionWindow.add(endingPeriodText);
         satSandeshBulkSubscriptionWindow.add(counterLabel);
         satSandeshBulkSubscriptionWindow.add(counterDropDown);
         
@@ -482,7 +484,7 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
             bulkEntryTable = new JTable(data,col){
                 @Override
                 public boolean isCellEditable(int row, int column) {
-                    return (column==3 || column==4) ? true : false;
+                    return (column ==3 || column==4 || column==5) ? true : false;
                 }
             };
             
@@ -618,7 +620,7 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
                         return;
                     }
                     
-                    System.out.println(endingMonth + " " + endingYear);
+                    //System.out.println(endingMonth + " " + endingYear);
                 }
             }
             
@@ -693,24 +695,26 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
                 catch(Exception e)
                 {
                     firstNames[i] = "";
+                    e.printStackTrace();
                     bulkEntryTable.changeSelection(i, 4, false, false);
                     JOptionPane.showMessageDialog(satSandeshBulkSubscriptionWindow, "Please enter first name in row "+(i+1), "ERROR", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 
-                //System.out.print(" "+firstNames[i]);
+                System.out.print(" "+firstNames[i]);
                 try{
                     lastNames[i] = model.getValueAt(i, 5).toString();
                 }
                 catch(Exception e)
                 {
                     lastNames[i] = "";
+                    e.printStackTrace();
                     bulkEntryTable.changeSelection(i, 5, false, false);
                     JOptionPane.showMessageDialog(satSandeshBulkSubscriptionWindow, "Please enter last name in row "+(i+1), "ERROR", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 
-                //System.out.println(" "+lastNames[i]);
+                System.out.println(" "+lastNames[i]);
                 
             }
             
@@ -806,9 +810,11 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
                         //database query for subscription details fragment
                         
                         //connect c4=new connect();
-                        c2.a=c2.st.executeUpdate("insert into subdetails values ("+asnNumbers[i]+",'"+
+                        String subDetailsQuery = "insert into subdetails values ("+asnNumbers[i]+",'"+
                                 title+"','"+firstNames[i]+"','"+lastNames[i]+"','"+addressPart1+"','"+addressPart2+"','"+
-                                addressPart3+"','"+district+"','"+state+"',"+pin+")");
+                                addressPart3+"','"+district+"','"+state+"',"+pin+")";
+                        c2.a=c2.st.executeUpdate(subDetailsQuery);
+                        //System.out.println(subDetailsQuery);
                         if(c2.a==1)
                             flag=flag+1;
                         //c4.closeAll();

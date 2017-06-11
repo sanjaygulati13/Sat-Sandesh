@@ -12,7 +12,7 @@ public class remindersub extends JFrame implements ActionListener
     
     JLabel monthf, yearf, montht, yeart, lang;
     JButton ok, back, clr, listFormatButton;
-    JTextField monthft, yearft, monthtt, yeartt;
+    JComboBox monthFromDropDown, yearFromDropDown, monthToDropDown, yearToDropDown;
     JComboBox langt;
     
     
@@ -37,7 +37,7 @@ public class remindersub extends JFrame implements ActionListener
         setLocation(10,10);
         setLayout(null);
         
-        monthf=new JLabel("Month From");
+        monthf=new JLabel("<html>Month From</html>");
         
         montht=new JLabel("Month To");
         yeart=new JLabel("Year");
@@ -45,22 +45,23 @@ public class remindersub extends JFrame implements ActionListener
         lang=new JLabel("Language");
         
         
-        monthft=new JTextField(20);
-        monthtt=new JTextField(20);
-        yeartt=new JTextField(40);
+        monthFromDropDown=new JComboBox();
+        monthToDropDown=new JComboBox();
+        yearFromDropDown = new JComboBox();
+        yearToDropDown=new JComboBox();
         langt=new JComboBox();
         
-        ok=new JButton("Label Format");
+        ok=new JButton("<html>Label Format</html>");
         clr=new JButton("Reset");
         back=new JButton("Back");
-        listFormatButton = new JButton("List Format");
+        listFormatButton = new JButton("<html>List Format</html>");
         
         langt.addItem("Hindi");
         langt.addItem("English");
         langt.addItem("Punjabi");
         langt.addItem("Urdu");
         
-        monthf.setBounds(30,70,70,20);
+        monthf.setBounds(30,70,90,20);
         add(monthf);
         
         montht.setBounds(30,110,70,20);
@@ -72,35 +73,53 @@ public class remindersub extends JFrame implements ActionListener
         lang.setBounds(30,190,80,20);
         add(lang);
         
-        monthft.setBounds(130,70,50,20);
-        add(monthft);
+        {
+            for( int month =1; month <= 12 ; month++ ){
+                monthFromDropDown.addItem(""+month);
+                monthToDropDown.addItem(""+month);
+            }
+            
+            int currYear = SamsUtilities.getCurrentYear();
+            for( int year=(currYear) ; year>(currYear-10) ; year--)
+            {
+                yearFromDropDown.addItem(""+year);
+                yearToDropDown.addItem(""+year);
+            }
+            monthFromDropDown.setSelectedItem(""+SamsUtilities.getCurrentMonth());
+            monthToDropDown.setSelectedItem(""+SamsUtilities.getCurrentMonth());
+            yearFromDropDown.setSelectedItem(""+SamsUtilities.getCurrentYear());
+            yearToDropDown.setSelectedItem(""+SamsUtilities.getCurrentYear());
+        }
+        
+        monthFromDropDown.setBounds(130,70,100,20);
+        add(monthFromDropDown);
         
         
-        monthtt.setBounds(130,110,50,20);
-        add(monthtt);
+        monthToDropDown.setBounds(130,110,100,20);
+        add(monthToDropDown);
         
-        yeartt.setBounds(130,150,50,20);
-        add(yeartt);
+        yearToDropDown.setBounds(130,150,100,20);
+        add(yearToDropDown);
         
         langt.setBounds(130,190,100,20);
         add(langt);
         
-        ok.setBounds(30,230,80,25);
+        ok.setBounds(30,230,80,45);
         add(ok);
         ok.addActionListener(this);
         ok.setMnemonic('l');
         
-        clr.setBounds(120,230,70,25);
+        clr.setBounds(120,230,70,45);
         add(clr);
         clr.addActionListener(this);
         clr.setMnemonic('r');
         
-        back.setBounds(210,230,70,25);
+        back.setBounds(210,230,70,45);
         add(back);
         back.addActionListener(this);
         back.setMnemonic('b');
         
-        listFormatButton.setBounds(300,230,70,25);
+        listFormatButton.setBounds(300,230,70,45);
         add(listFormatButton);
         listFormatButton.addActionListener(this);
         listFormatButton.setMnemonic('i');
@@ -115,22 +134,22 @@ public class remindersub extends JFrame implements ActionListener
     {
         if(ae.getSource()==ok)
         {
-            new reminder(Integer.parseInt(monthft.getText()),Integer.parseInt(yeartt.getText()),Integer.parseInt(monthtt.getText()),Integer.parseInt(yeartt.getText()));
+            new reminder(Integer.parseInt(monthFromDropDown.getSelectedItem().toString()),Integer.parseInt(yearToDropDown.getSelectedItem().toString()),Integer.parseInt(monthToDropDown.getSelectedItem().toString()),Integer.parseInt(yearToDropDown.getSelectedItem().toString()));
             this.dispose();
         }
         
         if(ae.getSource()==listFormatButton)
         {
-            new SatSandeshDespatchRemindersList(Integer.parseInt(monthft.getText()),Integer.parseInt(yeartt.getText()),Integer.parseInt(monthtt.getText()),Integer.parseInt(yeartt.getText()));
+            new SatSandeshDespatchRemindersList(Integer.parseInt(monthFromDropDown.getSelectedItem().toString()),Integer.parseInt(yearToDropDown.getSelectedItem().toString()),Integer.parseInt(monthToDropDown.getSelectedItem().toString()),Integer.parseInt(yearToDropDown.getSelectedItem().toString()));
             this.dispose();
         }
         
         if(ae.getSource()==clr)
         {
-            monthft.setText("");
-            monthtt.setText("");
-            yearft.setText("");
-            yeartt.setText("");
+            monthFromDropDown.setSelectedItem(""+SamsUtilities.getCurrentMonth());
+            monthToDropDown.setSelectedItem(""+SamsUtilities.getCurrentMonth());
+            yearFromDropDown.setSelectedItem(""+SamsUtilities.getCurrentYear());
+            yearToDropDown.setSelectedItem(""+SamsUtilities.getCurrentYear());
         }
         if(ae.getSource()==back)
         {

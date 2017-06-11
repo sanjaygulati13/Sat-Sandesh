@@ -807,6 +807,12 @@ setVisible(true);
                     stateNameDropDown.requestFocus();
                     return;
                 }
+                
+                if(subno1.equals("BD") && dno == 0){
+                    JOptionPane.showMessageDialog(this, "Please select D#", "ERROR", JOptionPane.ERROR_MESSAGE);
+                    distributionCodeDropDown.requestFocus();
+                    return;
+                }
                 //other details
                 
                 int return1;

@@ -15,12 +15,12 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
     {
         new SatSandeshRenewSubscription("BH",131);
     }
-   /* protected final void center() {
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        Dimension frameSize = getSize();
-        int x1 = (screenSize.width - frameSize.width) / 2;
-        int y = (screenSize.height - frameSize.height) / 2;
-        setLocation(x1, y);
+    /* protected final void center() {
+    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    Dimension frameSize = getSize();
+    int x1 = (screenSize.width - frameSize.width) / 2;
+    int y = (screenSize.height - frameSize.height) / 2;
+    setLocation(x1, y);
     }*/
     
     JLabel  subd1, asn1, sub1, status1, seriesLabel, rec1, dist1, d1, subt1, lang1;				//subscription details
@@ -50,7 +50,7 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
     TextFieldWithLimit telt1,emailt1,subIssueCounterText;
     JComboBox counterDropDown;
     
-    int currMonth, currYear; 
+    int currMonth, currYear;
     
     JButton renew, mod, clear, back;
     int x, amount;
@@ -519,13 +519,14 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
         starty1.setBounds(225,75,90,20);
         
         
-        p2.add(end1);
-        end1.setBounds(285,75,100,20);
+        //p2.add(end1);
+        //end1.setBounds(285,75,100,20);
         
-        p2.add(end1);
+        //p2.add(end1);
         end1.setBounds(400,75,100,20);
         
-        p2.add(endingPeriodText);
+        //removing on request of Sumit
+        //p2.add(endingPeriodText);
         endingPeriodText.setBounds(510,75,70,20);
         endingPeriodText.setEnabled(false);
         endingPeriodText.setFont(f);
@@ -866,40 +867,40 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
                 
                 //String str1, str2, str3;
                 /*GregorianCalendar cal= new GregorianCalendar();
-                 * str1=String.valueOf(cal.get(Calendar.DATE));
-                 * str2=String.valueOf(cal.get(Calendar.MONTH)+1);
-                 * str3=String.valueOf(cal.get(Calendar.YEAR));
-                 */
+                * str1=String.valueOf(cal.get(Calendar.DATE));
+                * str2=String.valueOf(cal.get(Calendar.MONTH)+1);
+                * str3=String.valueOf(cal.get(Calendar.YEAR));
+                */
                 //System.out.println("Date "+str1+"/"+str2+str3);
                 
                 /*
-                 * int year=Integer.parseInt((String)starty1.getSelectedItem());
-                 * int month=Integer.parseInt((String)startm1.getSelectedItem());
-                 * 
-                 * System.out.println(" current YM "+year+"-"+month);
-                 * 
-                 * //System.out.println(endy1>=year);
-                 * //System.out.println(endm1>=month);
-                 * 
-                 * if((endy1==year && endm1>month) || endy1>year)
-                 * {
-                 * startm=(endm1+1)%12;
-                 * 
-                 * starty=endy1;
-                 * if(startm==1)
-                 * starty++;
-                 * //System.out.println("New starting period "+startm+"-"+starty);
-                 * 
-                 * }
-                 * 
-                 * endm=((startm-1)+period1)%12;
-                 * if(endm==0)
-                 * endm=12;
-                 * if(endm<12)
-                 * endy=starty+period;
-                 * else
-                 * endy=starty+period-1;
-                 */
+                * int year=Integer.parseInt((String)starty1.getSelectedItem());
+                * int month=Integer.parseInt((String)startm1.getSelectedItem());
+                *
+                * System.out.println(" current YM "+year+"-"+month);
+                *
+                * //System.out.println(endy1>=year);
+                * //System.out.println(endm1>=month);
+                *
+                * if((endy1==year && endm1>month) || endy1>year)
+                * {
+                * startm=(endm1+1)%12;
+                *
+                * starty=endy1;
+                * if(startm==1)
+                * starty++;
+                * //System.out.println("New starting period "+startm+"-"+starty);
+                *
+                * }
+                *
+                * endm=((startm-1)+period1)%12;
+                * if(endm==0)
+                * endm=12;
+                * if(endm<12)
+                * endy=starty+period;
+                * else
+                * endy=starty+period-1;
+                */
                 
                 endm=endm2;
                 endy=endy2;
@@ -955,7 +956,8 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
                             startm1.requestFocus();
                             return;
                         }
-                        
+                        endm = endm2;
+                        endy = endy2;
                     }
                 }
                 
@@ -1021,14 +1023,14 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
                 if(c4.a == 1) flag++;
                 
                 String mainTableQuery = "update subscribers_primary_details set subscription_code='"
-                                        +subno1+"', subscription_number="+subno+" , membership_status='Active', receipt_number="
-                                        +rcpt+", distribution_type='"+dist+"', bulk_despatch_code="+dno+", subscription_period='"
-                                        +subt+"', language='"+lang+"', series_name = '"+seriesName+"', payment_type='"
-                                        +payt+"', instrument_number="+chno+", receipt_date = '"
-                                        +dat3+"-"+dat2+"-"+date1+"', amount="+amt+", starting_period='"
-                                        +starty+"-"+startm+"-1', ending_period='"+endingPeriod+"', entry_date='"
-                                        +SamsUtilities.getCurrentSqlDate()+"', subscription_type='Renew', counter_name = '"
-                                        +history+"' , updated_by = '"+SamsUtilities.getUserName()+"' where asn="+asn;
+                        +subno1+"', subscription_number="+subno+" , membership_status='Active', receipt_number="
+                        +rcpt+", distribution_type='"+dist+"', bulk_despatch_code="+dno+", subscription_period='"
+                        +subt+"', language='"+lang+"', series_name = '"+seriesName+"', payment_type='"
+                        +payt+"', instrument_number="+chno+", receipt_date = '"
+                        +dat3+"-"+dat2+"-"+date1+"', amount="+amt+", starting_period='"
+                        +starty+"-"+startm+"-1', ending_period='"+endingPeriod+"', entry_date='"
+                        +SamsUtilities.getCurrentSqlDate()+"', subscription_type='Renew', counter_name = '"
+                        +history+"' , updated_by = '"+SamsUtilities.getUserName()+"' where asn="+asn;
                 //System.out.println(mainTableQuery);
                 c4.a=c4.st.executeUpdate(mainTableQuery);
                 if(c4.a == 1) flag++;
@@ -1234,10 +1236,10 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
                 chddt1.setText("");
                 chddt1.setEnabled(true);
             }
-        }     
+        }
     }
     
-
+    
     String seriesNameText;
     
     @Override
@@ -1245,10 +1247,10 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
         if(fe.getSource() == receiptNumberText)
         {
             seriesNameText = (String)(seriesDropDown.getSelectedItem());
-            //System.out.println("Gained " + seriesName);   
+            //System.out.println("Gained " + seriesName);
         }
     }
-
+    
     @Override
     public void focusLost(FocusEvent fe) {
         if(fe.getSource() == receiptNumberText)
@@ -1315,8 +1317,11 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
                     //System.out.println(alreadyIssuedRcptCheckQuery);
                     
                     int existingAsnCount = fillSeriesConnection.rs.getInt(1);
-                    //System.out.println(existingAsnCount);
-                    int despatchCode=Integer.parseInt((String)distributionCodeDropDown.getSelectedItem());
+                    String despatchCodeStr = (String)distributionCodeDropDown.getSelectedItem();
+                    //System.out.println(existingAsnCount + " " + despatchCodeStr);
+                    int despatchCode = 0;
+                    if(despatchCodeStr.isEmpty() == false) despatchCode = Integer.parseInt(despatchCodeStr);
+                    
                     if(existingAsnCount > 0 && despatchCode == 0)
                     {
                         JOptionPane.showMessageDialog(this,"Already used receipt number", "Invalid receipt number", JOptionPane.ERROR_MESSAGE);

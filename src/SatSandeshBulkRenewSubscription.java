@@ -293,8 +293,8 @@ public class SatSandeshBulkRenewSubscription implements ActionListener, ItemList
         satSandeshBulkRenewSubscriptionWindow.add(startingPeriodMonthDropDown);
         satSandeshBulkRenewSubscriptionWindow.add(startingPeriodYearDropDown,"wrap 30px");
         
-        satSandeshBulkRenewSubscriptionWindow.add(endingPeriodLabel);
-        satSandeshBulkRenewSubscriptionWindow.add(endingPeriodText);
+        //satSandeshBulkRenewSubscriptionWindow.add(endingPeriodLabel);
+        //satSandeshBulkRenewSubscriptionWindow.add(endingPeriodText);
         satSandeshBulkRenewSubscriptionWindow.add(counterLabel);
         satSandeshBulkRenewSubscriptionWindow.add(counterDropDown);
         

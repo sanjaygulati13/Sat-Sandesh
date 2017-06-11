@@ -12,7 +12,7 @@ public class labeldist extends JFrame implements ActionListener
     
     JLabel month, year, lang, dno;
     JButton ok, back;
-    JTextField montht, yeart;
+    JComboBox monthDropDown, yearDropDown;
     JComboBox langt, dnot;
     
     
@@ -64,12 +64,27 @@ public class labeldist extends JFrame implements ActionListener
         
         
         
+        monthDropDown = new JComboBox();
+        yearDropDown = new JComboBox();
         
-        montht=new JTextField(20);
-        montht.setText(""+SamsUtilities.getCurrentMonth());
-        yeart=new JTextField(40);
-        yeart.setText(""+SamsUtilities.getCurrentYear());
         langt=new JComboBox();
+        
+        monthDropDown = new JComboBox();
+        yearDropDown = new JComboBox();
+       
+        
+        for( int month =1; month <= 12 ; month++ )
+            monthDropDown.addItem(""+month);
+        
+        int currYear = SamsUtilities.getCurrentYear();
+        for( int year=(currYear) ; year>(currYear-10) ; year--)
+        {
+            yearDropDown.addItem(""+year);
+        }
+        
+        monthDropDown.setSelectedItem(""+SamsUtilities.getCurrentMonth());
+        yearDropDown.setSelectedItem(""+SamsUtilities.getCurrentYear());
+        
         
         ok=new JButton("OK");
         back=new JButton("Back");
@@ -91,15 +106,15 @@ public class labeldist extends JFrame implements ActionListener
         lang.setBounds(30,150,80,20);
         add(lang);
         
-        dnot.setBounds(110,30,80,20);
+        dnot.setBounds(110,30,100,20);
         add(dnot);
         
         
-        montht.setBounds(110,70,80,20);
-        add(montht);
+        monthDropDown.setBounds(110,70,100,20);
+        add(monthDropDown);
         
-        yeart.setBounds(110,110,80,20);
-        add(yeart);
+        yearDropDown.setBounds(110,110,100,20);
+        add(yearDropDown);
         
         langt.setBounds(110,150,120,20);
         add(langt);
@@ -123,7 +138,7 @@ public class labeldist extends JFrame implements ActionListener
     {
         if(ae.getSource()==ok)
         {
-            new labeldno(Integer.parseInt((String)dnot.getSelectedItem()),Integer.parseInt(montht.getText()),Integer.parseInt(yeart.getText()));
+            new labeldno(Integer.parseInt((String)dnot.getSelectedItem()),Integer.parseInt(monthDropDown.getSelectedItem().toString()),Integer.parseInt(yearDropDown.getSelectedItem().toString()));
             this.dispose();
         }
         

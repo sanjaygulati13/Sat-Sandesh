@@ -18,7 +18,8 @@ public class SatSandeshSearchBySubNumber implements ActionListener
     JFrame satSandeshSearchWindow;
     MigLayout mLayout= new MigLayout( "insets 30");
     JComboBox seriesNameDropDown;
-    TextFieldWithLimit firstNameText,lastNameText,districtText, stateText;
+    TextFieldWithLimit firstNameText,lastNameText,districtText;
+    JComboBox stateNameDropDown;
     JLabel l1,l2,l3,l4;
     
     JRadioButton subNumberRadioButton, nameRadioButton,addressRadioButton, rcptNumberRadioButton;
@@ -137,8 +138,8 @@ public class SatSandeshSearchBySubNumber implements ActionListener
         l4=new JLabel("State");
         satSandeshSearchWindow.add(l4);
         
-        stateText= new TextFieldWithLimit(15,15);
-        satSandeshSearchWindow.add(stateText,"wrap, w 100!");
+        stateNameDropDown = new JComboBox(SamsUtilities.fillStateNameList());
+        satSandeshSearchWindow.add(stateNameDropDown,"wrap, w 140!");
         
         
         satSandeshSearchWindow.add(addressRadioButton);
@@ -216,7 +217,7 @@ public class SatSandeshSearchBySubNumber implements ActionListener
             
             if(mode == 2)
             {
-                searchBySubscriberDetailsAndFIllTable(firstNameText.getText(), lastNameText.getText(), districtText.getText(), stateText.getText(), searchResultsTable);
+                searchBySubscriberDetailsAndFIllTable(firstNameText.getText(), lastNameText.getText(), districtText.getText(), stateNameDropDown.getSelectedItem().toString(), searchResultsTable);
             }
             if(mode == 4)
             {

@@ -711,7 +711,7 @@ public class sams extends JFrame implements ActionListener {
         }
 
         if (ae.getSource() == distributorStatusMenuItem) {
-            dstatus dstatus1 = new dstatus();
+            SatSandeshDistributorStatus dstatus1 = new SatSandeshDistributorStatus();
             this.dispose();
         }
 
