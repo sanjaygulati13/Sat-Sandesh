@@ -32,7 +32,7 @@ public class sams extends JFrame implements ActionListener {
     
     
     JMenu freeze, inactive, deactive, account_book_details_menu, petty_menu;
-    JMenuItem receiptBookStatusMenuItem, accnt, accntsum,accnt_monthly, accnt_yearly, subscriptionReportMenuItem, addDistributorCodeMenuItem, alterDistributorCodeMenuItem, markReturnBackMenuItem,returnBackListMenuItem, /*freezed, freezes, deactived, deactives, inactived, inactives,*/ stateSubscriberReportMenuItem, districtSubscriberReportMenuItem,despatchCodeSubscriberReportMenuItem, distributorCodeSubscriberReportMenuItem, pet,petty_month, petty_year, dup;
+    JMenuItem receiptBookStatusMenuItem, accnt, accntsum,accnt_monthly, accnt_yearly, subscriptionReportMenuItem, addDistributorCodeMenuItem, alterDistributorCodeMenuItem, markReturnBackMenuItem,returnBackListMenuItem, /*freezed, freezes, deactived, deactives, inactived, inactives, stateSubscriberReportMenuItem, districtSubscriberReportMenuItem,*/subscriberReportMainMenuItem, /*distributorCodeSubscriberReportMenuItem,*/ pet,petty_month, petty_year, dup;
     JMenuItem indexRegisterMenuItem, supplementaryIndexRegisterMenuItem;
     //JMenuItem recordDeletionMenu;
     
@@ -162,17 +162,17 @@ public class sams extends JFrame implements ActionListener {
         crossCheckingReportMenuItem = new JMenuItem("Cross Checking Report");				//cross check reports--d/p
         crossCheckingReportMenuItem.setMnemonic('r');
         
-        despatchCodeSubscriberReportMenuItem = new JMenuItem("Despatch Code Wise");							//misclellaneous--others--sub list
-        despatchCodeSubscriberReportMenuItem.setMnemonic('d');
+        subscriberReportMainMenuItem = new JMenuItem("Report selector");							//misclellaneous--others--sub list
+        subscriberReportMainMenuItem.setMnemonic('d');
         
-        distributorCodeSubscriberReportMenuItem = new JMenuItem("Distributor Code Wise");							//misclellaneous--others--distributorLabelsMenuItem list
-        distributorCodeSubscriberReportMenuItem.setMnemonic('i');
+        //distributorCodeSubscriberReportMenuItem = new JMenuItem("Distributor Code Wise");							//misclellaneous--others--distributorLabelsMenuItem list
+        //distributorCodeSubscriberReportMenuItem.setMnemonic('i');
         
         distributorStatusMenuItem = new JMenuItem("Distributor Status");							//member status--d/p
         distributorStatusMenuItem.setMnemonic('s');
         
-        districtSubscriberReportMenuItem = new JMenuItem("District Wise");					//misclellaneous--others--districtSubscriberReportMenuItem list
-        districtSubscriberReportMenuItem.setMnemonic('t');
+        //districtSubscriberReportMenuItem = new JMenuItem("District Wise");					//misclellaneous--others--districtSubscriberReportMenuItem list
+        //districtSubscriberReportMenuItem.setMnemonic('t');
         
         detailedMemberStatusMenuItem = new JMenuItem("Member Status - Detailed");
         detailedMemberStatusMenuItem.setMnemonic('m');
@@ -194,8 +194,8 @@ public class sams extends JFrame implements ActionListener {
         returnBackListMenuItem=new JMenuItem("Return Back List");
         returnBackListMenuItem.setMnemonic('b');
         
-        stateSubscriberReportMenuItem = new JMenuItem("State Wise");							//misclellaneous--others--stateSubscriberReportMenuItem list
-        stateSubscriberReportMenuItem.setMnemonic('w');
+        //stateSubscriberReportMenuItem = new JMenuItem("State Wise");							//misclellaneous--others--stateSubscriberReportMenuItem list
+        //stateSubscriberReportMenuItem.setMnemonic('w');
         
         subscriptionReportMenuItem = new JMenuItem("Subscription Report");
         subscriptionReportMenuItem.setMnemonic('u');
@@ -497,17 +497,17 @@ public class sams extends JFrame implements ActionListener {
         subscriber_report_menu.add(centerLabelsMenuItem);
         subscriber_report_menu.add(centerListMenuItem);
         subscriber_report_menu.add(crossCheckingReportMenuItem);
-        subscriber_report_menu.add(despatchCodeSubscriberReportMenuItem);
-        subscriber_report_menu.add(distributorCodeSubscriberReportMenuItem);
+        subscriber_report_menu.add(subscriberReportMainMenuItem);
+        //subscriber_report_menu.add(distributorCodeSubscriberReportMenuItem);
         subscriber_report_menu.add(distributorStatusMenuItem);
-        subscriber_report_menu.add(districtSubscriberReportMenuItem);
+        //subscriber_report_menu.add(districtSubscriberReportMenuItem);
         subscriber_report_menu.add(detailedMemberStatusMenuItem);
         subscriber_report_menu.add(summaryMemberStatusMenuItem);
         subscriber_report_menu.add(periodWiseMemberStatusMenuItem);
         subscriber_report_menu.add(oldPeriodReportMenuItem);
         subscriber_report_menu.add(reminderStatusMenuItem);
         subscriber_report_menu.add(returnBackListMenuItem);
-        subscriber_report_menu.add(stateSubscriberReportMenuItem);
+        //subscriber_report_menu.add(stateSubscriberReportMenuItem);
         subscriber_report_menu.add(subscriptionReportMenuItem);
         //subscriber_report_menu.add(recordDeletionMenu);
         
@@ -624,11 +624,11 @@ public class sams extends JFrame implements ActionListener {
         inactived.addActionListener(this);
         inactives.addActionListener(this);
         deactived.addActionListener(this);
-        deactives.addActionListener(this);*/
+        deactives.addActionListener(this);
         stateSubscriberReportMenuItem.addActionListener(this);
-        districtSubscriberReportMenuItem.addActionListener(this);
-        despatchCodeSubscriberReportMenuItem.addActionListener(this);
-        distributorCodeSubscriberReportMenuItem.addActionListener(this);
+        districtSubscriberReportMenuItem.addActionListener(this);*/
+        subscriberReportMainMenuItem.addActionListener(this);
+        //distributorCodeSubscriberReportMenuItem.addActionListener(this);
 
         alterDistributorCodeMenuItem.addActionListener(this);
 
@@ -951,7 +951,7 @@ public class sams extends JFrame implements ActionListener {
             this.dispose();
         }
 
-        if (ae.getSource() == stateSubscriberReportMenuItem) {
+        /*if (ae.getSource() == stateSubscriberReportMenuItem) {
             new printstate();
             this.dispose();
         }
@@ -960,16 +960,16 @@ public class sams extends JFrame implements ActionListener {
         if (ae.getSource() == districtSubscriberReportMenuItem) {
             new printdistrict();
             this.dispose();
-        }
+        }*/
 
-        if (ae.getSource() == despatchCodeSubscriberReportMenuItem) {
-            new printsubno();
+        if (ae.getSource() == subscriberReportMainMenuItem) {
+            new SatSandeshSubscriberReportsMain();
             this.dispose();
         }
-        if (ae.getSource() == distributorCodeSubscriberReportMenuItem) {
+        /*if (ae.getSource() == distributorCodeSubscriberReportMenuItem) {
             new printdno();
             this.dispose();
-        }
+        }*/
 
 
         if (ae.getSource() == searchsubno) {

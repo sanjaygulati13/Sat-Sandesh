@@ -42,10 +42,9 @@ public class SupplementaryIndex implements Printable, ActionListener
         
         try
         {
-            f.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("skrm.jpg")));
             String cn = UIManager.getSystemLookAndFeelClassName();
-            
             UIManager.setLookAndFeel(cn); // Use the native L&F
+            f.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("skrm.jpg")));
         }
         catch (Exception cnf)
         {

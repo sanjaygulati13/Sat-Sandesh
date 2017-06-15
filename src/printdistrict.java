@@ -89,10 +89,8 @@ public class printdistrict extends JFrame implements ActionListener
             String stateName = stateNameDropDown.getSelectedItem().toString();
             String stateCode = SamsUtilities.getStateCodeForStateName(stateName);
             new alldistrict(districtt.getText(),stateCode);
-            this.dispose();
-            
+            this.dispose();            
         }
-        
         
         if(ae.getSource()==clr)
         {

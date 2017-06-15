@@ -349,6 +349,41 @@ public class SamsUtilities {
     
     }
     
+    public static Object[] getDistributorCodes()
+    {
+        Object[] dCodes = null;
+        try
+        {
+            connect despatchCodeFetcherConnection=new connect();
+            String countQuery = "select count(dno) from despcode";
+            String sqlQuery = "select dno from despcode";
+            despatchCodeFetcherConnection.rs=despatchCodeFetcherConnection.st.executeQuery(countQuery);
+            if(despatchCodeFetcherConnection.rs.next())
+            {
+                int ArrayCount = despatchCodeFetcherConnection.rs.getInt(1);
+                //System.out.println(ArrayCount+1);
+                dCodes = new Object[ArrayCount + 1];
+                dCodes[0] = "0";
+                int i = 1;
+                
+                despatchCodeFetcherConnection.rs=despatchCodeFetcherConnection.st.executeQuery(sqlQuery);
+                while(despatchCodeFetcherConnection.rs.next())
+                {
+                    dCodes[i++] = ""+despatchCodeFetcherConnection.rs.getInt(1);
+                }
+            }
+            despatchCodeFetcherConnection.st.close();
+            despatchCodeFetcherConnection.con.close();
+            
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        return dCodes;
+        
+    }
+    
     public static Object[] fillStateNameList() 
     {
         connect fillStateNameConnection = new connect();
