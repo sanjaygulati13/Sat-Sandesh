@@ -57,8 +57,9 @@ public class SupplementaryIndex implements Printable, ActionListener
         f.setLayout(null);
         f.setSize(300,85);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.addWindowListener(new WindowAdapter() {public void windowClosing(WindowEvent e){System.exit(0);}});
-        b=new JButton("Print Index-II");
+        f.addWindowListener(new WindowAdapter() {@Override
+	public void windowClosing(WindowEvent e){System.exit(0);}});
+        b=new JButton("Print S. Index");
         b.addActionListener(this);
         back=new JButton("Back");
         back.addActionListener(this);
@@ -346,10 +347,10 @@ for(i=0;i<x;i++)
                 textLines[i][6]=s2;
             
             if(s3!=null)
-                textLines[i][7]=s3;
+                textLines[i][7]=s3 + " " + s4;
             
-            if(s4!=null)
-                textLines[i][8]=s4;
+            //if(s4!=null)
+            //    textLines[i][8]=s4;
             
             if(s5!=null)
                 textLines[i][9]=s5;

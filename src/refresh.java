@@ -22,6 +22,7 @@ public class refresh {
             
             //----------------------------1 year----------------------------------------//
             
+            //receipt book details update for ending period
             /*connect tempConnection = new connect();
             tempConnection.rs = tempConnection.st.executeQuery("select asn from receipt_book_details");
             while(tempConnection.rs.next())
@@ -40,6 +41,28 @@ public class refresh {
                 tempConnectionNew.closeAll();
                 
             }
+            //tempConnection.a = tempConnection.st.executeUpdate("update subscribers_primary_details set membership_status='Active' where membership_status not in ('STOPPED')");
+            tempConnection.closeAll();*/
+            
+            
+            //receipt book details update for dno
+            /*connect tempConnection = new connect();
+            tempConnection.rs = tempConnection.st.executeQuery("select asn from receipt_book_details");
+            connect tempConnectionNew = new connect();
+            while(tempConnection.rs.next())
+            {
+                int asn = tempConnection.rs.getInt(1);
+                //System.out.println(asn);
+                tempConnectionNew.rs = tempConnectionNew.st.executeQuery("select bulk_despatch_code from subscribers_primary_details where asn = "+asn);
+                if(tempConnectionNew.rs.next()){
+                    int dNo = tempConnectionNew.rs.getInt(1);
+                    //System.out.println(endingPeriod);
+                    tempConnectionNew.a = tempConnectionNew.st.executeUpdate("update receipt_book_details set bulk_despatch_code  = "+dNo+" where asn = "+asn);
+                    if(tempConnectionNew.a == 0)
+                        System.out.println("Failed");
+                }
+            }
+            tempConnectionNew.closeAll();
             //tempConnection.a = tempConnection.st.executeUpdate("update subscribers_primary_details set membership_status='Active' where membership_status not in ('STOPPED')");
             tempConnection.closeAll();*/
             

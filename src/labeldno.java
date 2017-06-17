@@ -24,7 +24,7 @@ public class labeldno implements Printable, ActionListener
     int m1, y1;
     JButton b, back;
     JFrame displayFrame;
-    int dno;
+    int distributorCode;
     int linesPerPage;
     int NumberOfRecords=0;
     String distributionTypeText;
@@ -41,9 +41,9 @@ public class labeldno implements Printable, ActionListener
     
     public labeldno(int d, int m, int y)
     {
-        m1=m;
-        y1=y;
-        dno=d;
+        m1 = m;
+        y1 = y;
+        distributorCode = d;
         
         
         try
@@ -87,7 +87,7 @@ public class labeldno implements Printable, ActionListener
         {
             
             connect c1=new connect();
-            c1.rs=c1.st.executeQuery("select count(b.asn) from basic b, payment p where b.asn=p.asn and b.dno="+dno+" and (p.asn) in (select asn from payment where (endm>"+(m1-1)+" and endy="+y1+") or endy>"+y1+")");
+            c1.rs=c1.st.executeQuery("select count(b.asn) from basic b, payment p where b.asn=p.asn and b.dno="+distributorCode+" and (p.asn) in (select asn from payment where (endm>"+(m1-1)+" and endy="+y1+") or endy>"+y1+")");
             if(c1.rs.next())
             {
                 x=c1.rs.getInt(1);
@@ -163,7 +163,7 @@ public class labeldno implements Printable, ActionListener
                 if(i==0)
                 {
                     
-                    c2.rs=c2.st.executeQuery("select b.asn from basic b, payment p where b.asn=p.asn and b.dno="+dno+" and (p.asn) in (select asn from payment where (endm>"+(m1-1)+" and endy="+y1+") or endy>"+y1+") order by p.endy, p.endm");
+                    c2.rs=c2.st.executeQuery("select b.asn from basic b, payment p where b.asn=p.asn and b.dno="+distributorCode+" and (p.asn) in (select asn from payment where (endm>"+(m1-1)+" and endy="+y1+") or endy>"+y1+") order by p.endy, p.endm");
                     while(c2.rs.next())
                     {
                         if(i%(linesPerPage/2)==0 && i<x)
@@ -203,7 +203,7 @@ public class labeldno implements Printable, ActionListener
             
             i=0;
             connect c3=new connect();
-            c3.rs=c3.st.executeQuery("select district , state, distributionType from despcode where dno="+dno);
+            c3.rs=c3.st.executeQuery("select district , state, distributionType from despcode where dno="+distributorCode);
             c3.rs.next();
             dist=c3.rs.getString(1);
             state=c3.rs.getString(2);
@@ -241,7 +241,7 @@ public class labeldno implements Printable, ActionListener
                         textLines[i][4]="";
                         //textLines[i][5]="  SAT-SANDESH  ";
                         //textLines[i][6]="MEMBERS LIST";
-                        //textLines[i][7]=" FOR DISTRIBUTOR CODE  "+dno+"     DISTRICT    "+c3.rs.getString(1);
+                        //textLines[i][7]=" FOR DISTRIBUTOR CODE  "+distributorCode+"     DISTRICT    "+c3.rs.getString(1);
                         textLines[i][5]="";
                         textLines[i][6]="";
                         textLines[i][7]="";
@@ -432,7 +432,7 @@ public class labeldno implements Printable, ActionListener
         
         int a[]=new int[13];
         
-        //asn , subno, endm , endy, dno, fname, lname, add1, add2, add3, dist, state, pin
+        //asn , subno, endm , endy, distributorCode, fname, lname, add1, add2, add3, dist, state, pin
         
         a[1]=metric.stringWidth("99999   ");
         a[2]=15+a[1]+metric.stringWidth("DDDDDD");		//after asn
@@ -517,7 +517,7 @@ public class labeldno implements Printable, ActionListener
                 {
                     String distributionType = (distributionTypeText.equals("By Post"))?"DP":"DH";
                     g.setFont(new Font("SERIF", Font.BOLD, 9));
-                    g.drawString("LIST OF SAT-SANDESH MEMBERS FOR M/O "+m1+"/"+y1+" FOR DISTRIBUTOR CODE # "+dno+" ( "+dist+" , "+state+" ) ("+distributionType+")", (int)pf.getWidth()/2-320,y);
+                    g.drawString("LIST OF SAT-SANDESH MEMBERS FOR M/O "+m1+"/"+y1+" FOR DISTRIBUTOR CODE # "+distributorCode+" ( "+dist+" , "+state+" ) ("+distributionType+")", (int)pf.getWidth()/2-320,y);
                     g.drawString("( - "+(pageIndex+1)+" - )", (int)pf.getWidth()/2+220,y);
                     g.drawString("("+SamsUtilities.getCurrentDateString()+")  (TR: "+NumberOfRecords+")",(int)pf.getWidth()/2+260 , y);
                 }

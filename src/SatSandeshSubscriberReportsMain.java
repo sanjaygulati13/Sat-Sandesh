@@ -101,8 +101,8 @@ public class SatSandeshSubscriberReportsMain extends JFrame implements ActionLis
         
         distributorCodeDropDown=new JComboBox(SamsUtilities.getDistributorCodes());
         
-        okButton=new JButton("OK");
-        backButton=new JButton("Back");
+        okButton=new JButton(SamsUtilities.getOkButtonName());
+        backButton=new JButton(SamsUtilities.getCancelButtonName());
         
         subNumberDropDown.setBounds(90,60,100,20);
         

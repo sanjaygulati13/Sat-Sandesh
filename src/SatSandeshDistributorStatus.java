@@ -14,7 +14,7 @@ public class SatSandeshDistributorStatus extends JFrame implements ActionListene
     JScrollPane sp;
     Container con;
     JButton b1,showDataButton,backButton, printButton;
-    Object col[]={"D#","NAME","DISTRICT","STATE","DIST TYPE","ACTIVE","OTHERS","TOTAL"};
+    Object col[]={"D#","NAME","DISTRICT","CENTRE","STATE","DIST TYPE","ACTIVE","OTHERS","TOTAL"};
     
     int tot=0, act=0, oth=0;
     int act_num=0, oth_num=0,tot_num=0;
@@ -173,7 +173,7 @@ public class SatSandeshDistributorStatus extends JFrame implements ActionListene
                     z=new int[c];
                     
                     c2.rs=c2.st.executeQuery("select * from despcode");
-                    Object data[][]= new Object[i+1][8];
+                    Object data[][]= new Object[i+1][col.length];
                     int j=0;
                     
                     while(c2.rs.next())
@@ -182,8 +182,9 @@ public class SatSandeshDistributorStatus extends JFrame implements ActionListene
                         data[j][0]=z[j];
                         data[j][1]=c2.rs.getString(2)+" "+c2.rs.getString(3);
                         data[j][2]=c2.rs.getString(11);
-                        data[j][3]=c2.rs.getString(12);
-                        data[j][4]=c2.rs.getString(14);
+                        data[j][3]=c2.rs.getString(15);
+                        data[j][4]=c2.rs.getString(12);
+                        data[j][5]=c2.rs.getString(14);
                         j++;
                     }
                     
@@ -297,7 +298,7 @@ public class SatSandeshDistributorStatus extends JFrame implements ActionListene
             
             try
             {
-                MessageFormat headerFormat = new MessageFormat("Sat Sandesh Distributor Status for m/o " + SamsUtilities.getCurrentMonth()+"/"+SamsUtilities.getCurrentYear()); // \t (Page {0})");
+                MessageFormat headerFormat = new MessageFormat("Sat Sandesh Distributor Status for m/o " + monthText.getText() +"/"+yearText.getText()); // \t (Page {0})");
                 MessageFormat footerFormat = new MessageFormat("- Page {0} -");
                 tb1.print(JTable.PrintMode.FIT_WIDTH, headerFormat, footerFormat);
             }

@@ -19,6 +19,9 @@ public class SatSandeshAddDistributorCode extends JFrame implements ActionListen
     JComboBox distributionTypeDropDown;
     JButton saveButton, clr, back;
     
+    JLabel centreOfDeliveryLabel;
+    TextFieldWithLimit centreOfDeliveryText;
+    
     public SatSandeshAddDistributorCode()
     {
         
@@ -52,8 +55,8 @@ public class SatSandeshAddDistributorCode extends JFrame implements ActionListen
         hist=new JLabel("History");
         dist=new JLabel("District");
         stat=new JLabel("State");
-        pin=new JLabel("Pin Code");
-        
+        pin=new JLabel("Pin Code"); 
+        centreOfDeliveryLabel = new JLabel ("Centre");
         
         
         namt=new TextFieldWithLimit(16,16);
@@ -63,6 +66,7 @@ public class SatSandeshAddDistributorCode extends JFrame implements ActionListen
         addt11=new TextFieldWithLimit(33,32);
         addt12=new TextFieldWithLimit(33,32);
         addt13=new TextFieldWithLimit(33,32);
+        centreOfDeliveryText = new TextFieldWithLimit(40, 40);
         //stateCodeDropDown=new TextFieldWithLimit(4,3);
         stateNameDropDown = new JComboBox(SamsUtilities.fillStateNameList());
         stateCodeDropDown = new JComboBox(SamsUtilities.fillStateCodeList());
@@ -104,6 +108,9 @@ public class SatSandeshAddDistributorCode extends JFrame implements ActionListen
         add1.setBounds(20,110,80,20);
         add(add1);
         
+        centreOfDeliveryLabel.setBounds(20,200,80,20);
+        add(centreOfDeliveryLabel);
+        
         rem.setBounds(20,230,80,20);
         add(rem);
         
@@ -144,6 +151,9 @@ public class SatSandeshAddDistributorCode extends JFrame implements ActionListen
         
         addt13.setBounds(100,170,240,20);
         add(addt13);
+        
+        centreOfDeliveryText.setBounds(100,200,200,20);
+        add(centreOfDeliveryText);
         
         remt.setBounds(100,230,240,20);
         add(remt);
@@ -193,7 +203,7 @@ public class SatSandeshAddDistributorCode extends JFrame implements ActionListen
         if(ae.getSource() == saveButton)
         {
             
-            String name1,lname1, phone, email, add1, add2, add3, remarks, history, district, state;
+            String name1,lname1, phone, email, add1, add2, add3, remarks, history, district, state, centreOfDelivery;
             String distributionTypeText;
             int dno, pinno;
             //System.out.println("hello");
@@ -213,6 +223,7 @@ public class SatSandeshAddDistributorCode extends JFrame implements ActionListen
             pinno=Integer.parseInt(pint.getText());
             distributionTypeText = (String)(distributionTypeDropDown.getSelectedItem());
             //System.out.println(""+dno+name1+phone+email+add1+add2+add3+remarks+history+district+state+pinno);
+            centreOfDelivery = centreOfDeliveryText.getText();
             
             try
             {
@@ -229,7 +240,7 @@ public class SatSandeshAddDistributorCode extends JFrame implements ActionListen
                 if(k==0)
                 {
                     connect c1=new connect();
-                    c1.a=c1.st.executeUpdate("insert into despcode values("+dno+",'"+name1+"','"+lname1+"','"+phone+"','"+email+"','"+add1+"','"+add2+"','"+add3+"','"+remarks+"','"+history+"','"+district+"','"+state+"',"+pinno+",'"+distributionTypeText+"')");
+                    c1.a=c1.st.executeUpdate("insert into despcode values("+dno+",'"+name1+"','"+lname1+"','"+phone+"','"+email+"','"+add1+"','"+add2+"','"+add3+"','"+remarks+"','"+history+"','"+district+"','"+state+"',"+pinno+",'"+distributionTypeText+"', '"+centreOfDelivery+"')");
                     //System.out.println(""+c1.a);
                     if(c1.a==1)
                     {
@@ -291,6 +302,7 @@ public class SatSandeshAddDistributorCode extends JFrame implements ActionListen
             stateCodeDropDown.setSelectedIndex(0);
             pint.setText("");
             distributionTypeDropDown.setSelectedIndex(0);
+            centreOfDeliveryText.setText("");
             
             
         }

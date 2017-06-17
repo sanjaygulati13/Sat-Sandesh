@@ -63,7 +63,7 @@ public class SatSandeshAccountBookPosting  implements ActionListener, Printable 
     public SatSandeshAccountBookPosting()
     {
         //setting environment for the Frame satSandeshAccountBookPostingWindow
-        satSandeshAccountBookPostingWindow = new JFrame("Issue Sat Sandesh");
+        satSandeshAccountBookPostingWindow = new JFrame("Account Book Posting");
         satSandeshAccountBookPostingWindow.setLayout(mLayout);
         satSandeshAccountBookPostingWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         satSandeshAccountBookPostingWindow.addWindowListener(new WindowAdapter() {
@@ -302,19 +302,23 @@ public class SatSandeshAccountBookPosting  implements ActionListener, Printable 
                             
                             try
                             {
-                                //System.out.println(sqlQuery);
+                                System.out.println(sqlQuery);
                                 updateconnection.a = updateconnection.st.executeUpdate(sqlQuery);
-                                //if(updateconnection.a == 0)
-                                //    System.out.println("\tFailed");
+                                if(updateconnection.a == 0)
+                                    System.out.println("\tFailed");
                             }
                             catch(Exception e)
                             {
                                 e.printStackTrace();
                             }
-                            rcptText[i].setText("");
-                            seriesDropDown[i].setSelectedItem("");
-                            pageNumberText.setText("");
+                            
                         }
+                    }
+                    for(int i = 0; i < NUM_ROWS; i++)
+                    {
+                        rcptText[i].setText("");
+                        seriesDropDown[i].setSelectedItem("");
+                        pageNumberText.setText("");
                     }
                     updateconnection.closeAll();
                     

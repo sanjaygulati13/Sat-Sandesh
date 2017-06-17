@@ -8,7 +8,7 @@ public class SatSandeshModifyDistributorCode extends JFrame implements ActionLis
     
     public static void main(String args[])
     {
-        new SatSandeshModifyDistributorCode(2);
+        new SatSandeshModifyDistributorCode(993);
     }
     
     JLabel nam, phno, moddcd, email, add1, rem, hist, dist, stat, pin, distributionTypeLabel;
@@ -17,10 +17,14 @@ public class SatSandeshModifyDistributorCode extends JFrame implements ActionLis
     JComboBox distributionTypeDropDown, stateCodeDropDown, stateNameDropDown;
     JButton mod, back;
     int dno;
+    
+    JLabel centreOfDeliveryLabel;
+    TextFieldWithLimit centreOfDeliveryText;
+    
     public SatSandeshModifyDistributorCode(int d)
     {
         //JFrame.setDefaultLookAndFeelDecorated(true);
-        dno=d;
+        dno = d;
         try
         {
             this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("skrm.jpg")));
@@ -53,20 +57,22 @@ public class SatSandeshModifyDistributorCode extends JFrame implements ActionLis
         stat=new JLabel("State");
         pin=new JLabel("Pin Code");
         distributionTypeLabel = new JLabel("<html>Dist Type</html>");
-        
+        centreOfDeliveryLabel = new JLabel ("Centre");
         
         
         namt=new TextFieldWithLimit(16,16);
         lnamt=new TextFieldWithLimit(15,15);
         phnot=new TextFieldWithLimit(13,12);
-        moddcdt=new TextFieldWithLimit(3,2);
+        moddcdt=new TextFieldWithLimit(4,4);
         addt11=new TextFieldWithLimit(33,32);
         addt12=new TextFieldWithLimit(33,32);
         addt13=new TextFieldWithLimit(33,32);
+        centreOfDeliveryText = new TextFieldWithLimit(40, 40);
         //stateCodeDropDown=new TextFieldWithLimit(4,3);
         stateNameDropDown = new JComboBox(SamsUtilities.fillStateNameList());
         stateCodeDropDown = new JComboBox(SamsUtilities.fillStateCodeList());
         stateCodeDropDown.setEnabled(false);
+        
         
         pint=new TextFieldWithLimit(7,6);
         
@@ -97,6 +103,9 @@ public class SatSandeshModifyDistributorCode extends JFrame implements ActionLis
         
         add1.setBounds(20,110,80,20);
         add(add1);
+        
+        centreOfDeliveryLabel.setBounds(20,200,80,20);
+        add(centreOfDeliveryLabel);
         
         rem.setBounds(20,230,80,20);
         add(rem);
@@ -143,6 +152,7 @@ public class SatSandeshModifyDistributorCode extends JFrame implements ActionLis
             stateNameDropDown.setSelectedItem(SamsUtilities.getStateNameForStateCode(stateCode));
             pint.setText(c2.rs.getString(13));
             distributionTypeDropDown.setSelectedItem(c2.rs.getString(14));
+            centreOfDeliveryText.setText(""+c2.rs.getString(15));
         }
         catch(Exception e)
         {
@@ -160,7 +170,7 @@ public class SatSandeshModifyDistributorCode extends JFrame implements ActionLis
         phnot.setBounds(480,30,120,20);
         add(phnot);
         
-        moddcdt.setBounds(100,70,30,20);
+        moddcdt.setBounds(100,70,50,20);
         add(moddcdt);
         moddcdt.setText(""+dno);
         
@@ -175,6 +185,9 @@ public class SatSandeshModifyDistributorCode extends JFrame implements ActionLis
         
         addt13.setBounds(100,170,240,20);
         add(addt13);
+        
+        centreOfDeliveryText.setBounds(100,200,200,20);
+        add(centreOfDeliveryText);
         
         remt.setBounds(100,230,240,20);
         add(remt);
@@ -215,7 +228,7 @@ public class SatSandeshModifyDistributorCode extends JFrame implements ActionLis
         if(ae.getSource()==mod)
         {
             
-            String name1,lname1, phone, email, add1, add2, add3, remarks, history, district, state;
+            String name1,lname1, phone, email, add1, add2, add3, remarks, history, district, state, centreOfDelivery;
             String distributionTypeText;
             int pinno;
             //dno=Integer.parseInt(moddcdt.getText());
@@ -232,13 +245,14 @@ public class SatSandeshModifyDistributorCode extends JFrame implements ActionLis
             state=(String)stateCodeDropDown.getSelectedItem();
             pinno=Integer.parseInt(pint.getText());
             distributionTypeText = (String)(distributionTypeDropDown.getSelectedItem());
+            centreOfDelivery = centreOfDeliveryText.getText();
             //System.out.println(""+dno+name1+phone+email+add1+add2+add3+remarks+history+district+state+pinno);
             
             try
             {
                 
                 connect c1=new connect();
-                String sqlQuery = "update despcode set fname='"+name1+"', lname='"+lname1+"',phone='"+phone+"',email='"+email+"',add1='"+add1+"',add2='"+add2+"',add3='"+add3+"',remarks='"+remarks+"',history='"+history+"',district='"+district+"',state='"+state+"',pinno="+pinno+", distributionType = '"+distributionTypeText+"' where dno="+dno;
+                String sqlQuery = "update despcode set fname='"+name1+"', lname='"+lname1+"',phone='"+phone+"',email='"+email+"',add1='"+add1+"',add2='"+add2+"',add3='"+add3+"',remarks='"+remarks+"',history='"+history+"',district='"+district+"',state='"+state+"',pinno="+pinno+", distributionType = '"+distributionTypeText+"', centre_of_delivery = '"+centreOfDelivery+"' where dno="+dno;
                 System.out.println(sqlQuery);
                 c1.a=c1.st.executeUpdate(sqlQuery);
                 if(c1.a==1)

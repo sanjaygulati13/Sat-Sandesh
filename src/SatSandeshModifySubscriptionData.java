@@ -1018,7 +1018,8 @@ setVisible(true);
                         //System.out.println(originalSeriesName + " " + seriesNameText + " " + originalRcptNumber + " " + rcpt);
                         if( seriesNameText.equals(originalSeriesName) == false || rcpt.equals(originalRcptNumber) == false ){
                             String distributionType = (String)distributionTypeDropDown.getSelectedItem();
-                            if( distributionType.equals("Distributor")){
+                            //if( distributionType.equals("Distributor"))
+                            {
                                 JOptionPane.showMessageDialog(this,"Already used receipt number", "Invalid receipt number", JOptionPane.ERROR_MESSAGE);
                                 receiptNumberText.setText("");
                                 receiptNumberText.requestFocus();

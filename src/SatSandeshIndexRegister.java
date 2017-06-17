@@ -593,12 +593,15 @@ public class SatSandeshIndexRegister implements Printable, ActionListener
             {
                 try
                 {
-                    HashPrintRequestAttributeSet attr = new HashPrintRequestAttributeSet();
+                    
                     //attr.add(MediaSizeName.ISO_A4);
                     //attr.add()
+                    
+                    /*HashPrintRequestAttributeSet attr = new HashPrintRequestAttributeSet();
                     attr.add(new MediaPrintableArea(0f, 0f, (float)pf.getImageableWidth()-36f, (float)pf.getImageableHeight()-36f, MediaPrintableArea.INCH));
                     System.out.println(pf.getImageableHeight() + " " + pf.getImageableWidth() + " " + ((float)pf.getImageableWidth()-0.50f));
-                    job.print(attr);
+                    job.print(attr);*/
+                    job.print();
                 }
                 catch(PrinterException pe)
                 {

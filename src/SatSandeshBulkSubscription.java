@@ -1081,7 +1081,7 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
                 String countQuery = "select count(book_num) from receipt_book_inventory where end_rcpt_num > "+(rcptNum-1)+" and start_rcpt_num < "+(rcptNum+1)+" and series_name='"+seriesNameText+"'";
                 String sqlQuery = "select issued_to,book_num, start_rcpt_num, end_rcpt_num from receipt_book_inventory where series_name = '"+seriesNameText+"' and end_rcpt_num > "+(rcptNum-1)+" and start_rcpt_num < "+(rcptNum+1);
                 //String alreadyIssuedRcptCheckQuery = "select count(asn) from basic where rcpt = "+rcptNum +" and series_name = '"+seriesNameText+"'";
-                String alreadyIssuedRcptCheckQuery = "select count(asn) from receipt_book_details where receipt_number = "+rcptNum +" and series_name = '"+seriesNameText+"'";
+                String alreadyIssuedRcptCheckQuery = "select count(asn) from receipt_book_details where receipt_number = "+rcptNum +" and series_name = '"+seriesNameText+"' and bulk_despatch_code not in ( "+ distributionNumberDropDown.getSelectedItem().toString() +" )";
                 
                 connect fillSeriesConnection = new connect();
                 try
@@ -1128,6 +1128,7 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
                     //System.out.println(subCounter);
                     subIssueCounterText.setText(subCounter);
                     
+                    //System.out.println(alreadyIssuedRcptCheckQuery);
                     fillSeriesConnection.rs = fillSeriesConnection.st.executeQuery(alreadyIssuedRcptCheckQuery);
                     int existingAsnCount = 0;
                     if(fillSeriesConnection.rs.next())
