@@ -4,11 +4,11 @@ import java.awt.event.*;
 import java.sql.*;
 import javax.swing.*;
 
-public class reminder implements Printable, ActionListener
+public class SatSandeshDespatchRemindersLabel_Old implements Printable, ActionListener
 {
     public static void main(String args[])
     {
-        new reminder(1,2009,12,2009);
+        new SatSandeshDespatchRemindersLabel_Old(1,2009,12,2009);
     }
     
     int[] pageBreak;
@@ -24,7 +24,7 @@ public class reminder implements Printable, ActionListener
     JFrame f;
     
     
-    public reminder(int m, int y, int m3, int y3)
+    public SatSandeshDespatchRemindersLabel_Old(int m, int y, int m3, int y3)
     {
         m1=m;
         y1=y;
@@ -45,7 +45,7 @@ public class reminder implements Printable, ActionListener
             System.out.println(cnf);
         }
         
-        f= new JFrame("Print Reminders");
+        f= new JFrame("Print Reminders -- Old");
         f.setVisible(true);
         f.setLayout(null);
         f.setSize(300,100);
@@ -79,19 +79,17 @@ public class reminder implements Printable, ActionListener
                 x=c1.rs.getInt(1);
                 
             }
-            c1.st.close();
-            c1.con.close();
             
             numLines=x*9;
             
             textLines=new String[numLines][7];
             asn=new int[x];
             
-            connect c2=new connect();
-            c2.rs=c2.st.executeQuery("select b.asn from basic b, payment p where b.asn=p.asn and (b.dist='By Post' or b.dist='By Hand') and ( p.endm>"+(m1-1)+" and p.endy="+y1+")  and (p.endm <"+(m2+1)+" and p.endy="+y2+") order by p.endm asc, p.endy asc, b.subnos, b.subno");
-            while(c2.rs.next())
+            //connect c1=new connect();
+            c1.rs=c1.st.executeQuery("select b.asn from basic b, payment p where b.asn=p.asn and (b.dist='By Post' or b.dist='By Hand') and ( p.endm>"+(m1-1)+" and p.endy="+y1+")  and (p.endm <"+(m2+1)+" and p.endy="+y2+") order by p.endm asc, p.endy asc, b.subnos, b.subno");
+            while(c1.rs.next())
             {
-                asn[i]=c2.rs.getInt(1);
+                asn[i]=c1.rs.getInt(1);
                 
                 i++;
             }
@@ -99,46 +97,42 @@ public class reminder implements Printable, ActionListener
             i=0;
             for(i=0;i<x;i++)
             {
-                connect c10=new connect();
-                c10.rs=c10.st.executeQuery("select * from basic where asn="+asn[i]);
-                c10.rs.next();
-                textLines[i][0]="SUB # "+ c10.rs.getString(2)+" "+ c10.rs.getString(3)+" / REMI ";
+                //connect c1=new connect();
+                c1.rs=c1.st.executeQuery("select * from basic where asn="+asn[i]);
+                c1.rs.next();
+                textLines[i][0]="SUB # "+ c1.rs.getString(2)+" "+ c1.rs.getString(3)+" / REMI ";
             }
             
             
-            c2.st.close();
-            c2.con.close();
             
             i=0;
             
-            connect c3=new connect();
+            //connect c1=new connect();
             for(i=0;i<x;i++)
             {
-                c3.rs=c3.st.executeQuery("select * from payment where asn="+asn[i]);
-                c3.rs.next();
-                textLines[i][0]+="   "+c3.rs.getInt(10)+"/"+c3.rs.getInt(11);
+                c1.rs=c1.st.executeQuery("select * from payment where asn="+asn[i]);
+                c1.rs.next();
+                textLines[i][0]+="   "+c1.rs.getInt(10)+"/"+c1.rs.getInt(11);
             }
             
-            c3.st.close();
-            c3.con.close();
             
             i=0;
-            connect c4=new connect();
+            //connect c1=new connect();
             for(i=0;i<x;i++)
             {
                 
-                c4.rs=c4.st.executeQuery("select * from subdetails where asn="+asn[i]);
-                c4.rs.next();
+                c1.rs=c1.st.executeQuery("select * from subdetails where asn="+asn[i]);
+                c1.rs.next();
                 
                 String s1, s2, s3, s4, s5,s6, s7;
                 
-                s1=c4.rs.getString(3);
-                s2=c4.rs.getString(4);
-                s3=c4.rs.getString(5);
-                s4=c4.rs.getString(6);
-                s5=c4.rs.getString(7);
-                s6=c4.rs.getString(8);
-                s7=c4.rs.getString(9);
+                s1=c1.rs.getString(3);
+                s2=c1.rs.getString(4);
+                s3=c1.rs.getString(5);
+                s4=c1.rs.getString(6);
+                s5=c1.rs.getString(7);
+                s6=c1.rs.getString(8);
+                s7=c1.rs.getString(9);
                 
                 textLines[i][1]="";
                 textLines[i][2]="";
@@ -172,16 +166,14 @@ public class reminder implements Printable, ActionListener
                 
                 
                 
-                int c=Integer.parseInt(c4.rs.getString(10));
+                int c=Integer.parseInt(c1.rs.getString(10));
                 if(c>0)
                 {
                     textLines[i][6]+=" - "+c;
                 }
             }
             
-            c4.st.close();
-            c4.con.close();
-            
+            c1.closeAll();
             i=0;
             
         }

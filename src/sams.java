@@ -31,7 +31,7 @@ public class sams extends JFrame implements ActionListener {
     JMenuItem newSubscriptionMenuItem, renewSubscriptionMenuItem,bulknewEntry,bulkRenewEntry, despatchRegisterMenuItem, distributorRemindersMenuItem, despatchRemindersMenuItem, crossCheckingReportMenuItem, detailedMemberStatusMenuItem, summaryMemberStatusMenuItem, periodWiseMemberStatusMenuItem,centerLabelsMenuItem, despatchLabelsMenuItem, centerListMenuItem, distributorLabelsMenuItem, reminderStatusMenuItem, distributorStatusMenuItem, leftoutsMenuItem;
     
     
-    JMenu freeze, inactive, deactive, account_book_details_menu, petty_menu;
+    JMenu freeze, inactive, deactive, account_book_details_menu/*, petty_menu*/;
     JMenuItem receiptBookStatusMenuItem, accnt, accntsum,accnt_monthly, accnt_yearly, subscriptionReportMenuItem, addDistributorCodeMenuItem, alterDistributorCodeMenuItem, markReturnBackMenuItem,returnBackListMenuItem, /*freezed, freezes, deactived, deactives, inactived, inactives, stateSubscriberReportMenuItem, districtSubscriberReportMenuItem,*/subscriberReportMainMenuItem, /*distributorCodeSubscriberReportMenuItem,*/ pet,petty_month, petty_year, dup;
     JMenuItem indexRegisterMenuItem, supplementaryIndexRegisterMenuItem;
     //JMenuItem recordDeletionMenu;
@@ -318,8 +318,8 @@ public class sams extends JFrame implements ActionListener {
         dup.setMnemonic('D');
         dup.addActionListener(this);
 
-        petty_menu=new JMenu("Petty Sales");
-        petty_menu.setMnemonic('P');
+        /*petty_menu=new JMenu("Petty Sales");
+        petty_menu.setMnemonic('P');*/
 
         pet=new JMenuItem("Add Record");
         pet.setMnemonic('a');
@@ -489,7 +489,7 @@ public class sams extends JFrame implements ActionListener {
         registers_menu.add(indexRegisterMenuItem);
         registers_menu.add(supplementaryIndexRegisterMenuItem);       
         
-        registers_menu.add(petty_menu);
+        /*registers_menu.add(petty_menu);*/
         //registers_menu.add(receiptBookStatusMenuItem);
         registers_menu.add(dup);
 
@@ -557,9 +557,9 @@ public class sams extends JFrame implements ActionListener {
         
         
 
-        petty_menu.add(pet);
+        /*petty_menu.add(pet);
         petty_menu.add(petty_month);
-        petty_menu.add(petty_year);
+        petty_menu.add(petty_year);*/
 
         
         /*recordDeletionMenu.add(freeze);
@@ -664,8 +664,6 @@ public class sams extends JFrame implements ActionListener {
 
 
         setVisible(true);
-        new refresh();
-        
         
         if(SamsUtilities.getUserName().isEmpty() || SamsUtilities.getUserName().equals("Unknown"))
         {
@@ -677,6 +675,7 @@ public class sams extends JFrame implements ActionListener {
             if(SamsUtilities.getUserName().isEmpty() == false)JOptionPane.showMessageDialog(this, "Welcome "+SamsUtilities.getUserName()+" !!");
         }
         
+        new refresh();
 
     }
 

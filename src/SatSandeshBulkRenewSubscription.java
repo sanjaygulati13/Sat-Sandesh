@@ -754,7 +754,7 @@ public class SatSandeshBulkRenewSubscription implements ActionListener, ItemList
                                 +rcptNum+","+asnNumbers[i]+",'"
                                 +paymentType+"','"+entryYear+"-"
                                 +entryMonth+"-"+entryDate+"',"
-                                +amount+",'"+history+"','0','"+SamsUtilities.getUserName()+"','"+endDate+"')";
+                                +amount+",'"+history+"','0','"+SamsUtilities.getUserName()+"','"+endDate+"',"+distributionNumber+")";
                         
                         c2.a=c2.st.executeUpdate(sqlQuery);
                         

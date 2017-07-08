@@ -26,11 +26,11 @@ import javax.swing.UIManager;
 * To change this template file, choose Tools | Templates
 * and open the template in the editor.
 */
-public class SatSandeshDespatchRemindersList implements Printable, ActionListener
+public class SatSandeshDespatchRemindersList_Old implements Printable, ActionListener
 {
     public static void main(String args[])
     {
-        new SatSandeshDespatchRemindersList(1,2009,12,2009);
+        new SatSandeshDespatchRemindersList_Old(1,2009,12,2009);
     }
     
     int present;
@@ -41,7 +41,7 @@ public class SatSandeshDespatchRemindersList implements Printable, ActionListene
     int[] asn;
     int totalNumberOfLabels=0;
     int x1=0;
-    int currentLabel=0;
+    int i=0;
     int chk=0;
     int m1, y1, m2, y2;
     JButton printButton, back;
@@ -52,7 +52,7 @@ public class SatSandeshDespatchRemindersList implements Printable, ActionListene
     int NumberOfRecords=0;
     
     
-    public SatSandeshDespatchRemindersList(int m, int y, int m3, int y3)
+    public SatSandeshDespatchRemindersList_Old(int m, int y, int m3, int y3)
     {
         
         m1=m;
@@ -73,7 +73,7 @@ public class SatSandeshDespatchRemindersList implements Printable, ActionListene
             System.out.println(cnf);
         }
         
-        f= new JFrame("Print Reminders");
+        f= new JFrame("Print Reminders -- old");
         f.setVisible(true);
         f.setLayout(null);
         f.setSize(300,100);
@@ -107,18 +107,18 @@ public class SatSandeshDespatchRemindersList implements Printable, ActionListene
                     + "( p.endm>"+(m1-1)+" and p.endy="+y1+")  "
                     + "and (p.endm <"+(m2+1)+" and p.endy="+y2+")";
             
-            String dateStart, dateEnd;
+            /*String dateStart, dateEnd;
             Date referenceStartDate = new Date((y1-1900),m1-1,28);
             Date referenceEndDate = new Date((y2-1900),m2-1,1);
             {
                 Calendar c = Calendar.getInstance();
                 c.setTime(referenceStartDate);
                 c.add(Calendar.MONTH, -1);
-                //System.out.println(c.get(Calendar.DATE) +" - " + (c.get(Calendar.MONTH)+1) + " - " + c.get(Calendar.YEAR));
+                System.out.println(c.get(Calendar.DATE) +" - " + (c.get(Calendar.MONTH)+1) + " - " + c.get(Calendar.YEAR));
                 dateStart = c.get(Calendar.YEAR) +"-" + (c.get(Calendar.MONTH)+1) + "-" + c.get(Calendar.DATE);
                 c.setTime(referenceEndDate);
                 c.add(Calendar.MONTH, 1);
-                //System.out.println(c.get(Calendar.DATE) +" - " + (c.get(Calendar.MONTH)+1) + " - " + c.get(Calendar.YEAR));
+                System.out.println(c.get(Calendar.DATE) +" - " + (c.get(Calendar.MONTH)+1) + " - " + c.get(Calendar.YEAR));
                 dateEnd = c.get(Calendar.YEAR) +"-" + (c.get(Calendar.MONTH)+1) + "-" + c.get(Calendar.DATE);
             }
             
@@ -126,18 +126,18 @@ public class SatSandeshDespatchRemindersList implements Printable, ActionListene
                     + "(distribution_type = 'By Post' or distribution_type ='By Hand') and "
                     + "ending_period > '"+dateStart+"' and ending_period < '"+dateEnd+"'";
             
-            //System.out.println(sqlQuery);
-            //System.out.println(newSqlQuery);
-            /*c1.rs=c1.st.executeQuery(sqlQuery);
+            System.out.println(sqlQuery);
+            System.out.println(newSqlQuery);*/
+            c1.rs=c1.st.executeQuery(sqlQuery);
             if(c1.rs.next())
                 totalNumberOfLabels = c1.rs.getInt(1);
-            */
             
-            c1.rs=c1.st.executeQuery(newSqlQuery);
+            
+            /*c1.rs=c1.st.executeQuery(newSqlQuery);
             if(c1.rs.next()){
-                //System.out.println("Orig: " +totalNumberOfLabels+ " <--> new: " + c1.rs.getInt(1));
-                totalNumberOfLabels = c1.rs.getInt(1);
-            }
+                System.out.println("Orig: " +totalNumberOfLabels+ " <--> new: " + c1.rs.getInt(1));
+                //x=c1.rs.getInt(1);
+            }*/
             
             
             NumberOfRecords=totalNumberOfLabels;
@@ -145,7 +145,12 @@ public class SatSandeshDespatchRemindersList implements Printable, ActionListene
             //System.out.println("totalNumberOfLabels : "+totalNumberOfLabels);
             
             int y=(numLines%linesPerPage);
+            
             //System.out.println("y : "+y);
+            
+            c1.st.close();
+            c1.con.close();
+            
             numLines=totalNumberOfLabels*2;
             
             //--------------------------------^^numlines for records only==============================
@@ -183,277 +188,258 @@ public class SatSandeshDespatchRemindersList implements Printable, ActionListene
             textLines=new String[numLines][15];
             asn=new int[totalNumberOfLabels];
             
-            //connect c2=new connect();
-            for(currentLabel=0;currentLabel<totalNumberOfLabels;currentLabel++)
+            connect c2=new connect();
+            for(i=0;i<totalNumberOfLabels;i++)
             {
                 
-                if(currentLabel==0)
+                if(i==0)
                 {
-                    //c2.rs=c2.st.executeQuery("select b.asn from basic b, payment p where b.asn=p.asn and (b.dist='By Post' or b.dist='By Hand') and ( p.endm>"+(m1-1)+" and p.endy="+y1+")  and (p.endm <"+(m2+1)+" and p.endy="+y2+") order by p.endm asc, p.endy asc, b.subnos, b.subno");
-                    sqlQuery = "select b.asn from basic b, payment p where b.asn=p.asn "
-                            + "and (b.dist='By Post' or b.dist='By Hand') "
-                            + "and ( p.endm>"+(m1-1)+" and p.endy="+y1+")  "
-                            + "and (p.endm <"+(m2+1)+" and p.endy="+y2+") "
-                            + "order by p.endm asc, p.endy asc, b.subnos, b.subno";
-                    
-                    newSqlQuery = "select asn from subscribers_primary_details where "
-                            + "(distribution_type = 'By Post' or distribution_type ='By Hand') and "
-                            + "ending_period > '"+dateStart+"' and ending_period < '"+dateEnd+"'"
-                            + "order by ending_period asc, subscription_code, subscription_number";
-                    
-                    c1.rs=c1.st.executeQuery(newSqlQuery);
-                    while(c1.rs.next())
+                    c2.rs=c2.st.executeQuery("select b.asn from basic b, payment p where b.asn=p.asn and (b.dist='By Post' or b.dist='By Hand') and ( p.endm>"+(m1-1)+" and p.endy="+y1+")  and (p.endm <"+(m2+1)+" and p.endy="+y2+") order by p.endm asc, p.endy asc, b.subnos, b.subno");
+                    while(c2.rs.next())
                     {
-                        if(currentLabel%(linesPerPage/2)==0 && currentLabel<totalNumberOfLabels)
+                        if(i%(linesPerPage/2)==0 && i<totalNumberOfLabels)
                         {
-                            asn[currentLabel]=0;
+                            asn[i]=0;
                             
-                            currentLabel++;
+                            i++;
                             
                         }
-                        if(currentLabel%(linesPerPage/2)==1 && currentLabel<totalNumberOfLabels)
+                        if(i%(linesPerPage/2)==1 && i<totalNumberOfLabels)
                         {
-                            asn[currentLabel]=0;
+                            asn[i]=0;
                             
-                            currentLabel++;
+                            i++;
                         }
-                        if(currentLabel%(linesPerPage/2)==2 && currentLabel<totalNumberOfLabels)
+                        if(i%(linesPerPage/2)==2 && i<totalNumberOfLabels)
                         {
-                            asn[currentLabel]=0;
+                            asn[i]=0;
                             
-                            currentLabel++;
+                            i++;
                         }
-                        if(currentLabel%(linesPerPage/2)>2 && currentLabel<totalNumberOfLabels)
+                        if(i%(linesPerPage/2)>2 && i<totalNumberOfLabels)
                         {
-                            asn[currentLabel]=c1.rs.getInt(1);
+                            asn[i]=c2.rs.getInt(1);
                             
-                            currentLabel++;
+                            i++;
                         }
                         
-                        present=currentLabel;
+                        present=i;
                         
                     }
                 }
                 
             }
+            c2.st.close();
+            c2.con.close();
             
-            currentLabel=0;
+            i=0;
             
-            //connect c3=new connect();
-            for(currentLabel=0;currentLabel<totalNumberOfLabels;currentLabel++)
+            connect c3=new connect();
+            for(i=0;i<totalNumberOfLabels;i++)
             {
-                if(currentLabel<present)
+                if(i<present)
                 {
-                    if(currentLabel%(linesPerPage/2)==0)
+                    if(i%(linesPerPage/2)==0)
                     {
-                        textLines[currentLabel][0]="";
-                        textLines[currentLabel][1]="";
-                        textLines[currentLabel][2]="";
-                        textLines[currentLabel][3]="";
-                        textLines[currentLabel][4]="";
-                        textLines[currentLabel][5]="";
-                        textLines[currentLabel][6]="";
-                        textLines[currentLabel][7]="";
-                        textLines[currentLabel][8]="";
-                        textLines[currentLabel][9]="";
-                        textLines[currentLabel][10]="";
-                        textLines[currentLabel][11]="";
-                        textLines[currentLabel][12]="";
-                        textLines[currentLabel][13]="";
-                        textLines[currentLabel][14]="";
+                        textLines[i][0]="";
+                        textLines[i][1]="";
+                        textLines[i][2]="";
+                        textLines[i][3]="";
+                        textLines[i][4]="";
+                        textLines[i][5]="";
+                        textLines[i][6]="";
+                        textLines[i][7]="";
+                        textLines[i][8]="";
+                        textLines[i][9]="";
+                        textLines[i][10]="";
+                        textLines[i][11]="";
+                        textLines[i][12]="";
+                        textLines[i][13]="";
+                        textLines[i][14]="";
                         
                     }
-                    else if(currentLabel%(linesPerPage/2)==1)
+                    else if(i%(linesPerPage/2)==1)
                     {
                         /*c3.rs=c3.st.executeQuery("select district, state from despcode where dno="+dno);
                         c3.rs.next();
                         dist=c3.rs.getString(1);
                         state=c3.rs.getString(2);*/
                         
-                        textLines[currentLabel][0]="";
-                        textLines[currentLabel][1]="";
-                        textLines[currentLabel][2]="";
-                        textLines[currentLabel][3]="";
-                        textLines[currentLabel][4]="";
-                        textLines[currentLabel][5]="";
-                        textLines[currentLabel][6]="";
-                        textLines[currentLabel][7]="";
-                        textLines[currentLabel][8]="";
-                        textLines[currentLabel][9]="";
-                        textLines[currentLabel][10]="";
-                        textLines[currentLabel][11]="";
-                        textLines[currentLabel][12]="";
-                        textLines[currentLabel][13]="";
-                        textLines[currentLabel][14]="";
+                        textLines[i][0]="";
+                        textLines[i][1]="";
+                        textLines[i][2]="";
+                        textLines[i][3]="";
+                        textLines[i][4]="";
+                        textLines[i][5]="";
+                        textLines[i][6]="";
+                        textLines[i][7]="";
+                        textLines[i][8]="";
+                        textLines[i][9]="";
+                        textLines[i][10]="";
+                        textLines[i][11]="";
+                        textLines[i][12]="";
+                        textLines[i][13]="";
+                        textLines[i][14]="";
                     }
-                    else if(currentLabel%(linesPerPage/2)==2)
+                    else if(i%(linesPerPage/2)==2)
                     {
-                        textLines[currentLabel][0]="ASN";
-                        textLines[currentLabel][1]="Sub No";
-                        textLines[currentLabel][2]="M";
-                        textLines[currentLabel][3]="Year";
-                        textLines[currentLabel][4]="D#";
-                        textLines[currentLabel][5]="F Name";
-                        textLines[currentLabel][6]="L Name";
-                        textLines[currentLabel][7]="ADDRESS";
-                        textLines[currentLabel][8]="";
-                        textLines[currentLabel][9]="";
-                        textLines[currentLabel][10]="District";
-                        textLines[currentLabel][11]="State";
-                        textLines[currentLabel][12]="Pin";
-                        textLines[currentLabel][13]="";
-                        textLines[currentLabel][14]="";
+                        textLines[i][0]="ASN";
+                        textLines[i][1]="Sub No";
+                        textLines[i][2]="M";
+                        textLines[i][3]="Year";
+                        textLines[i][4]="D#";
+                        textLines[i][5]="F Name";
+                        textLines[i][6]="L Name";
+                        textLines[i][7]="ADDRESS";
+                        textLines[i][8]="";
+                        textLines[i][9]="";
+                        textLines[i][10]="District";
+                        textLines[i][11]="State";
+                        textLines[i][12]="Pin";
+                        textLines[i][13]="";
+                        textLines[i][14]="";
                     }
                     
-                    else if((currentLabel%(linesPerPage/2))>2)
+                    else if((i%(linesPerPage/2))>2)
                     {
                         
-                        //sqlQuery = "select b.asn, b.subnos, b.subno, p.endm, p.endy, b.dno from basic b, payment p where b.asn=p.asn and b.asn="+asn[currentLabel];
-                        newSqlQuery = "select asn, subscription_code, subscription_number, "
-                                + "ending_period, bulk_despatch_code from subscribers_primary_details "
-                                + "where asn="+asn[currentLabel];
-                        c1.rs=c1.st.executeQuery(newSqlQuery);
-                        c1.rs.next();
-                        
-                        Date endDate = c1.rs.getDate(4);
-                        int despatchCode = c1.rs.getInt(5);
-                        
-                        textLines[currentLabel][0]=""+c1.rs.getInt(1);
-                        textLines[currentLabel][1]=""+c1.rs.getString(2)+c1.rs.getString(3);
-                        textLines[currentLabel][2]=""+(endDate.getMonth()+1);
-                        textLines[currentLabel][3]=""+(endDate.getYear()+1900);
-                        textLines[currentLabel][4]="" + ((despatchCode > 0)?despatchCode:"");
-                        
-                        //if(despatchCode > 0)
-                        //    textLines[currentLabel][4] = "" + despatchCode;
+                        c3.rs=c3.st.executeQuery("select b.asn, b.subnos, b.subno, p.endm, p.endy, b.dno from basic b, payment p where b.asn=p.asn and b.asn="+asn[i]);
+                        c3.rs.next();
+                        textLines[i][0]=""+c3.rs.getInt(1);
+                        textLines[i][1]=""+c3.rs.getString(2)+c3.rs.getString(3);
+                        textLines[i][2]=""+c3.rs.getInt(4);
+                        textLines[i][3]=""+c3.rs.getInt(5);
+                        textLines[i][4]="";
+                        int d=c3.rs.getInt(6);
+                        if(d>0)
+                            textLines[i][4]=""+d;
                     }
                 }
-                else if(currentLabel>=present)
+                else if(i>=present)
                 {
                     
-                    textLines[currentLabel][0]="";
-                    textLines[currentLabel][1]="";
-                    textLines[currentLabel][2]="";
-                    textLines[currentLabel][3]="";
-                    textLines[currentLabel][4]="";
-                    textLines[currentLabel][5]="";
-                    textLines[currentLabel][6]="";
-                    textLines[currentLabel][7]="";
-                    textLines[currentLabel][8]="";
-                    textLines[currentLabel][9]="";
-                    textLines[currentLabel][10]="";
-                    textLines[currentLabel][11]="";
-                    textLines[currentLabel][12]="";
-                    textLines[currentLabel][13]="";
-                    textLines[currentLabel][14]="";
+                    textLines[i][0]="";
+                    textLines[i][1]="";
+                    textLines[i][2]="";
+                    textLines[i][3]="";
+                    textLines[i][4]="";
+                    textLines[i][5]="";
+                    textLines[i][6]="";
+                    textLines[i][7]="";
+                    textLines[i][8]="";
+                    textLines[i][9]="";
+                    textLines[i][10]="";
+                    textLines[i][11]="";
+                    textLines[i][12]="";
+                    textLines[i][13]="";
+                    textLines[i][14]="";
                     
                 }
             }
+            c3.closeAll();
             
-            currentLabel=0;
-            //connect c4=new connect();
-            for(currentLabel=0;currentLabel<totalNumberOfLabels;currentLabel++)
+            i=0;
+            connect c4=new connect();
+            for(i=0;i<totalNumberOfLabels;i++)
             {
-                if(currentLabel<present)
+                if(i<present)
                 {
                     
-                    if(currentLabel%(linesPerPage/2)>2)
+                    if(i%(linesPerPage/2)>2)
                     {
-                        //c4.rs=c4.st.executeQuery("select * from subdetails where asn="+asn[currentLabel]);
-                        //c4.rs=c4.st.executeQuery("select * from subdetails where asn="+asn[currentLabel]);
-                        c1.rs = c1.st.executeQuery("select first_name, last_name, address_line1, "
-                                + "address_line2, address_line3, district, state, "
-                                + "pin_code from subscribers_primary_details where asn="+asn[currentLabel]);
-                        c1.rs.next();
+                        c4.rs=c4.st.executeQuery("select * from subdetails where asn="+asn[i]);
+                        c4.rs.next();
                         String s1, s2, s3, s4, s5, s6,s7;
                         
-                        s1= c1.rs.getString(1);
-                        s2= c1.rs.getString(2);
-                        s3= c1.rs.getString(3);
-                        s4= c1.rs.getString(4);
-                        s5= c1.rs.getString(5);
-                        s6= c1.rs.getString(6);
-                        s7= c1.rs.getString(7);
+                        s1= c4.rs.getString(3);
+                        s2= c4.rs.getString(4);
+                        s3= c4.rs.getString(5);
+                        s4= c4.rs.getString(6);
+                        s5= c4.rs.getString(7);
+                        s6= c4.rs.getString(8);
+                        s7=c4.rs.getString(9);
                         
-                        textLines[currentLabel][5]="";
-                        textLines[currentLabel][6]="";
-                        textLines[currentLabel][7]="";
-                        textLines[currentLabel][8]="";
-                        textLines[currentLabel][9]="";
-                        textLines[currentLabel][10]="";
-                        textLines[currentLabel][11]="";
+                        textLines[i][5]="";
+                        textLines[i][6]="";
+                        textLines[i][7]="";
+                        textLines[i][8]="";
+                        textLines[i][9]="";
+                        textLines[i][10]="";
+                        textLines[i][11]="";
                         
                         if(s1!=null)
-                            textLines[currentLabel][5]=s1;
+                            textLines[i][5]=s1;
                         
                         if(s2!=null)
-                            textLines[currentLabel][6]=s2;
+                            textLines[i][6]=s2;
                         
                         if(s3!=null)
-                            textLines[currentLabel][7]=s3;
+                            textLines[i][7]=s3;
                         
                         if(s4!=null)
-                            textLines[currentLabel][8]=s4;
+                            textLines[i][8]=s4;
                         
                         if(s5!=null)
-                            textLines[currentLabel][9]=s5;
+                            textLines[i][9]=s5;
                         
                         if(s6!=null)
-                            textLines[currentLabel][10]=s6;
+                            textLines[i][10]=s6;
                         
                         if(s7!=null)
-                            textLines[currentLabel][11]=s7;
+                            textLines[i][11]=s7;
                         
-                        textLines[currentLabel][12]="";
-                        int c=Integer.parseInt(c1.rs.getString(8));
+                        textLines[i][12]="";
+                        int c=Integer.parseInt(c4.rs.getString(10));
                         if(c>0)
                         {
-                            textLines[currentLabel][12]+=c;
+                            textLines[i][12]+=c;
                         }
                     }
                 }
             }
-            //System.out.println(" : "+textLines[currentLabel-1][1]);
+            //System.out.println(" : "+textLines[i-1][1]);
+            c4.st.close();
+            c4.con.close();
             
             
             
-            //connect c5=new connect();
-            for(currentLabel=0;currentLabel<totalNumberOfLabels;currentLabel++)
+            connect c5=new connect();
+            for(i=0;i<totalNumberOfLabels;i++)
             {
-                if(currentLabel<present)
+                if(i<present)
                 {
                     
-                    if(currentLabel%(linesPerPage/2)>2)
+                    if(i%(linesPerPage/2)>2)
                     {
-                        //c1.rs=c1.st.executeQuery("select phone, email from otherdet where asn="+asn[currentLabel]);
-                        c1.rs=c1.st.executeQuery("select phone_number, email from subscribers_primary_details where asn="+asn[currentLabel]);
-                        c1.rs.next();
+                        c5.rs=c5.st.executeQuery("select phone, email from otherdet where asn="+asn[i]);
+                        c5.rs.next();
                         String s1, s2;
                         
-                        s1= c1.rs.getString(1);
-                        s2= c1.rs.getString(2);
+                        s1= c5.rs.getString(1);
+                        s2= c5.rs.getString(2);
                         
-                        textLines[currentLabel][13]="";
-                        textLines[currentLabel][14]="";
+                        textLines[i][13]="";
+                        textLines[i][14]="";
                         
                         if(s1!=null && s1.length()>6)
                         {
-                            textLines[currentLabel][13]="(T No.-"+s1+")";
+                            textLines[i][13]="(T No.-"+s1+")";
                         }
                         
                         
                         if(s2!=null && s2.length()>5)
                         {
-                            textLines[currentLabel][14]="(e-id:"+s2+")";textLines[currentLabel][14]="(e-id:"+s2+")";
+                            textLines[i][14]="(e-id:"+s2+")";textLines[i][14]="(e-id:"+s2+")";
                         }
                         
                         
                     }
                 }
             }
-            c1.closeAll();
+            c5.st.close();
+            c5.con.close();
             
-            currentLabel=0;
+            i=0;
             
         }
         catch(Exception e)
@@ -553,7 +539,7 @@ public class SatSandeshDespatchRemindersList implements Printable, ActionListene
             for(int line=start; line<end; line+=2)
             {
                 
-                if(currentLabel%(linesPerPage/2)==1)
+                if(i%(linesPerPage/2)==1)
                 {
                     g.setFont(new Font("SERIF", Font.BOLD, 10));
                     g.drawString("LIST OF REMINDERS OF SAT-SANDESH MEMBERS ",(int)pf.getWidth()/2-360,y);
@@ -563,40 +549,40 @@ public class SatSandeshDespatchRemindersList implements Printable, ActionListene
                 
                 
                 g.setFont(new Font("SERIF", Font.PLAIN, 8));
-                if(currentLabel%(linesPerPage/2)>1)
+                if(i%(linesPerPage/2)>1)
                     g.drawLine(3,y+lineHeight,(int)pf.getWidth()+1,y+lineHeight); //horizontal lines
                 
-                g.drawString(" "+textLines[currentLabel][0], 5, y);
+                g.drawString(" "+textLines[i][0], 5, y);
                 
-                g.drawString(" "+textLines[currentLabel][1], 13+a[1], y);
+                g.drawString(" "+textLines[i][1], 13+a[1], y);
                 
-                g.drawString(" "+textLines[currentLabel][2], a[2], y);
+                g.drawString(" "+textLines[i][2], a[2], y);
                 
-                g.drawString(" "+textLines[currentLabel][3], a[3], y);
+                g.drawString(" "+textLines[i][3], a[3], y);
                 
-                //g.drawString(" "+textLines[currentLabel][4], a[4], y);
+                //g.drawString(" "+textLines[i][4], a[4], y);
                 
-                g.drawString(" "+textLines[currentLabel][5], a[5]-5, y);
+                g.drawString(" "+textLines[i][5], a[5]-5, y);
                 
-                g.drawString(" "+textLines[currentLabel][6], a[6], y);
+                g.drawString(" "+textLines[i][6], a[6], y);
                 
-                g.drawString(" "+textLines[currentLabel][7], a[7], y);
+                g.drawString(" "+textLines[i][7], a[7], y);
                 
-                g.drawString(" "+textLines[currentLabel][8], a[8], y);
+                g.drawString(" "+textLines[i][8], a[8], y);
                 
-                g.drawString(" "+textLines[currentLabel][9], a[7], y+lineHeight-2);
+                g.drawString(" "+textLines[i][9], a[7], y+lineHeight-2);
                 
-                g.drawString(" "+textLines[currentLabel][10], a[9], y);
+                g.drawString(" "+textLines[i][10], a[9], y);
                 
-                g.drawString(" "+textLines[currentLabel][13], a[9], y+lineHeight-2);
+                g.drawString(" "+textLines[i][13], a[9], y+lineHeight-2);
                 
-                g.drawString(" "+textLines[currentLabel][11], a[10], y);
+                g.drawString(" "+textLines[i][11], a[10], y);
                 
-                g.drawString(" "+textLines[currentLabel][12], a[11], y);
+                g.drawString(" "+textLines[i][12], a[11], y);
                 
                 y+=2*lineHeight;
                 
-                currentLabel++;
+                i++;
             }
             
         }

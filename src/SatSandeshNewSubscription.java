@@ -895,7 +895,7 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
                 if(c2.a == 1) flag++;
                 
                 
-                String sqlQuery = "insert into receipt_book_details values ('"+seriesName+"',"+rcpt+","+asn+",'"+payt+"','"+dat3+"-"+dat2+"-"+date1+"',"+amt+",'"+history+"','0','"+SamsUtilities.getUserName()+"', '"+endingPeriod+"')";
+                String sqlQuery = "insert into receipt_book_details values ('"+seriesName+"',"+rcpt+","+asn+",'"+payt+"','"+dat3+"-"+dat2+"-"+date1+"',"+amt+",'"+history+"','0','"+SamsUtilities.getUserName()+"', '"+endingPeriod+"', "+dno+")";
                 c2.a=c2.st.executeUpdate(sqlQuery);
                 if(c2.a == 1) flag++;
                 

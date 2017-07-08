@@ -4,13 +4,15 @@ import java.awt.*;
 import java.awt.event.*;
 import static java.awt.print.Printable.NO_SUCH_PAGE;
 import static java.awt.print.Printable.PAGE_EXISTS;
+import java.util.Calendar;
+import java.util.Date;
 import javax.swing.*;
 
-public class stickerLabels implements Printable, ActionListener
+public class SatSandeshStickerLabelsPrint implements Printable, ActionListener
 {
     public static void main(String args[])
     {
-        new stickerLabels(2, 2016, "Hindi");
+        new SatSandeshStickerLabelsPrint(7, 2017, "Hindi");
     }
     
     int[] pageBreak;
@@ -27,13 +29,13 @@ public class stickerLabels implements Printable, ActionListener
     String lang;
     
     
-    public stickerLabels(int m, int y, String lang1)
+    public SatSandeshStickerLabelsPrint(int m, int y, String lang1)
     {
         m1=m;
         y1=y;
         lang=lang1;
         
-        f= new JFrame("Print Stickers -- old");
+        f= new JFrame("Print Stickers");
         try
         {
             f.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("skrm.jpg")));
@@ -78,402 +80,111 @@ public class stickerLabels implements Printable, ActionListener
         
         
     }
-    /*
-    
-    public void initLines()
-    {
-    try
-    {
-    
-    connect c1=new connect();
-    c1.rs=c1.st.executeQuery("select count(printStickerButton.asn) from basic printStickerButton, payment p where printStickerButton.asn=p.asn and printStickerButton.dist='By Post' and printStickerButton.lang='"+lang+"' and (p.asn) in (select asn from payment where (endm>"+(m1-1)+" and endy="+y1+") or endy>"+y1+") and printStickerButton.status not in ('STOPPED')");
-    while(c1.rs.next())
-    {
-    totalNumberOfLabels=c1.rs.getInt(1);
-    
-    }
-    c1.st.close();
-    c1.con.close();
-    
-    numLines=totalNumberOfLabels*9;
-    
-    textLines=new String[numLines][7];
-    asn=new int[totalNumberOfLabels];
-    
-    connect c2=new connect();
-    c2.rs=c2.st.executeQuery("select printStickerButton.asn from basic printStickerButton, payment p where printStickerButton.asn=p.asn and printStickerButton.dist='By Post' and printStickerButton.lang='"+lang+"' and (p.asn) in (select asn from payment where (endm>"+(m1-1)+" and endy="+y1+") or endy>"+y1+") and printStickerButton.status not in ('STOPPED') order by subnos, subno");
-    while(c2.rs.next())
-    {
-    asn[currentLabel]=c2.rs.getInt(1);
-    
-    currentLabel++;
-    }
-    
-    currentLabel=0;
-    for(currentLabel=0;currentLabel<x;currentLabel++)
-    {
-    connect c10=new connect();
-    c10.rs=c10.st.executeQuery("select * from basic where asn="+asn[currentLabel]);
-    c10.rs.next();
-    textLines[currentLabel][0]="SUB # "+ c10.rs.getString(2)+" "+ c10.rs.getString(3)+" / "+c10.rs.getInt(5)+" / ";
-    }
-    
-    
-    c2.st.close();
-    c2.con.close();
-    
-    currentLabel=0;
-    
-    connect c3=new connect();
-    for(currentLabel=0;currentLabel<x;currentLabel++)
-    {
-    c3.rs=c3.st.executeQuery("select * from payment where asn="+asn[currentLabel]);
-    c3.rs.next();
-    textLines[currentLabel][0]+=m1+"   "+c3.rs.getInt(10)+"/"+c3.rs.getInt(11);
-    }
-    
-    c3.st.close();
-    c3.con.close();
-    
-    currentLabel=0;
-    connect c4=new connect();
-    for(currentLabel=0;currentLabel<x;currentLabel++)
-    {
-    
-    c4.rs=c4.st.executeQuery("select * from subdetails where asn="+asn[currentLabel]);
-    c4.rs.next();
-    
-    String s1, s2, s3, s4, s5,s6, stateName;
-    
-    s1=c4.rs.getString(3);
-    s2=c4.rs.getString(4);
-    s3=c4.rs.getString(5);
-    s4=c4.rs.getString(6);
-    s5=c4.rs.getString(7);
-    s6=c4.rs.getString(8);
-    stateName=c4.rs.getString(9);
-    
-    textLines[currentLabel][1]="";
-    textLines[currentLabel][2]="";
-    textLines[currentLabel][3]="";
-    textLines[currentLabel][4]="";
-    textLines[currentLabel][5]="";
-    textLines[currentLabel][6]="";
-    
-    
-    
-    if(s1!=null)
-    textLines[currentLabel][1]= s1+" ";
-    
-    if(s2!=null)
-    textLines[currentLabel][1]+=s2;
-    
-    if(s3!=null)
-    textLines[currentLabel][2]= s3;
-    
-    if(s4!=null)
-    textLines[currentLabel][3]= s4;
-    
-    if(s5!=null)
-    textLines[currentLabel][4]= s5;
-    
-    if(s6!=null)
-    textLines[currentLabel][5]= s6;
-    
-    if(stateName!=null)
-    textLines[currentLabel][6]=stateName;
-    
-    
-    
-    int pinCode=Integer.parseInt(c4.rs.getString(10));
-    if(pinCode>0)
-    {
-    textLines[currentLabel][6]+=" - "+pinCode;
-    }
-    }
-    
-    c4.st.close();
-    c4.con.close();
-    
-    currentLabel=0;
-    
-    }
-    catch(Exception e)
-    {
-    System.out.println(e);
-    e.printStackTrace();
-    }
-    
-    }
-    
-    public int print(Graphics g, PageFormat pf, int pageIndex)
-    {
-    Font f1=new Font("SERIF", Font.PLAIN, 8);
-    FontMetrics metric=g.getFontMetrics(f1);
-    int lineHeight=metric.getHeight();
-    
-    if(pageBreak==null)
-    {
-    initLines();
-    int s=(numLines%3);
-    if(s>0)
-    numLines=numLines+(3-s);
-    numLines/=3;
-    
-    
-    int linesPerPage=(int)(pf.getImageableHeight()/lineHeight);
-    int numBreaks=(numLines/linesPerPage);
-    pageBreak=new int[numBreaks];
-    for(int printStickerButton=0;printStickerButton<numBreaks;printStickerButton++)
-    {
-    pageBreak[printStickerButton]=(printStickerButton+1)*linesPerPage;
-    }
-    }
-    
-    if(pageIndex > pageBreak.length)
-    {
-    return NO_SUCH_PAGE;
-    }
-    
-    Graphics2D g2d=(Graphics2D)g;
-    g2d.translate(pf.getImageableX(), pf.getImageableY());
-    
-    int currentLine=0;
-    
-    g.setFont( new Font("SERIF", Font.PLAIN, 9));
-    
-    int start=0;
-    if(pageIndex==0)
-    start=0;
-    else
-    start=pageBreak[pageIndex-1];
-    
-    int end=0;
-    
-    if(pageIndex==pageBreak.length)
-    end=numLines;
-    else
-    end=pageBreak[pageIndex];
-    
-    if(chk%2==1 && (end-start)!=lineHeight)
-    {
-    
-    for(int line=start;line<end && currentLabel<x; line+=9)
-    {
-    currentLine+=(4*lineHeight);
-    g.drawString(""+textLines[currentLabel][0], 30, currentLine);
-    g.drawString(textLines[currentLabel][1], 30, currentLine+lineHeight);
-    g.drawString(textLines[currentLabel][2], 30, currentLine+2*lineHeight);
-    g.drawString(textLines[currentLabel][3], 30, currentLine+3*lineHeight);
-    g.drawString(textLines[currentLabel][4], 30, currentLine+4*lineHeight);
-    g.drawString(textLines[currentLabel][5], 30, currentLine+5*lineHeight);
-    g.drawString(textLines[currentLabel][6], 30, currentLine+6*lineHeight);
-    
-    if((currentLabel+1)<x)
-    {
-    g.drawString(textLines[currentLabel+1][0], 215, currentLine);
-    g.drawString(textLines[currentLabel+1][1], 215, currentLine+lineHeight);
-    g.drawString(textLines[currentLabel+1][2], 215, currentLine+2*lineHeight);
-    g.drawString(textLines[currentLabel+1][3], 215, currentLine+3*lineHeight);
-    g.drawString(textLines[currentLabel+1][4], 215, currentLine+4*lineHeight);
-    g.drawString(textLines[currentLabel+1][5], 215, currentLine+5*lineHeight);
-    g.drawString(textLines[currentLabel+1][6], 215, currentLine+6*lineHeight);
-    }
-    if((currentLabel+2)<x)
-    {
-    g.drawString(textLines[currentLabel+2][0], 415, currentLine);
-    g.drawString(textLines[currentLabel+2][1], 415, currentLine+lineHeight);
-    g.drawString(textLines[currentLabel+2][2], 415, currentLine+2*lineHeight);
-    g.drawString(textLines[currentLabel+2][3], 415, currentLine+3*lineHeight);
-    g.drawString(textLines[currentLabel+2][4], 415, currentLine+4*lineHeight);
-    g.drawString(textLines[currentLabel+2][5], 415, currentLine+5*lineHeight);
-    g.drawString(textLines[currentLabel+2][6], 415, currentLine+6*lineHeight);
-    }
-    currentLine+=6*lineHeight;
-    currentLabel+=3;
-    
-    }
-    
-    }
-    else
-    {
-    
-    for(int line=start;line<end && currentLabel<x; line+=8)
-    {
-    
-    }
-    
-    }
-    chk++;
-    
-    return PAGE_EXISTS;
-    }
-    
-    Graphics g1;
-    public Graphics initGraphics()
-    {
-    int currentLine=0;
-    
-    Font f1=new Font("SERIF", Font.PLAIN, 8);
-    //FontMetrics metric=.getFontMetrics(f1);
-    int lineHeight=10;             //metric.getHeight();
-    int start=0;
-    int end=numLines;
-    initLines();
-    currentLabel=0;
-    for(int line=start;line<end && currentLabel<x; line+=9)
-    {
-    currentLine+=(4*lineHeight);
-    g1.drawString(""+textLines[currentLabel][0], 30, currentLine);
-    g1.drawString(textLines[currentLabel][1], 30, currentLine+lineHeight);
-    g1.drawString(textLines[currentLabel][2], 30, currentLine+2*lineHeight);
-    g1.drawString(textLines[currentLabel][3], 30, currentLine+3*lineHeight);
-    g1.drawString(textLines[currentLabel][4], 30, currentLine+4*lineHeight);
-    g1.drawString(textLines[currentLabel][5], 30, currentLine+5*lineHeight);
-    g1.drawString(textLines[currentLabel][6], 30, currentLine+6*lineHeight);
-    
-    if((currentLabel+1)<x)
-    {
-    g1.drawString(textLines[currentLabel+1][0], 215, currentLine);
-    g1.drawString(textLines[currentLabel+1][1], 215, currentLine+lineHeight);
-    g1.drawString(textLines[currentLabel+1][2], 215, currentLine+2*lineHeight);
-    g1.drawString(textLines[currentLabel+1][3], 215, currentLine+3*lineHeight);
-    g1.drawString(textLines[currentLabel+1][4], 215, currentLine+4*lineHeight);
-    g1.drawString(textLines[currentLabel+1][5], 215, currentLine+5*lineHeight);
-    g1.drawString(textLines[currentLabel+1][6], 215, currentLine+6*lineHeight);
-    }
-    if((currentLabel+2)<x)
-    {
-    g1.drawString(textLines[currentLabel+2][0], 415, currentLine);
-    g1.drawString(textLines[currentLabel+2][1], 415, currentLine+lineHeight);
-    g1.drawString(textLines[currentLabel+2][2], 415, currentLine+2*lineHeight);
-    g1.drawString(textLines[currentLabel+2][3], 415, currentLine+3*lineHeight);
-    g1.drawString(textLines[currentLabel+2][4], 415, currentLine+4*lineHeight);
-    g1.drawString(textLines[currentLabel+2][5], 415, currentLine+5*lineHeight);
-    g1.drawString(textLines[currentLabel+2][6], 415, currentLine+6*lineHeight);
-    }
-    currentLine+=6*lineHeight;
-    currentLabel+=3;
-    }
-    
-    return g1;
-    }
-    
-    
-    public void actionPerformed(ActionEvent ae)
-    {
-    
-    
-    if(ae.getSource()==printStickerButton)
-    {
-    
-    PrinterJob job=PrinterJob.getPrinterJob();
-    job.setPrintable(this);
-    boolean ok=job.printDialog();
-    
-    if(ok)
-    {
-    try
-    {
-    job.print();
-    JOptionPane.showMessageDialog(f, "Print complete");
-    }
-    catch(PrinterException pe)
-    {
-    System.out.println(pe);
-    pe.printStackTrace();
-    
-    }
-    
-    }
-    }
-    
-    if(ae.getSource()==preview)
-    {
-    Graphics g=initGraphics();
-    new Preview(g);
-    f.dispose();
-    }
-    
-    if(ae.getSource()==back)
-    {
-    new labelsubno();
-    f.dispose();
-    }
-    
-    }
-    
-    }*/
+   
     void initLines()
     {
         try
         {
             
             connect c1=new connect();
-            c1.rs=c1.st.executeQuery("select count(b.asn) from basic b, payment p where b.asn=p.asn and b.dist='By Post' and b.lang='"+lang+"' and (p.asn) in (select asn from payment where (endm>"+(m1-1)+" and endy="+y1+") or endy>"+y1+") and b.status not in ('STOPPED')");
-            while(c1.rs.next())
+            String sqlQuery = "select count(b.asn) from basic b, payment p where b.asn=p.asn "
+                    + "and b.dist='By Post' and b.lang='"+lang+"' and "
+                    + "(p.asn) in (select asn from payment where (endm>"+(m1-1)+" and endy="+y1+") or endy>"+y1+") "
+                    + "and b.status not in ('STOPPED')";
+            
+            //System.out.println(sqlQuery);
+            String date;
+            Date referenceDate = new Date((y1-1900),m1-1,28);
             {
-                totalNumberOfLabels=c1.rs.getInt(1);
-                
+                Calendar c = Calendar.getInstance();
+                c.setTime(referenceDate);
+                c.add(Calendar.MONTH, -1);
+                //System.out.println(c.get(Calendar.DATE) +" - " + (c.get(Calendar.MONTH)+1) + " - " + c.get(Calendar.YEAR));
+                date = c.get(Calendar.YEAR) +"-" + (c.get(Calendar.MONTH)+1) + "-" + c.get(Calendar.DATE);
             }
-            c1.st.close();
-            c1.con.close();
+            
+            String newSqlQuery = "select count(asn) from subscribers_primary_details where distribution_type = 'By Post' "
+                    + "and language = '"+lang+"' and ending_period > '"+date+"' and membership_status not in ('STOPPED')";
+            
+            //System.out.println(newSqlQuery);
+            
+            /*c1.rs=c1.st.executeQuery(sqlQuery);
+            if(c1.rs.next())
+            {
+                totalNumberOfLabels=c1.rs.getInt(1);   
+            }*/
+            
+            c1.rs=c1.st.executeQuery(newSqlQuery);
+            if(c1.rs.next()){
+                //System.out.println("Orig: " +totalNumberOfLabels+ " <--> new: " + c1.rs.getInt(1));  
+                totalNumberOfLabels = c1.rs.getInt(1);
+            }
             
             numLines = (totalNumberOfLabels*6)/3; //num labels * num lines per label / num labels in a row
             
             textLines=new String[totalNumberOfLabels][6];
             asn=new int[totalNumberOfLabels];
             
-            connect c2=new connect();
-            c2.rs=c2.st.executeQuery("select b.asn from basic b, payment p where b.asn=p.asn and b.dist='By Post' and b.lang='"+lang+"' and (p.asn) in (select asn from payment where (endm>"+(m1-1)+" and endy="+y1+") or endy>"+y1+") and b.status not in ('STOPPED') order by subnos, subno");
-            while(c2.rs.next())
+            //connect c1=new connect();
+            sqlQuery = "select b.asn from basic b, payment p where b.asn=p.asn "
+                    + "and b.dist='By Post' and b.lang='"+lang+"' and "
+                    + "(p.asn) in (select asn from payment where (endm>"+(m1-1)+" and endy="+y1+") or endy>"+y1+") "
+                    + "and b.status not in ('STOPPED') order by subnos, subno";
+            newSqlQuery = "select asn from subscribers_primary_details where distribution_type = 'By Post' "
+                    + "and language = '"+lang+"' and ending_period > '"+date+"' and membership_status not in ('STOPPED') "
+                    + "order by subscription_code, subscription_number";
+            c1.rs=c1.st.executeQuery(newSqlQuery);
+            
+            while(c1.rs.next())
             {
-                asn[currentLabel]=c2.rs.getInt(1);
+                asn[currentLabel]=c1.rs.getInt(1);
                 currentLabel++;
             }
             
             currentLabel=0;
-            connect c10=new connect();
+            //connect c1=new connect();
             for(currentLabel=0;currentLabel<totalNumberOfLabels;currentLabel++)
             {
-                c10.rs=c10.st.executeQuery("select * from basic where asn="+asn[currentLabel]);
-                c10.rs.next();
-                textLines[currentLabel][0]="SUB # "+ c10.rs.getString(2)+" "+ c10.rs.getString(3)+" / "+c10.rs.getInt(5)+" / ";
+                //c1.rs=c1.st.executeQuery("select * from basic where asn="+asn[currentLabel]);
+                newSqlQuery = "select subscription_code, subscription_number, receipt_number from subscribers_primary_details where asn = " + asn[currentLabel];
+                c1.rs=c1.st.executeQuery(newSqlQuery);
+                c1.rs.next();
+                //textLines[currentLabel][0]="SUB # "+ c1.rs.getString(2)+" "+ c1.rs.getString(3)+" / "+c1.rs.getInt(5)+" / ";
+                textLines[currentLabel][0]="SUB # "+ c1.rs.getString(1)+" "+ c1.rs.getInt(2)+" / "+c1.rs.getInt(3)+" / ";
             }
-            c10.closeAll();
-            
-            
-            c2.closeAll();
             
             currentLabel=0;
             
-            connect c3=new connect();
+            //connect c1=new connect();
             for(currentLabel=0;currentLabel<totalNumberOfLabels;currentLabel++)
             {
-                c3.rs=c3.st.executeQuery("select * from payment where asn="+asn[currentLabel]);
-                c3.rs.next();
-                textLines[currentLabel][0]+=m1+"   "+c3.rs.getInt(10)+"/"+c3.rs.getInt(11);
+                //c1.rs=c1.st.executeQuery("select * from payment where asn="+asn[currentLabel]);
+                c1.rs=c1.st.executeQuery("select ending_period from subscribers_primary_details where asn="+asn[currentLabel]);
+                c1.rs.next();
+                //textLines[currentLabel][0]+=m1+"   "+c1.rs.getInt(10)+"/"+c1.rs.getInt(11);
+                Date endDate = c1.rs.getDate(1);
+                textLines[currentLabel][0] += m1 + "   " + (endDate.getMonth()+1) + "/" + (endDate.getYear()+1900);
             }
             
-            c3.closeAll();
             
             currentLabel=0;
-            connect c4=new connect();
+            //connect c1=new connect();
             for(currentLabel=0;currentLabel<totalNumberOfLabels;currentLabel++)
             {
                 
-                c4.rs=c4.st.executeQuery("select * from subdetails where asn="+asn[currentLabel]);
-                c4.rs.next();
+                //c1.rs=c1.st.executeQuery("select * from subdetails where asn="+asn[currentLabel]);
+                c1.rs = c1.st.executeQuery("select first_name, last_name, address_line1, address_line2, address_line3, district, state, pin_code from subscribers_primary_details where asn="+asn[currentLabel]);
+                c1.rs.next();
                 
                 String s1, s2, s3, s4, s5,s6, stateName;
                 
-                s1=c4.rs.getString(3);
-                s2=c4.rs.getString(4);
-                s3=c4.rs.getString(5);
-                s4=c4.rs.getString(6);
-                s5=c4.rs.getString(7);
-                s6=c4.rs.getString(8);
-                stateName=c4.rs.getString(9);
+                s1=c1.rs.getString(1);  //fname
+                s2=c1.rs.getString(2);  //lname
+                s3=c1.rs.getString(3);  //add1
+                s4=c1.rs.getString(4);  //add2
+                s5=c1.rs.getString(5);  //add3
+                s6=c1.rs.getString(6);  //dist
+                stateName=c1.rs.getString(7);
                 
                 textLines[currentLabel][1]="";
                 textLines[currentLabel][2]="";
@@ -514,7 +225,7 @@ public class stickerLabels implements Printable, ActionListener
                 
                 
                 
-                int pinCode =Integer.parseInt(c4.rs.getString(10));
+                int pinCode =Integer.parseInt(c1.rs.getString(8));
                 if(pinCode > 0)
                 {
                     textLines[currentLabel][5] += " - " + pinCode;
@@ -524,9 +235,9 @@ public class stickerLabels implements Printable, ActionListener
                     textLines[currentLabel][5] += " (" +stateName + ")";
             }
             
-            c4.st.close();
-            c4.con.close();
-            
+            //c1.st.close();
+            //c1.con.close();
+            c1.closeAll();
             currentLabel=0;
             
         }
@@ -650,7 +361,7 @@ public class stickerLabels implements Printable, ActionListener
                 currentLine += (int)(3*lineHeight);
                 //currentLine += (int)(3*lineHeight);  //GOLD
                 
-                System.out.println(currentLine + " : currentLine");
+                //System.out.println(currentLine + " : currentLine");
                 
             }
             
@@ -728,7 +439,7 @@ public class stickerLabels implements Printable, ActionListener
         
         if(ae.getSource()==printStickerButton)
         {
-            
+            printStickerButton.setEnabled(false);
             PrinterJob job=PrinterJob.getPrinterJob();
             job.setPrintable(this);
             boolean ok=job.printDialog();
@@ -747,6 +458,7 @@ public class stickerLabels implements Printable, ActionListener
                 }
                 
             }
+            printStickerButton.setEnabled(true);
         }
         
         if(ae.getSource()==preview)

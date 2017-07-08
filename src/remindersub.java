@@ -12,6 +12,7 @@ public class remindersub extends JFrame implements ActionListener
     
     JLabel monthf, yearf, montht, yeart, lang;
     JButton ok, back, clr, listFormatButton;
+    JButton ok_old, listFormatButton_old;
     JComboBox monthFromDropDown, yearFromDropDown, monthToDropDown, yearToDropDown;
     JComboBox langt;
     
@@ -52,9 +53,11 @@ public class remindersub extends JFrame implements ActionListener
         langt=new JComboBox();
         
         ok=new JButton("<html>Label Format</html>");
+        ok_old=new JButton("<html>Label Format (Old)</html>");
         clr=new JButton("Reset");
         back=new JButton("Back");
         listFormatButton = new JButton("<html>List Format</html>");
+        listFormatButton_old = new JButton("<html>List Format (Old)</html>");
         
         langt.addItem("Hindi");
         langt.addItem("English");
@@ -104,7 +107,7 @@ public class remindersub extends JFrame implements ActionListener
         langt.setBounds(130,190,100,20);
         add(langt);
         
-        ok.setBounds(30,230,80,45);
+        ok.setBounds(30,230,90,45);
         add(ok);
         ok.addActionListener(this);
         ok.setMnemonic('l');
@@ -119,10 +122,20 @@ public class remindersub extends JFrame implements ActionListener
         back.addActionListener(this);
         back.setMnemonic('b');
         
-        listFormatButton.setBounds(300,230,70,45);
+        listFormatButton.setBounds(300,230,90,45);
         add(listFormatButton);
         listFormatButton.addActionListener(this);
         listFormatButton.setMnemonic('i');
+        
+        ok_old.setBounds(30,280,90,60);
+        add(ok_old);
+        ok_old.addActionListener(this);
+        ok_old.setMnemonic('l');
+        
+        listFormatButton_old.setBounds(300,280,90,60);
+        add(listFormatButton_old);
+        listFormatButton_old.addActionListener(this);
+        listFormatButton_old.setMnemonic('i');
         
         setVisible(true);
         
@@ -132,9 +145,21 @@ public class remindersub extends JFrame implements ActionListener
     
     public void actionPerformed(ActionEvent ae)
     {
+        if(ae.getSource()==ok_old)
+        {
+            new SatSandeshDespatchRemindersLabel_Old(Integer.parseInt(monthFromDropDown.getSelectedItem().toString()),Integer.parseInt(yearToDropDown.getSelectedItem().toString()),Integer.parseInt(monthToDropDown.getSelectedItem().toString()),Integer.parseInt(yearToDropDown.getSelectedItem().toString()));
+            this.dispose();
+        }
+        
         if(ae.getSource()==ok)
         {
-            new reminder(Integer.parseInt(monthFromDropDown.getSelectedItem().toString()),Integer.parseInt(yearToDropDown.getSelectedItem().toString()),Integer.parseInt(monthToDropDown.getSelectedItem().toString()),Integer.parseInt(yearToDropDown.getSelectedItem().toString()));
+            new SatSandeshDespatchRemindersLabel(Integer.parseInt(monthFromDropDown.getSelectedItem().toString()),Integer.parseInt(yearToDropDown.getSelectedItem().toString()),Integer.parseInt(monthToDropDown.getSelectedItem().toString()),Integer.parseInt(yearToDropDown.getSelectedItem().toString()));
+            this.dispose();
+        }
+        
+        if(ae.getSource()==listFormatButton_old)
+        {
+            new SatSandeshDespatchRemindersList_Old(Integer.parseInt(monthFromDropDown.getSelectedItem().toString()),Integer.parseInt(yearToDropDown.getSelectedItem().toString()),Integer.parseInt(monthToDropDown.getSelectedItem().toString()),Integer.parseInt(yearToDropDown.getSelectedItem().toString()));
             this.dispose();
         }
         

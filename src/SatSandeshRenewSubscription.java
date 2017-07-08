@@ -1014,7 +1014,7 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
                 if(c4.a == 1) flag++;
                 //database query for other details fragment
                 
-                String sqlQuery = "insert into receipt_book_details values ('"+seriesName+"',"+rcpt+","+asn+",'"+payt+"','"+dat3+"-"+dat2+"-"+date1+"',"+amt+",'"+history+"','0','"+SamsUtilities.getUserName()+"','"+endingPeriod+"')";
+                String sqlQuery = "insert into receipt_book_details values ('"+seriesName+"',"+rcpt+","+asn+",'"+payt+"','"+dat3+"-"+dat2+"-"+date1+"',"+amt+",'"+history+"','0','"+SamsUtilities.getUserName()+"','"+endingPeriod+"', "+dno+")";
                 c4.a=c4.st.executeUpdate(sqlQuery);
                 if(c4.a == 1) flag++;
                 

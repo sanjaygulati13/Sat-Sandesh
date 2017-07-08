@@ -12,6 +12,7 @@ public class labelsubno extends JFrame implements ActionListener
     
     JLabel month, year, lang;
     JButton ok, back, stickerLabelButton;
+    JButton ok_old, stickerLabelButton_old;
     JComboBox monthDropDown, yearDropDown;
     JComboBox langt;
     
@@ -63,6 +64,9 @@ public class labelsubno extends JFrame implements ActionListener
         
         ok=new JButton("Labels");
         stickerLabelButton = new JButton("Sticker");
+        
+        ok_old =new JButton("<html>Labels old</html>");
+        stickerLabelButton_old  = new JButton("<html>Sticker old</html>");
         back=new JButton("Back");
         
         langt.addItem("Hindi");
@@ -88,20 +92,31 @@ public class labelsubno extends JFrame implements ActionListener
         langt.setBounds(110,110,100,20);
         add(langt);
         
-        ok.setBounds(30,170,70,25);
+        ok.setBounds(30,170,70,40);
         ok.addActionListener(this);
         ok.setMnemonic('O');
         add(ok);
         
-        stickerLabelButton.setBounds(110,170,70,25);
+        stickerLabelButton.setBounds(110,170,70,40);
         stickerLabelButton.addActionListener(this);
         stickerLabelButton.setMnemonic('O');
         add(stickerLabelButton);
         
-        back.setBounds(190,170,70,25);
+        back.setBounds(190,170,70,40);
         back.setMnemonic('B');
         back.addActionListener(this);
         add(back);
+        
+        ok_old.setBounds(30,220,70,40);
+        ok_old.addActionListener(this);
+        ok_old.setMnemonic('O');
+        add(ok_old);
+        
+        stickerLabelButton_old.setBounds(110,220,70,40);
+        stickerLabelButton_old.addActionListener(this);
+        stickerLabelButton_old.setMnemonic('O');
+        add(stickerLabelButton_old);
+        
         
         setVisible(true);
         
@@ -115,10 +130,29 @@ public class labelsubno extends JFrame implements ActionListener
             //                    System.out.println(""+Integer.parseInt(montht.getText()));
             //                    System.out.println(""+Integer.parseInt(yeart.getText()));
             //                    System.out.println(""+(String)langt.getSelectedItem());
+            new SatSandeshLabelPrint(Integer.parseInt(monthDropDown.getSelectedItem().toString()),Integer.parseInt(yearDropDown.getSelectedItem().toString()),(String)langt.getSelectedItem());
+            this.dispose();
+        }
+        
+        if(ae.getSource()==ok_old)
+        {
+            //                    System.out.println(""+Integer.parseInt(montht.getText()));
+            //                    System.out.println(""+Integer.parseInt(yeart.getText()));
+            //                    System.out.println(""+(String)langt.getSelectedItem());
             new label(Integer.parseInt(monthDropDown.getSelectedItem().toString()),Integer.parseInt(yearDropDown.getSelectedItem().toString()),(String)langt.getSelectedItem());
             this.dispose();
         }
+        
         if(ae.getSource()== stickerLabelButton)
+        {
+            //                    System.out.println(""+Integer.parseInt(montht.getText()));
+            //                    System.out.println(""+Integer.parseInt(yeart.getText()));
+            //                    System.out.println(""+(String)langt.getSelectedItem());
+            new SatSandeshStickerLabelsPrint(Integer.parseInt(monthDropDown.getSelectedItem().toString()),Integer.parseInt(yearDropDown.getSelectedItem().toString()),(String)langt.getSelectedItem());
+            this.dispose();
+        }
+        
+        if(ae.getSource()== stickerLabelButton_old)
         {
             //                    System.out.println(""+Integer.parseInt(montht.getText()));
             //                    System.out.println(""+Integer.parseInt(yeart.getText()));
@@ -129,8 +163,8 @@ public class labelsubno extends JFrame implements ActionListener
         
         if(ae.getSource()==back)
         {
-            new sams();
             this.dispose();
+            new sams();
         }
     }
 }
