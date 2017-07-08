@@ -1,7 +1,7 @@
 
 import java.util.*;
 
-public class refresh {
+public class refresh implements Runnable{
     
     public static void main(String args[]) {
         new refresh();
@@ -13,6 +13,11 @@ public class refresh {
     int yi, yd, yf;
     
     public refresh() {
+        //update();
+    }
+    
+    public void update()
+    {
         try {
             GregorianCalendar g = new GregorianCalendar();
             int m = (g.get(Calendar.MONTH) + 1);
@@ -71,21 +76,21 @@ public class refresh {
             connect c1 = new connect();
             c1.a = c1.st.executeUpdate("update basic set status='Active' where status not in ('STOPPED')");
             c1.a = c1.st.executeUpdate("update subscribers_primary_details set membership_status='Active' where membership_status not in ('STOPPED')");
-            c1.closeAll();
+            //c1.closeAll();
             
             
             
-            connect c4 = new connect();
-            c4.a = c4.st.executeUpdate("update basic set basic.status='Freeze' where basic.asn in (select asn from payment where (endm<" + m + " and endy=" + (y - 1) + ") or endy<" + (y - 1) + ") and basic.status not in ('STOPPED')");
+            //connect c1 = new connect();
+            c1.a = c1.st.executeUpdate("update basic set basic.status='Freeze' where basic.asn in (select asn from payment where (endm<" + m + " and endy=" + (y - 1) + ") or endy<" + (y - 1) + ") and basic.status not in ('STOPPED')");
             System.out.println("update basic set basic.status='Freeze' where basic.asn in (select asn from payment where (endm<" + m + " and endy=" + (y - 1) + ") or endy<" + (y - 1) + ") and basic.status not in ('STOPPED')");
-            System.out.println("freezed : "+c4.a);
+            System.out.println("freezed : "+c1.a);
             String ending_period = (y-1)+"-"+m+"-1";
             
-            c4.a = c4.st.executeUpdate("update subscribers_primary_details set membership_status='Freeze' where ending_period < '"+ending_period+"' and membership_status not in ('STOPPED')");
+            c1.a = c1.st.executeUpdate("update subscribers_primary_details set membership_status='Freeze' where ending_period < '"+ending_period+"' and membership_status not in ('STOPPED')");
             System.out.println("update subscribers_primary_details set membership_status='Freeze' where ending_period < '"+ending_period+"' and membership_status not in ('STOPPED')");
-            System.out.println("freezed : "+c4.a);
+            System.out.println("freezed : "+c1.a);
             
-            c4.closeAll();
+            //c1.closeAll();
             //--------------------------6 mnth nd 1 year-------------------------------//
             
             md = (m + 5) % 12;
@@ -102,18 +107,18 @@ public class refresh {
             
             //System.out.println("update basic set basic.status='Deactive' where basic.asn in (select asn from payment where (endm>"+(m-1)+" and endy="+(y-1)+") UNION select asn from payment where (endm<"+md+" and endy="+yd+") )");
             
-            connect c5 = new connect();
+            //connect c1 = new connect();
             //            System.out.println("update basic set basic.status='Deactive' where basic.asn in (select asn "
             //                        + "from payment where ((endm>" + (m - 1) + " and endy=" + (y - 1) + ")"
             //                        + "|| (endm<" + (md+1) + " and endy=" + yd + ") )) and basic.status not in ('STOPPED')");
             //            System.out.println(yd+  " deactive" +md);
             if (yd != y) {
-                c5.a = c5.st.executeUpdate("update basic set basic.status='Deactive' where basic.asn in ( select asn "
+                c1.a = c1.st.executeUpdate("update basic set basic.status='Deactive' where basic.asn in ( select asn "
                         + "from payment where endm>=" + m + " and endy=" + (y - 1)
                         + " UNION select asn from payment where endm<=" + md + " and endy=" + y + ") and basic.status not in ('STOPPED')");
                 
                 //System.out.println(yd+":"+y);
-                System.out.println("deactivated : "+c5.a);
+                System.out.println("deactivated : "+c1.a);
                 
                 
                 System.out.println("Hello update basic set basic.status='Deactive' where basic.asn in ( select asn "
@@ -122,29 +127,29 @@ public class refresh {
                 
                 String period1 =  (y-1)+"-"+m+"-1";
                 String period2 = y+"-"+md+"-28";
-                c5.a = c5.st.executeUpdate("update subscribers_primary_details set membership_status='Deactive' where  (  "
+                c1.a = c1.st.executeUpdate("update subscribers_primary_details set membership_status='Deactive' where  (  "
                         + "ending_period >= '" + period1 + "' and ending_period <= '" + period2 + "' ) and membership_status not in ('STOPPED')");
                 System.out.println("update subscribers_primary_details set membership_status='Deactive' where  (  "
                         + "ending_period >= '" + period1 + "' and ending_period <= '" + period2 + "' ) and membership_status not in ('STOPPED')");
-                System.out.println("deactivated : "+c5.a);
+                System.out.println("deactivated : "+c1.a);
                 
             } else if (yd == y) {
                 //System.out.println("Hello");
                 //System.out.println("update basic set basic.status='Deactive' where basic.asn in (select asn from payment where (endm>=" + m + " and endm<=" + md +") and  endy=" + (y - 1) + " ) and basic.status not in ('STOPPED')");
                 
-                c5.a = c5.st.executeUpdate("update basic set basic.status='Deactive' where basic.asn in (select asn from payment where (endm>=" + m + " and endm<=" + md +") and  endy=" + (y - 1) + " ) and basic.status not in ('STOPPED')");
+                c1.a = c1.st.executeUpdate("update basic set basic.status='Deactive' where basic.asn in (select asn from payment where (endm>=" + m + " and endm<=" + md +") and  endy=" + (y - 1) + " ) and basic.status not in ('STOPPED')");
                 System.out.println("update basic set basic.status='Deactive' where basic.asn in (select asn from payment where (endm>=" + m + " and endm<=" + md +") and  endy=" + (y - 1) + " ) and basic.status not in ('STOPPED')");
-                System.out.println("deactivated : "+c5.a);
+                System.out.println("deactivated : "+c1.a);
                 String period1 = (y-1)+"-"+m+"-1";
                 String period2 = (y-1)+"-"+md+"-28";
-                c5.a = c5.st.executeUpdate("update subscribers_primary_details set membership_status='Deactive' where  ending_period >= '"+period1+"' and ending_period <= '"+period2+"' and membership_status not in ('STOPPED')");
+                c1.a = c1.st.executeUpdate("update subscribers_primary_details set membership_status='Deactive' where  ending_period >= '"+period1+"' and ending_period <= '"+period2+"' and membership_status not in ('STOPPED')");
                 System.out.println("update subscribers_primary_details set membership_status='Deactive' where  ending_period >= '"+period1+"' and ending_period <= '"+period2+"' and membership_status not in ('STOPPED')");
-                System.out.println("deactivated : "+c5.a);
+                System.out.println("deactivated : "+c1.a);
             }
             
-            System.out.println("deactivated : "+c5.a+"");
+            System.out.println("deactivated : "+c1.a+"");
             
-            c5.closeAll();
+            //c1.closeAll();
             //System.out.println("B");
             //=======================================inactive last 6 months=============================================
             
@@ -172,34 +177,34 @@ public class refresh {
             //            System.out.println(yi+  " inactive" +mi);
             //System.out.println("update basic set basic.status='Inactive' where basic.asn in (select asn from payment where (endm<" + m + " and endy=" + y + ") and (endm>" + (mi - 1) + " and endy=" + yi + ")) and basic.status not in ('STOPPED')");
             
-            connect c3 = new connect();
+            //connect c1 = new connect();
             
             /*
             if (yi != y) {
-            c3.a = c3.st.executeUpdate("update basic set basic.status='Inactive' where basic.asn in (select asn from payment where (endm<=" + mi2 + " and endy=" + y + ") union select asn from payment where (endm>=" + mi + " and endy=" + yi + ")) and basic.status not in ('STOPPED')");
+            c1.a = c1.st.executeUpdate("update basic set basic.status='Inactive' where basic.asn in (select asn from payment where (endm<=" + mi2 + " and endy=" + y + ") union select asn from payment where (endm>=" + mi + " and endy=" + yi + ")) and basic.status not in ('STOPPED')");
             }
             */
             //====================================================================
             if (mi2 < mi) {
                 //System.out.println("Hello");
-                //                c3.a = c3.st.executeUpdate("update basic set basic.status='Inactive' where basic.asn in (select asn from payment where (endm>="+mi+" and endm<=" + mi2 + ") and endy=" + yi + " ) and basic.status not in ('STOPPED')");
+                //                c1.a = c1.st.executeUpdate("update basic set basic.status='Inactive' where basic.asn in (select asn from payment where (endm>="+mi+" and endm<=" + mi2 + ") and endy=" + yi + " ) and basic.status not in ('STOPPED')");
                 
-                c3.a = c3.st.executeUpdate("update basic set basic.status='Inactive' where basic.asn in (select asn from payment where (endm<=" + mi2 + " and endy=" + y + ") or (endm>=" + mi + " and endy=" + (y-1) + ")) and basic.status not in ('STOPPED')");
+                c1.a = c1.st.executeUpdate("update basic set basic.status='Inactive' where basic.asn in (select asn from payment where (endm<=" + mi2 + " and endy=" + y + ") or (endm>=" + mi + " and endy=" + (y-1) + ")) and basic.status not in ('STOPPED')");
                 System.out.println("update basic set basic.status='Inactive' where basic.asn in (select asn from payment where (endm<=" + mi2 + " and endy=" + y + ") or (endm>=" + mi + " and endy=" + (y-1) + ")) and basic.status not in ('STOPPED')");
-                System.out.println("inactivated : "+c3.a);
+                System.out.println("inactivated : "+c1.a);
                 
                 String period1 = y+"-"+mi2+"-28";
                 String period2 = (y-1)+"-"+mi+"-1";
                 String abc = "(endm<=" + mi2 + " and endy=" + y + ") or (endm>=" + mi + " and endy=" + (y-1) ;
-                c3.a = c3.st.executeUpdate("update subscribers_primary_details set membership_status='Inactive' where (ending_period <= '"+period1+"' and ending_period >= '"+period2+"') and membership_status not in ('STOPPED')");
+                c1.a = c1.st.executeUpdate("update subscribers_primary_details set membership_status='Inactive' where (ending_period <= '"+period1+"' and ending_period >= '"+period2+"') and membership_status not in ('STOPPED')");
                 System.out.println("update subscribers_primary_details set membership_status='Inactive' where (ending_period <= '"+period1+"' and ending_period >= '"+period2+"') and membership_status not in ('STOPPED')");
-                System.out.println("inactivated : "+c3.a);
+                System.out.println("inactivated : "+c1.a);
             }
             //====================================================================
             
             else if (mi2==12)
             {
-                c3.a = c3.st.executeUpdate("update basic set basic.status='Inactive' where basic.asn "
+                c1.a = c1.st.executeUpdate("update basic set basic.status='Inactive' where basic.asn "
                         + "in (select asn from payment where (endm<=" + mi2 + " and endy=" + (y-1) + ") "
                         + "and (endm>=" + mi + " and endy=" + (y-1) + ")) and basic.status not in ('STOPPED')");
                 
@@ -207,37 +212,43 @@ public class refresh {
                         + "in (select asn from payment where (endm<=" + mi2 + " and endy=" + (y-1) + ") "
                         + "and (endm>=" + mi + " and endy=" + (y-1) + ")) and basic.status not in ('STOPPED')");
                 
-                System.out.println("inactivated : "+c3.a);
+                System.out.println("inactivated : "+c1.a);
                 
                 String period1 = (y-1)+"-"+mi2+"-28";
                 String period2 = (y-1)+"-"+mi+"-1";
-                c3.a = c3.st.executeUpdate("update subscribers_primary_details set membership_status='Inactive' "
+                c1.a = c1.st.executeUpdate("update subscribers_primary_details set membership_status='Inactive' "
                         + "where (ending_period <= '"+period1+"' "
                         + "and ending_period >= '"+period2+"') and membership_status not in ('STOPPED')");
-                System.out.println("inactivated : "+c3.a);
+                System.out.println("inactivated : "+c1.a);
                 
             }
             //else if (yi == y) {
             else
             {
-                c3.a = c3.st.executeUpdate("update basic set basic.status='Inactive' where basic.asn in (select asn from payment where (endm<=" + mi2 + " and endy=" + y + ") and (endm>=" + mi + " and endy=" + (y) + ")) and basic.status not in ('STOPPED')");
+                c1.a = c1.st.executeUpdate("update basic set basic.status='Inactive' where basic.asn in (select asn from payment where (endm<=" + mi2 + " and endy=" + y + ") and (endm>=" + mi + " and endy=" + (y) + ")) and basic.status not in ('STOPPED')");
                 System.out.println("update basic set basic.status='Inactive' where basic.asn in (select asn from payment where (endm<=" + mi2 + " and endy=" + y + ") and (endm>=" + mi + " and endy=" + (y) + ")) and basic.status not in ('STOPPED')");
                 
-                System.out.println("inactivated : "+c3.a);
+                System.out.println("inactivated : "+c1.a);
                 String period1 = y+"-"+mi2+"-28";
                 String period2 = y+"-"+mi+"-1";
-                c3.a = c3.st.executeUpdate("update subscribers_primary_details set membership_status='Inactive' where (ending_period <= '"+period1+"' and ending_period >= '" + period2 + "') and membership_status not in ('STOPPED')");
+                c1.a = c1.st.executeUpdate("update subscribers_primary_details set membership_status='Inactive' where (ending_period <= '"+period1+"' and ending_period >= '" + period2 + "') and membership_status not in ('STOPPED')");
                 System.out.println("update subscribers_primary_details set membership_status='Inactive' where (ending_period <= '"+period1+"' and ending_period >= '" + period2 + "') and membership_status not in ('STOPPED')");
-                System.out.println("inactivated : "+c3.a);
+                System.out.println("inactivated : "+c1.a);
             }
             
-            //System.out.println(""+c3.a);                                                                 (endm<2 and endy=2010) or endy=2009 and (endm>8 and endy=2009)
-            //System.out.println("inactivated : "+c3.a);
-            c3.closeAll();
+            //System.out.println(""+c1.a);                                                                 (endm<2 and endy=2010) or endy=2009 and (endm>8 and endy=2009)
+            //System.out.println("inactivated : "+c1.a);
+            c1.closeAll();
             
         } catch (Exception e) {
             //System.out.println(e);
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void run() {
+        update();
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

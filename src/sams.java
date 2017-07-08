@@ -80,6 +80,11 @@ public class sams extends JFrame implements ActionListener {
         setTitle("Sat Sandesh");
         center();
 
+        refresh refresher = new refresh();
+        Thread refreshThread = new Thread(refresher);
+        refreshThread.start();
+        //refresher.update();
+        
         Container con = getContentPane();
         //con.setBackground(Color.cyan);
 
@@ -664,6 +669,13 @@ public class sams extends JFrame implements ActionListener {
 
 
         setVisible(true);
+        try{
+            refreshThread.join();
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
         
         if(SamsUtilities.getUserName().isEmpty() || SamsUtilities.getUserName().equals("Unknown"))
         {
@@ -675,7 +687,8 @@ public class sams extends JFrame implements ActionListener {
             if(SamsUtilities.getUserName().isEmpty() == false)JOptionPane.showMessageDialog(this, "Welcome "+SamsUtilities.getUserName()+" !!");
         }
         
-        new refresh();
+        
+        
 
     }
 
