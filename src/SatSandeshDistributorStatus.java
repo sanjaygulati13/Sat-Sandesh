@@ -172,19 +172,20 @@ public class SatSandeshDistributorStatus extends JFrame implements ActionListene
                     c=c2.rs.getInt(1);
                     z=new int[c];
                     
-                    c2.rs=c2.st.executeQuery("select * from despcode");
+                    c2.rs=c2.st.executeQuery("select dno,fname,lname,district,centre_of_delivery,state,distributiontype from despcode");
                     Object data[][]= new Object[i+1][col.length];
                     int j=0;
                     
                     while(c2.rs.next())
                     {
                         z[j]=c2.rs.getInt(1);
-                        data[j][0]=z[j];
-                        data[j][1]=c2.rs.getString(2)+" "+c2.rs.getString(3);
-                        data[j][2]=c2.rs.getString(11);
-                        data[j][3]=c2.rs.getString(15);
-                        data[j][4]=c2.rs.getString(12);
-                        data[j][5]=c2.rs.getString(14);
+                        data[j][0]=z[j];                                            //d number
+                        data[j][1]=c2.rs.getString(2)+" "+c2.rs.getString(3);       //name
+                        data[j][2]=c2.rs.getString(4);                              //district
+                        data[j][3]=c2.rs.getString(5);                              //centre
+                        data[j][4]=c2.rs.getString(6);                              //state
+                        data[j][5]=c2.rs.getString(7);                              //dist type
+                        //data[j][6]=c2.rs.getString(8);
                         j++;
                     }
                     
@@ -205,11 +206,11 @@ public class SatSandeshDistributorStatus extends JFrame implements ActionListene
                         {
                             
                             act_num=c2.rs.getInt(1);
-                            data[j][5]=" "+act_num;
+                            data[j][6]=" "+act_num;
                             //j++;
                         }
                         else
-                            data[j][5]=" 0";
+                            data[j][6]=" 0";
                         
                         //					j=0;
                         query = "select count(b.asn) from basic b, despcode d where b.status not in ('Active') and b.dno="+z[i]+" group by d.dno order by d.dno";
@@ -220,11 +221,11 @@ public class SatSandeshDistributorStatus extends JFrame implements ActionListene
                         {
                             
                             oth_num=c2.rs.getInt(1);
-                            data[j][6]=""+oth_num;
+                            data[j][7]=""+oth_num;
                             //j++;
                         }
                         else
-                            data[j][6]=" 0";
+                            data[j][7]=" 0";
                         
                         //				j=0;
                         query = "select count(b.asn) from basic b, despcode d where b.dno="+z[i]+" group by d.dno order by d.dno";
@@ -234,11 +235,11 @@ public class SatSandeshDistributorStatus extends JFrame implements ActionListene
                         {
                             
                             tot_num=c2.rs.getInt(1);
-                            data[j][7]=""+tot_num;
+                            data[j][8]=""+tot_num;
                             //j++;
                         }
                         else
-                            data[j][7]=" 0";
+                            data[j][8]=" 0";
                         
                         tot+=tot_num;
                         act+=act_num;
@@ -247,9 +248,9 @@ public class SatSandeshDistributorStatus extends JFrame implements ActionListene
                         j++;
                     }
                     data[j][2]="TOTAL";
-                    data[j][5]=""+act;
-                    data[j][6]=""+oth;
-                    data[j][7]=""+tot;
+                    data[j][6]=""+act;
+                    data[j][7]=""+oth;
+                    data[j][8]=""+tot;
                     
                     tb1=new JTable(data,col);
                     sp=new JScrollPane(tb1);

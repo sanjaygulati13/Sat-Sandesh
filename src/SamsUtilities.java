@@ -107,6 +107,112 @@ public class SamsUtilities {
         return subCodeArray;
     }
     
+    public void initListLines(int totalNumberOfLabels, int[]asn, String[][] textLines)
+    {
+        
+        
+    }
+    
+    
+    public void initLabelLines(int totalNumberOfLabels, int[]asn, String[][] textLines)
+    {
+        try
+        {
+            
+            connect c1=new connect();
+            int currentLabel=0;
+            for(currentLabel = 0 ; currentLabel < totalNumberOfLabels; currentLabel++)
+            {
+                //connect c10=new connect();
+                //c10.rs=c10.st.executeQuery("select * from basic where asn="+asn[currentLabel]);
+                c1.rs=c1.st.executeQuery("select subscription_code, subscription_number from subscribers_primary_details where asn="+asn[currentLabel]);
+                c1.rs.next();
+                textLines[currentLabel][0]="SUB # "+ c1.rs.getString(1)+" "+ c1.rs.getString(2)+" / REMI ";
+            }
+            
+            
+            currentLabel=0;
+            
+            //connect c1=new connect();
+            for(currentLabel=0;currentLabel<totalNumberOfLabels;currentLabel++)
+            {
+                //c1.rs=c1.st.executeQuery("select * from payment where asn="+asn[currentLabel]);
+                c1.rs=c1.st.executeQuery("select ending_period from subscribers_primary_details where asn="+asn[currentLabel]);
+                c1.rs.next();
+                java.util.Date endDate = c1.rs.getDate(1);
+                textLines[currentLabel][0] += "   " + (endDate.getMonth()+1) + "/" + (endDate.getYear()+1900);
+                //textLines[currentLabel][0]+="   "+c1.rs.getInt(10)+"/"+c1.rs.getInt(11);
+            }
+            
+            currentLabel=0;
+            //connect c1=new connect();
+            for(currentLabel=0;currentLabel<totalNumberOfLabels;currentLabel++)
+            {
+                
+                //c1.rs=c1.st.executeQuery("select * from subdetails where asn="+asn[currentLabel]);
+                c1.rs = c1.st.executeQuery("select first_name, last_name, address_line1, address_line2, address_line3, district, state, pin_code from subscribers_primary_details where asn="+asn[currentLabel]);
+                c1.rs.next();
+                
+                String s1, s2, s3, s4, s5,s6, s7;
+                
+                s1=c1.rs.getString(1);  //fname
+                s2=c1.rs.getString(2);  //lname
+                s3=c1.rs.getString(3);  //add1
+                s4=c1.rs.getString(4);  //add2
+                s5=c1.rs.getString(5);  //add3
+                s6=c1.rs.getString(6);  //dist
+                s7=c1.rs.getString(7);  //state
+                
+                textLines[currentLabel][1]="";
+                textLines[currentLabel][2]="";
+                textLines[currentLabel][3]="";
+                textLines[currentLabel][4]="";
+                textLines[currentLabel][5]="";
+                textLines[currentLabel][6]="";
+                
+                
+                
+                if(s1!=null)
+                    textLines[currentLabel][1]= s1+" ";
+                
+                if(s2!=null)
+                    textLines[currentLabel][1]+=s2;
+                
+                if(s3!=null)
+                    textLines[currentLabel][2]= s3;
+                
+                if(s4!=null)
+                    textLines[currentLabel][3]= s4;
+                
+                if(s5!=null)
+                    textLines[currentLabel][4]= s5;
+                
+                if(s6!=null)
+                    textLines[currentLabel][5]= s6;
+                
+                if(s7!=null)
+                    textLines[currentLabel][6]=s7;
+                
+                
+                
+                int c=Integer.parseInt(c1.rs.getString(8));
+                if(c>0)
+                {
+                    textLines[currentLabel][6]+=" - "+c;
+                }
+            }
+            c1.closeAll();
+            currentLabel=0;
+            
+        }
+        catch(Exception e)
+        {
+            System.out.println(e);
+            e.printStackTrace();
+        }
+        
+    }
+    
     public static Object[] getMonthNames()
     {
         return month;

@@ -8,7 +8,7 @@ public class labeldno implements Printable, ActionListener
 {
     public static void main(String args[])
     {
-        new labeldno(1, 1, 2016);
+        new labeldno(1, 7, 2017, true);
     }
     int present;
     
@@ -28,6 +28,7 @@ public class labeldno implements Printable, ActionListener
     int linesPerPage;
     int NumberOfRecords=0;
     String distributionTypeText;
+    boolean dataFromNewTable = true;
     
     
     protected final void center(JFrame frame) {
@@ -37,21 +38,21 @@ public class labeldno implements Printable, ActionListener
         int y = (screenSize.height - frameSize.height) / 2;
         frame.setLocation(x, y);
     }
-
     
-    public labeldno(int d, int m, int y)
+    
+    public labeldno(int d, int m, int y, boolean mode)
     {
         m1 = m;
         y1 = y;
         distributorCode = d;
+        dataFromNewTable = mode;
         
-        
+        displayFrame= new JFrame("Print Labels");
         try
         {
-            displayFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("skrm.jpg")));
             String cn = UIManager.getSystemLookAndFeelClassName();
-            
             UIManager.setLookAndFeel(cn); // Use the native L&F
+            displayFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("skrm.jpg")));
         }
         catch (Exception cnf)
         {
@@ -59,7 +60,7 @@ public class labeldno implements Printable, ActionListener
             cnf.printStackTrace();
         }
         
-        displayFrame= new JFrame("Print Labels");
+        
         displayFrame.setLayout(null);
         displayFrame.setSize(300,85);
         displayFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -87,12 +88,30 @@ public class labeldno implements Printable, ActionListener
         {
             
             connect c1=new connect();
-            c1.rs=c1.st.executeQuery("select count(b.asn) from basic b, payment p where b.asn=p.asn and b.dno="+distributorCode+" and (p.asn) in (select asn from payment where (endm>"+(m1-1)+" and endy="+y1+") or endy>"+y1+")");
+            String query = "select count(b.asn) from basic b, payment p "
+                    + "where b.asn=p.asn and b.dno="+distributorCode+" "
+                    + "and (p.asn) in "
+                    + "(select asn from payment where (endm>"+(m1-1)+" and endy="+y1+") or endy>"+y1+")";
+            
+            String endingPeriod = y1+"-"+(m1-1)+"-28";
+            
+            String newQuery = "select count(asn) from subscribers_primary_details "
+                    + "where bulk_despatch_code = "+distributorCode+" "
+                    + "and ending_period > '"+endingPeriod+"'";
+            
+            if(dataFromNewTable)
+                c1.rs=c1.st.executeQuery(newQuery);
+            else
+                c1.rs=c1.st.executeQuery(query);
+            
             if(c1.rs.next())
             {
-                x=c1.rs.getInt(1);
+                x = c1.rs.getInt(1);
             }
             NumberOfRecords=x;
+            
+            //System.out.println(query);
+            //System.out.println(newQuery);
             
             numLines=x*2;
             //System.out.println("x : "+x);
@@ -163,7 +182,20 @@ public class labeldno implements Printable, ActionListener
                 if(i==0)
                 {
                     
-                    c2.rs=c2.st.executeQuery("select b.asn from basic b, payment p where b.asn=p.asn and b.dno="+distributorCode+" and (p.asn) in (select asn from payment where (endm>"+(m1-1)+" and endy="+y1+") or endy>"+y1+") order by p.endy, p.endm");
+                    query = "select b.asn from basic b, payment p where b.asn=p.asn and "
+                            + "b.dno="+distributorCode+" and (p.asn) in "
+                            + "(select asn from payment where (endm>"+(m1-1)+" and endy="+y1+") or endy>"+y1+") "
+                            + "order by p.endy, p.endm";
+                    
+                    newQuery = "select asn from subscribers_primary_details "
+                            + "where bulk_despatch_code = "+distributorCode+" "
+                            + "and ending_period > '"+endingPeriod+"' order by ending_period";
+                    
+                    if(dataFromNewTable)
+                        c2.rs=c2.st.executeQuery(newQuery);
+                    else
+                        c2.rs=c2.st.executeQuery(query);
+                    
                     while(c2.rs.next())
                     {
                         if(i%(linesPerPage/2)==0 && i<x)
@@ -276,14 +308,32 @@ public class labeldno implements Printable, ActionListener
                     else if((i%(linesPerPage/2))>2)
                     {
                         
-                        c3.rs=c3.st.executeQuery("select b.asn, b.subnos, b.subno, p.endm, p.endy, b.dno from basic b, payment p where b.asn=p.asn and b.asn="+asn[i]);
+                        query = "select b.asn, b.subnos, b.subno, p.endm, p.endy from basic b, payment p "
+                                + "where b.asn=p.asn and b.asn="+asn[i];
+                        newQuery = "select asn, subscription_code, subscription_number, ending_period from subscribers_primary_details "
+                                + "where asn="+asn[i];
+                        
+                        if(dataFromNewTable)
+                            c3.rs=c3.st.executeQuery(newQuery);
+                        else
+                            c3.rs=c3.st.executeQuery(query);
+                        
                         c3.rs.next();
                         textLines[i][0]=""+c3.rs.getInt(1);
                         textLines[i][1]=""+c3.rs.getString(2)+c3.rs.getString(3);
-                        textLines[i][2]=""+c3.rs.getInt(4);
-                        textLines[i][3]=""+c3.rs.getInt(5);
+                        if(dataFromNewTable)
+                        {
+                            java.util.Date endDate = c1.rs.getDate(4);
+                            textLines[i][2]=""+(endDate.getMonth()+1);
+                            textLines[i][3]=""+(endDate.getYear()+1900);
+                        }
+                        else
+                        {
+                            textLines[i][2]=""+c3.rs.getInt(4);
+                            textLines[i][3]=""+c3.rs.getInt(5);
+                        }
                         textLines[i][4]="";
-                        int d=c3.rs.getInt(6);
+                        int d= distributorCode;
                         if(d>0)
                             textLines[i][4]=""+d;
                     }
@@ -403,7 +453,8 @@ public class labeldno implements Printable, ActionListener
                         
                         if(s2!=null && s2.length()>5)
                         {
-                            textLines[i][14]="(e-id:"+s2+")";textLines[i][14]="(e-id:"+s2+")";
+                            textLines[i][14]="(e-id:"+s2+")";
+                            //textLines[i][14]="(e-id:"+s2+")";
                         }
                         
                         

@@ -138,7 +138,7 @@ public class labeldist extends JFrame implements ActionListener
     {
         if(ae.getSource()==ok)
         {
-            new labeldno(Integer.parseInt((String)dnot.getSelectedItem()),Integer.parseInt(monthDropDown.getSelectedItem().toString()),Integer.parseInt(yearDropDown.getSelectedItem().toString()));
+            new labeldno(Integer.parseInt((String)dnot.getSelectedItem()),Integer.parseInt(monthDropDown.getSelectedItem().toString()),Integer.parseInt(yearDropDown.getSelectedItem().toString()), false);
             this.dispose();
         }
         
