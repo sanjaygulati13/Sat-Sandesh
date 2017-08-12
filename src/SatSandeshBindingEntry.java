@@ -5,6 +5,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Date;
+import java.util.Properties;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -12,6 +14,9 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import net.miginfocom.swing.MigLayout;
+import org.jdatepicker.impl.JDatePanelImpl;
+import org.jdatepicker.impl.JDatePickerImpl;
+import org.jdatepicker.impl.UtilDateModel;
 
 /*
  * To change this template, choose Tools | Templates
@@ -26,7 +31,7 @@ public class SatSandeshBindingEntry implements ActionListener{
     
     JFrame addSatSandeshBindingWindow;
     JLabel yearLabel, stallLabel, dateLabel, nameLabel, languageLabel, countLabel, amountLabel;
-    TextFieldWithLimit dateText, monthText, yearText, nameText, countText, amountText;
+    TextFieldWithLimit /*dateText, monthText, yearText,*/ nameText, countText, amountText;
     JComboBox yearDropDown, languageDropDown, stallDropDown;
     JButton okButton, cancelButton;
     
@@ -40,6 +45,11 @@ public class SatSandeshBindingEntry implements ActionListener{
                         "Urdu",
                         "Punjabi"
     };
+    
+    UtilDateModel model = new UtilDateModel();
+    Properties prop;
+    JDatePanelImpl datePanel;
+    JDatePickerImpl datePicker;
     
     public static void main(String args[])
     {
@@ -96,16 +106,25 @@ public class SatSandeshBindingEntry implements ActionListener{
         
         
         
-        dateText = new TextFieldWithLimit( 2 , 2 );
-        monthText = new TextFieldWithLimit( 2 , 2 );
-        yearText = new TextFieldWithLimit( 4 , 4 );
+        {
+            prop = new Properties();
+            prop.put("text.today", "Today");
+            prop.put("text.month", "Month");
+            prop.put("text.year", "Year");
+            datePanel = new JDatePanelImpl(model, prop);
+            datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+        }
+        
+        //dateText = new TextFieldWithLimit( 2 , 2 );
+        //monthText = new TextFieldWithLimit( 2 , 2 );
+        //yearText = new TextFieldWithLimit( 4 , 4 );
         nameText = new TextFieldWithLimit( 32 , 32 );
         nameText.setText(SamsUtilities.getUserName());
         countText = new TextFieldWithLimit( 4 , 4 );
         amountText = new TextFieldWithLimit( 5 , 5 );
         
-        monthText.setText(""+SamsUtilities.getCurrentMonth());
-        yearText.setText(""+SamsUtilities.getCurrentYear());
+        //monthText.setText(""+SamsUtilities.getCurrentMonth());
+        //yearText.setText(""+SamsUtilities.getCurrentYear());
         
         
         //Buttons
@@ -130,9 +149,10 @@ public class SatSandeshBindingEntry implements ActionListener{
         
         
         addSatSandeshBindingWindow.add(dateLabel);
-        addSatSandeshBindingWindow.add(dateText, "split 3");
-        addSatSandeshBindingWindow.add(monthText);
-        addSatSandeshBindingWindow.add(yearText);
+        addSatSandeshBindingWindow.add(datePicker,"w 150!");
+        //addSatSandeshBindingWindow.add(dateText, "split 3");
+        //addSatSandeshBindingWindow.add(monthText);
+        //addSatSandeshBindingWindow.add(yearText);
         addSatSandeshBindingWindow.add(amountLabel);
         addSatSandeshBindingWindow.add(amountText, "wrap 20px");
         
@@ -158,7 +178,13 @@ public class SatSandeshBindingEntry implements ActionListener{
             String language = (String)languageDropDown.getSelectedItem();
             String stall = (String)stallDropDown.getSelectedItem();
             String bindingsString = countText.getText();
-            String entryDate = yearText.getText()+"-"+monthText.getText()+"-"+dateText.getText();;
+            //String entryDate = yearText.getText()+"-"+monthText.getText()+"-"+dateText.getText();
+            Date selectedDate = (Date) datePicker.getModel().getValue();
+            int eDate= selectedDate.getDate();
+            int eMonth=selectedDate.getMonth()+1;
+            int eYear=selectedDate.getYear()+1900;
+            String entryDate = eYear+"-"+eMonth+"-"+eDate;
+            
             String issuedBy = nameText.getText();
             String issuePriceString = amountText.getText();
             
@@ -213,9 +239,10 @@ public class SatSandeshBindingEntry implements ActionListener{
                     yearDropDown.setSelectedIndex(0);
                     languageDropDown.setSelectedIndex(0);
                     stallDropDown.setSelectedIndex(0);
-                    dateText.setText("");
-                    monthText.setText(""+SamsUtilities.getCurrentMonth());
-                    yearText.setText(""+SamsUtilities.getCurrentYear());
+                    datePicker.getJFormattedTextField().setText("");
+                    //dateText.setText("");
+                    //monthText.setText(""+SamsUtilities.getCurrentMonth());
+                    //yearText.setText(""+SamsUtilities.getCurrentYear());
                     nameText.setText("");
                     countText.setText("");
                     amountText.setText("");

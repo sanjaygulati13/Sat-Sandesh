@@ -7,6 +7,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Properties;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -16,6 +17,9 @@ import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import net.miginfocom.swing.MigLayout;
+import org.jdatepicker.impl.JDatePanelImpl;
+import org.jdatepicker.impl.JDatePickerImpl;
+import org.jdatepicker.impl.UtilDateModel;
 
 /*
  * To change this template, choose Tools | Templates
@@ -45,7 +49,7 @@ public class InventoryRevertIssueDetails implements ActionListener, ItemListener
     
     JLabel issuedToLabel, issueDateLabel, descriptionLabel, receiptFromLabel, receiptToLabel;
     JLabel revertBackFromLabel, revertBackToLabel;
-    TextFieldWithLimit issuedToText, issueDateMonthtext, issueDateYearText, issueDatetext;
+    TextFieldWithLimit issuedToText/*, issueDateMonthtext, issueDateYearText, issueDatetext*/;
     TextFieldWithLimit receiptFromText, receiptToText , descriptionText;
     
     JComboBox revertBackFromDropDown, revertBackToDropDown;
@@ -54,6 +58,11 @@ public class InventoryRevertIssueDetails implements ActionListener, ItemListener
     MigLayout mLayout= new MigLayout( "insets 30");
     
     Object [] stalls = {"Kirpal Bagh", "Kirpal Ashram"};
+    
+    UtilDateModel model = new UtilDateModel();
+    Properties prop;
+    JDatePanelImpl datePanel;
+    JDatePickerImpl datePicker;
     
     InventoryRevertIssueDetails()
     {
@@ -123,12 +132,20 @@ public class InventoryRevertIssueDetails implements ActionListener, ItemListener
         issuedToLabel = new JLabel("<HTML>Issued To</HTML>");
         issueDateLabel = new JLabel("<HTML>Issue Date</HTML>");
         
-        issueDatetext = new TextFieldWithLimit( 2 , 2 );
-        issueDateMonthtext = new TextFieldWithLimit( 2 , 2 );
-        issueDateYearText = new TextFieldWithLimit( 4 , 4 );
+        {
+            prop = new Properties();
+            prop.put("text.today", "Today");
+            prop.put("text.month", "Month");
+            prop.put("text.year", "Year");
+            datePanel = new JDatePanelImpl(model, prop);
+            datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+        }
+        //issueDatetext = new TextFieldWithLimit( 2 , 2 );
+        //issueDateMonthtext = new TextFieldWithLimit( 2 , 2 );
+        //issueDateYearText = new TextFieldWithLimit( 4 , 4 );
         
-        issueDateMonthtext.setText(""+SamsUtilities.getCurrentMonth());
-        issueDateYearText.setText(""+SamsUtilities.getCurrentYear());
+        //issueDateMonthtext.setText(""+SamsUtilities.getCurrentMonth());
+        //issueDateYearText.setText(""+SamsUtilities.getCurrentYear());
         
         descriptionLabel = new JLabel("<HTML>Description</HTML>");
         descriptionText = new TextFieldWithLimit( 32 , 32 );
@@ -168,9 +185,11 @@ public class InventoryRevertIssueDetails implements ActionListener, ItemListener
         subIssueReceiptBookWindow.add(issuedToStallLabel);
         subIssueReceiptBookWindow.add(issuedToStallText, "span 2, w 130!");
         subIssueReceiptBookWindow.add(issueDateLabel);
-        subIssueReceiptBookWindow.add(issueDatetext, "split 3, w 30!");
-        subIssueReceiptBookWindow.add(issueDateMonthtext, " w 30!");
-        subIssueReceiptBookWindow.add(issueDateYearText, "w 50! , wrap 20px");
+        subIssueReceiptBookWindow.add(datePicker,"w 150!, wrap 15px");
+        
+        //subIssueReceiptBookWindow.add(issueDatetext, "split 3, w 30!");
+        //subIssueReceiptBookWindow.add(issueDateMonthtext, " w 30!");
+        //subIssueReceiptBookWindow.add(issueDateYearText, "w 50! , wrap 20px");
         
         subIssueReceiptBookWindow.add(new JSeparator(SwingConstants.HORIZONTAL),"span 5,w 400!, wrap 20px");
         //subIssueReceiptBookWindow.add(descriptionLabel);
@@ -252,9 +271,12 @@ public class InventoryRevertIssueDetails implements ActionListener, ItemListener
                         fromText.setText("");
                         toText.setText("");
                         revertBackFromDropDown.removeAllItems();
-                        issueDateYearText.setText(""+SamsUtilities.getCurrentYear());
-                        issueDateMonthtext.setText(""+SamsUtilities.getCurrentMonth());
-                        issueDatetext.setText("");
+                        
+                        
+                        datePicker.getJFormattedTextField().setText("");
+                        //issueDateYearText.setText(""+SamsUtilities.getCurrentYear());
+                        //issueDateMonthtext.setText(""+SamsUtilities.getCurrentMonth());
+                        //issueDatetext.setText("");
                     }
                     
                 }

@@ -13,6 +13,8 @@ import static java.awt.print.Printable.NO_SUCH_PAGE;
 import static java.awt.print.Printable.PAGE_EXISTS;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
+import java.util.Date;
+import java.util.Properties;
 import java.util.Vector;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -23,6 +25,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 import net.miginfocom.swing.MigLayout;
+import org.jdatepicker.impl.JDatePanelImpl;
+import org.jdatepicker.impl.JDatePickerImpl;
+import org.jdatepicker.impl.UtilDateModel;
 
 /*
 * To change this license header, choose License Headers in Project Properties.
@@ -50,7 +55,7 @@ public class SatSandeshAccountBookPosting  implements ActionListener, Printable 
     JPanel entryPanel;
     JScrollPane scrollPane;
     
-    TextFieldWithLimit  entryDateText,entryMonthText,entryYearText, pageNumberText;
+    TextFieldWithLimit  /*entryDateText,entryMonthText,entryYearText,*/ pageNumberText;
     //JComboBox yearDropDown[], monthDropDown[], stallDropDown, languageDropDown[], issueTypeDropDown[];
     //JComboBox customerNameDropDown[];
     JComboBox stallDropDown;
@@ -58,6 +63,11 @@ public class SatSandeshAccountBookPosting  implements ActionListener, Printable 
     MigLayout mLayout= new MigLayout( "insets 30");
     MigLayout pLayout= new MigLayout( "insets 20");
     Object [] stalls = {"Kirpal Bagh", "Kirpal Ashram","Other"};
+    
+    UtilDateModel model = new UtilDateModel();
+    Properties prop;
+    JDatePanelImpl datePanel;
+    JDatePickerImpl datePicker;
     
     
     public SatSandeshAccountBookPosting()
@@ -141,16 +151,26 @@ public class SatSandeshAccountBookPosting  implements ActionListener, Printable 
         
         
         //TextFields
-        entryDateText = new TextFieldWithLimit( 2 , 2 );
-        entryMonthText = new TextFieldWithLimit( 2 , 2 );
-        entryYearText = new TextFieldWithLimit( 4 , 4 );
+        //entryDateText = new TextFieldWithLimit( 2 , 2 );
+        //entryMonthText = new TextFieldWithLimit( 2 , 2 );
+        //entryYearText = new TextFieldWithLimit( 4 , 4 );
         pageNumberText = new TextFieldWithLimit( 4 , 4 );
         
-        entryMonthText.setText(""+SamsUtilities.getCurrentMonth());
-        entryYearText.setText(""+SamsUtilities.getCurrentYear());
+        //entryMonthText.setText(""+SamsUtilities.getCurrentMonth());
+        //entryYearText.setText(""+SamsUtilities.getCurrentYear());
         
         //quantityText  = new TextFieldWithLimit( 5 , 5 );
         
+        {
+            prop = new Properties();
+            prop.put("text.today", "Today");
+            prop.put("text.month", "Month");
+            prop.put("text.year", "Year");
+            datePanel = new JDatePanelImpl(model, prop);
+            datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+        }
+        
+        datePicker.setBounds(30,55,240,45);
         
         
         
@@ -174,9 +194,10 @@ public class SatSandeshAccountBookPosting  implements ActionListener, Printable 
         satSandeshAccountBookPostingWindow.add(pageNumberLabel,"span 2, align right");
         satSandeshAccountBookPostingWindow.add(pageNumberText,"span 1");
         satSandeshAccountBookPostingWindow.add(entryDateLabel,"span 2, align right");
-        satSandeshAccountBookPostingWindow.add(entryDateText, "split 5, w 30!");
-        satSandeshAccountBookPostingWindow.add(entryMonthText,"span 1");
-        satSandeshAccountBookPostingWindow.add(entryYearText, "span 1, wrap 15px");
+        satSandeshAccountBookPostingWindow.add(datePicker,"w 150!, wrap 15px");
+        //satSandeshAccountBookPostingWindow.add(entryDateText, "split 5, w 30!");
+        //satSandeshAccountBookPostingWindow.add(entryMonthText,"span 1");
+        //satSandeshAccountBookPostingWindow.add(entryYearText, "span 1, wrap 15px");
         
         
         entryPanel.add(seriesFirstLabel," span 1, w 100");
@@ -238,7 +259,13 @@ public class SatSandeshAccountBookPosting  implements ActionListener, Printable 
             //Font font = new Font();
             
             //gather the info from user input into the frame
-            String issueDate = entryYearText.getText()+"-"+entryMonthText.getText()+"-"+entryDateText.getText();
+            
+            Date selectedDate = (Date) datePicker.getModel().getValue();
+            int date= selectedDate.getDate();
+            int month=selectedDate.getMonth()+1;
+            int year=selectedDate.getYear()+1900;
+            String issueDate = year+"-"+month+"-"+date;
+            
             for(int i = 0; i < NUM_ROWS; i++)
             {
                 String seriesName = (String)seriesDropDown[i].getSelectedItem();
@@ -328,9 +355,10 @@ public class SatSandeshAccountBookPosting  implements ActionListener, Printable 
                 //    JOptionPane.showMessageDialog(satSandeshAccountBookPostingWindow, "Please fill all the fields");
                 //}
                 //}
-                entryDateText.setText("");
-                entryMonthText.setText(""+SamsUtilities.getCurrentMonth());
-                entryYearText.setText(""+SamsUtilities.getCurrentYear());
+                datePicker.getJFormattedTextField().setText("");
+                //entryDateText.setText("");
+                //entryMonthText.setText(""+SamsUtilities.getCurrentMonth());
+                //entryYearText.setText(""+SamsUtilities.getCurrentYear());
             }
         }
         else if(event.getSource() == cancelButton)

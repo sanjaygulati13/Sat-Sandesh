@@ -10,7 +10,7 @@ public class SatSandeshIndexRegister implements Printable, ActionListener
 {
     public static void main(String args[])
     {
-        SatSandeshIndexRegister index = new SatSandeshIndexRegister(1,12,2011);
+        SatSandeshIndexRegister index = new SatSandeshIndexRegister(1,12,2011, true);
     }
     int present=0;
     int[] pageBreak;
@@ -28,13 +28,17 @@ public class SatSandeshIndexRegister implements Printable, ActionListener
     int d, m, y1;
     int linesPerPage;
     int NumberOfRecords=0;
-    public SatSandeshIndexRegister(int d2,int m2, int y2)
+    boolean dataFromNewTable = true;
+    
+    public SatSandeshIndexRegister(int d2,int m2, int y2, boolean mode)
     {
         
         d=d2;
         m=m2;
         y1=y2;
+        dataFromNewTable = mode;
         
+        f= new JFrame("Print Index Register");
         try
         {
             f.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("skrm.jpg")));
@@ -47,7 +51,7 @@ public class SatSandeshIndexRegister implements Printable, ActionListener
             System.out.println(cnf);
         }
         
-        f= new JFrame("Print Index Register");
+        
         f.setVisible(true);
         f.setLayout(null);
         f.setSize(300,85);
@@ -73,14 +77,20 @@ public class SatSandeshIndexRegister implements Printable, ActionListener
         {
             
             connect c1=new connect();
-            c1.rs=c1.st.executeQuery("select count(asn) from basic where lang not in ('Other') and subnos not in ('NA')");
+            String query = "select count(asn) from basic where lang not in ('Other') and subnos not in ('NA')";
+            String newQuery = "select count(asn) from subscribers_primary_details where language not in "
+                    + "('Other') and subscription_code not in ('NA')";
+            if(dataFromNewTable)
+                c1.rs=c1.st.executeQuery(newQuery);
+            else
+                c1.rs=c1.st.executeQuery(query);
             while(c1.rs.next())
             {
                 x=c1.rs.getInt(1);
             }
             NumberOfRecords=x;
             numLines=x*2;
-            //System.out.println("x : "+x);
+            System.out.println("x : "+x);
             
             int y=(numLines%linesPerPage);
             
@@ -148,7 +158,15 @@ public class SatSandeshIndexRegister implements Printable, ActionListener
                 if(i==0)
                 {
                     
-                    c2.rs=c2.st.executeQuery("select b.asn from basic b, subdetails s where b.lang not in ('Other') and subnos not in ('NA') and b.asn=s.asn order by s.state, s.fname, s.lname");
+                    query = "select b.asn from basic b, subdetails s where "
+                            + "b.lang not in ('Other') and subnos not in ('NA') "
+                            + "and b.asn=s.asn order by s.state, s.fname, s.lname";
+                    
+                    newQuery = "select asn from subscribers_primary_details where "
+                            + "language not in ('Other') and subscription_code not in ('NA') "
+                            + "order by state, first_name, last_name";
+                    
+                    c2.rs=c2.st.executeQuery(query);
                     while(c2.rs.next())
                     {
                         if(i%(linesPerPage/2)==0 && i<x)
@@ -258,15 +276,38 @@ public class SatSandeshIndexRegister implements Printable, ActionListener
                     else if((i%(linesPerPage/2))>2)
                     {
                         
-                        c3.rs=c3.st.executeQuery("select b.asn, b.subnos, b.subno, p.endm, p.endy, b.dno from basic b, payment p where b.asn=p.asn and b.asn="+asn[i]);
+                        query = "select b.asn, b.subnos, b.subno, p.endm, p.endy, b.dno "
+                                + "from basic b, payment p where b.asn=p.asn and b.asn="+asn[i];
+                        
+                        newQuery = "select asn, subscription_code, subscription_number, ending_period, "
+                                + "bulk_despatch_code from subscribers_primary_details where asn="+asn[i];
+                        
+                        if(dataFromNewTable)
+                            c3.rs=c3.st.executeQuery(newQuery);
+                        else
+                            c3.rs=c3.st.executeQuery(query);
+                        
                         c3.rs.next();
                         textLines[i][0]=""+c3.rs.getInt(1);
                         textLines[i][1]=""+c3.rs.getString(2)+c3.rs.getString(3);
                         textLines[i][2]=""+c3.rs.getInt(4);
                         textLines[i][3]=""+c3.rs.getInt(5);
+                        
+                        if(dataFromNewTable)
+                        {
+                            java.util.Date endDate = c3.rs.getDate(4);
+                            textLines[i][2]=""+(endDate.getMonth()+1);
+                            textLines[i][3]=""+(endDate.getYear()+1900);
+                        }
                         textLines[i][4]="";
-                        int d=c3.rs.getInt(6);
-                        if(d>0)
+                        int d= 0;
+                        
+                        if(dataFromNewTable)
+                            d = c3.rs.getInt(5);
+                        else
+                            d = c3.rs.getInt(6);
+                        
+                        if(d > 0)
                             textLines[i][4]=""+d;
                     }
                 }
@@ -303,7 +344,17 @@ public class SatSandeshIndexRegister implements Printable, ActionListener
                     
                     if(i%(linesPerPage/2)>2)
                     {
-                        c4.rs=c4.st.executeQuery("select * from subdetails where asn="+asn[i]);
+                        
+                        query = "select * from subdetails where asn="+asn[i];
+                        //asn, titile not required, just to minimize code change for indexing
+                        newQuery = "select asn, title, first_name, last_name, address_line1, address_line2, address_line3, "
+                                + "district, state, pin_code from subscribers_primary_details where asn = "+asn[i];
+                        
+                        if(dataFromNewTable)
+                            c4.rs=c4.st.executeQuery(newQuery);
+                        else
+                            c4.rs=c4.st.executeQuery(query);
+                        
                         c4.rs.next();
                         String s1, s2, s3, s4, s5, s6,s7;
                         
@@ -367,7 +418,14 @@ public class SatSandeshIndexRegister implements Printable, ActionListener
                     
                     if(i%(linesPerPage/2)>2)
                     {
-                        c5.rs=c5.st.executeQuery("select phone, email from otherdet where asn="+asn[i]);
+                        query = "select phone, email from otherdet where asn="+asn[i];
+                        newQuery = "select phone_number, email from subscribers_primary_details where asn="+asn[i];
+                        
+                        if(dataFromNewTable)
+                            c5.rs=c5.st.executeQuery(newQuery);
+                        else
+                            c5.rs=c5.st.executeQuery(query);
+                        
                         c5.rs.next();
                         String s1, s2;
                         

@@ -7,6 +7,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Date;
+import java.util.Properties;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -14,35 +16,43 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import net.miginfocom.swing.MigLayout;
+import org.jdatepicker.impl.JDatePanelImpl;
+import org.jdatepicker.impl.JDatePickerImpl;
+import org.jdatepicker.impl.UtilDateModel;
 
 
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+* To change this template, choose Tools | Templates
+* and open the template in the editor.
+*/
 
 /**
  *
  * @author sanjay
  */
 public class SatSandeshInventory implements ActionListener, ItemListener{
-
+    
     JFrame addSatSandeshInventoryWindow;
     JLabel issueMonthLabel, issueYearLabel, issuePriceLabel, billNumberLabel, quantityLabel, entryDateLabel, nameLabel, stallLabel, languageLabel;
     
-    TextFieldWithLimit issueMonthtext, issueYearText, issuePriceText, billNumberText, quantityText, entryDateText, entryDateMonthText,entryDateYearText, issuedByNameText;
+    TextFieldWithLimit issueMonthtext, issueYearText, issuePriceText, billNumberText, quantityText,/* entryDateText, entryDateMonthText,entryDateYearText,*/ issuedByNameText;
     JComboBox languageDropDown, stallDropDown;
     JButton okButton, cancelButton;
     MigLayout mLayout= new MigLayout( "insets 30");
     //Object [] stalls = {"Kirpal Bagh", "Kirpal Ashram","Other"};
     Object [] stalls = {"Main Store"};
     String language[] = {
-                        "",
-                        "Hindi",
-                        "English",
-                        "Urdu",
-                        "Punjabi"
+        "",
+        "Hindi",
+        "English",
+        "Urdu",
+        "Punjabi"
     };
+    
+    UtilDateModel model = new UtilDateModel();
+    Properties prop;
+    JDatePanelImpl datePanel;
+    JDatePickerImpl datePicker;
     
     //Object [] stalls = {"Kirpl Bagh", "Kirpal Ashram"};
     public static void main (String[] args)
@@ -57,14 +67,14 @@ public class SatSandeshInventory implements ActionListener, ItemListener{
         addSatSandeshInventoryWindow.setLayout(mLayout);
         addSatSandeshInventoryWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         addSatSandeshInventoryWindow.addWindowListener(new WindowAdapter() {
-                @Override
-                public void windowClosing(WindowEvent e) {
-                    System.exit(0);
-                }
+            @Override
+            public void windowClosing(WindowEvent e) {
+                System.exit(0);
             }
+        }
         );
         addSatSandeshInventoryWindow.setSize(500,400);
-        //Getting the size of the screen, so that the window can 
+        //Getting the size of the screen, so that the window can
         // adjust itself at the center of the screen
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         Dimension frameSize = addSatSandeshInventoryWindow.getSize();
@@ -72,16 +82,16 @@ public class SatSandeshInventory implements ActionListener, ItemListener{
         int y = (screenSize.height - frameSize.height) / 2;
         addSatSandeshInventoryWindow.setLocation(x, y);
         
-        //adding the system look and feel to the frame 
-        try 
-        {    
+        //adding the system look and feel to the frame
+        try
+        {
             addSatSandeshInventoryWindow.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("skrm.jpg")));
             String cn = UIManager.getSystemLookAndFeelClassName();
             UIManager.setLookAndFeel(cn); // Use the native L&F
-        } 
-        catch (Exception cnf) 
+        }
+        catch (Exception cnf)
         {
-           // this class will create a log, helps in debugging
+            // this class will create a log, helps in debugging
             except currentException = new except(cnf, this.getClass().toString());
         }
         
@@ -103,19 +113,28 @@ public class SatSandeshInventory implements ActionListener, ItemListener{
         issuePriceText = new TextFieldWithLimit( 4 , 4 );
         quantityText = new TextFieldWithLimit( 5 , 5 );
         billNumberText = new TextFieldWithLimit( 5 , 5 );
-        entryDateText = new TextFieldWithLimit( 2 , 2 );
-        entryDateMonthText = new TextFieldWithLimit( 2 , 2 );
-        entryDateYearText = new TextFieldWithLimit( 4 , 4 );
+        
+        {
+            prop = new Properties();
+            prop.put("text.today", "Today");
+            prop.put("text.month", "Month");
+            prop.put("text.year", "Year");
+            datePanel = new JDatePanelImpl(model, prop);
+            datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+        }
+        //entryDateText = new TextFieldWithLimit( 2 , 2 );
+        //entryDateMonthText = new TextFieldWithLimit( 2 , 2 );
+        //entryDateYearText = new TextFieldWithLimit( 4 , 4 );
         issuedByNameText= new TextFieldWithLimit( 32 , 32 );
         issuedByNameText.setText(SamsUtilities.getUserName());
         
         issueMonthtext.setText(""+SamsUtilities.getCurrentMonth());
         issueYearText.setText(""+SamsUtilities.getCurrentYear());
         
-        entryDateText.setText(""+SamsUtilities.getCurrentDate());
-        entryDateMonthText.setText(""+SamsUtilities.getCurrentMonth());
-        entryDateYearText.setText(""+SamsUtilities.getCurrentYear());
-
+        //entryDateText.setText(""+SamsUtilities.getCurrentDate());
+        //entryDateMonthText.setText(""+SamsUtilities.getCurrentMonth());
+        //entryDateYearText.setText(""+SamsUtilities.getCurrentYear());
+        
         
         okButton = new JButton("OK");
         okButton.setMnemonic('o');
@@ -129,10 +148,10 @@ public class SatSandeshInventory implements ActionListener, ItemListener{
         addSatSandeshInventoryWindow.add(stallDropDown,"split 2");
         
         addSatSandeshInventoryWindow.add(issueMonthLabel);
-        addSatSandeshInventoryWindow.add(issueMonthtext); 
+        addSatSandeshInventoryWindow.add(issueMonthtext);
         
-        addSatSandeshInventoryWindow.add(issueYearLabel); 
-        addSatSandeshInventoryWindow.add(issueYearText, "wrap 20px"); 
+        addSatSandeshInventoryWindow.add(issueYearLabel);
+        addSatSandeshInventoryWindow.add(issueYearText, "wrap 20px");
         
         addSatSandeshInventoryWindow.add(languageLabel);
         addSatSandeshInventoryWindow.add(languageDropDown);
@@ -144,9 +163,11 @@ public class SatSandeshInventory implements ActionListener, ItemListener{
         addSatSandeshInventoryWindow.add(quantityText, "wrap 20px");
         
         addSatSandeshInventoryWindow.add(entryDateLabel);
-        addSatSandeshInventoryWindow.add(entryDateText,"split 3");
-        addSatSandeshInventoryWindow.add(entryDateMonthText);
-        addSatSandeshInventoryWindow.add(entryDateYearText, "wrap 20px"); 
+        addSatSandeshInventoryWindow.add(datePicker,"w 150!, wrap 15px");
+        
+        //addSatSandeshInventoryWindow.add(entryDateText,"split 3");
+        //addSatSandeshInventoryWindow.add(entryDateMonthText);
+        //addSatSandeshInventoryWindow.add(entryDateYearText, "wrap 20px");
         
         addSatSandeshInventoryWindow.add(nameLabel);
         addSatSandeshInventoryWindow.add(issuedByNameText, "wrap 20px");
@@ -171,14 +192,20 @@ public class SatSandeshInventory implements ActionListener, ItemListener{
             String issueYear = issueYearText.getText();
             String issuePriceString = issuePriceText.getText();
             String quantity = quantityText.getText();
-            String entryDate = entryDateYearText.getText()+"-"+entryDateMonthText.getText()+"-"+entryDateText.getText();;
+            //String entryDate = entryDateYearText.getText()+"-"+entryDateMonthText.getText()+"-"+entryDateText.getText();
+            Date selectedDate = (Date) datePicker.getModel().getValue();
+            int eDate= selectedDate.getDate();
+            int eMonth=selectedDate.getMonth()+1;
+            int eYear=selectedDate.getYear()+1900;
+            String entryDate = eYear+"-"+eMonth+"-"+eDate;
+            
             String issuedBy = issuedByNameText.getText();
             String language  = (String)languageDropDown.getSelectedItem();
             String billNumber = (String)billNumberText.getText();
-            if(!issueMonth.isEmpty() 
-                    && !issueYear.isEmpty() 
+            if(!issueMonth.isEmpty()
+                    && !issueYear.isEmpty()
                     && !issuePriceString.isEmpty()
-                    //&& !fromNum.isEmpty() 
+                    //&& !fromNum.isEmpty()
                     //&& !toNum.isEmpty()
                     && !issuedBy.isEmpty()
                     && !quantity.isEmpty()
@@ -188,7 +215,7 @@ public class SatSandeshInventory implements ActionListener, ItemListener{
                     )
             {
                 int month = Integer.parseInt(issueMonth);
-                int year = Integer.parseInt(issueYear);          
+                int year = Integer.parseInt(issueYear);
                 int qty = Integer.parseInt(quantity);
                 int bill = Integer.parseInt(billNumber);
                 
@@ -220,9 +247,10 @@ public class SatSandeshInventory implements ActionListener, ItemListener{
                 issueMonthtext.setText(""+SamsUtilities.getCurrentMonth());
                 issueYearText.setText(""+SamsUtilities.getCurrentYear());
                 quantityText.setText("");
-                entryDateYearText.setText("");
-                entryDateMonthText.setText("");
-                entryDateText.setText("");
+                datePicker.getJFormattedTextField().setText("");
+                //entryDateYearText.setText("");
+                //entryDateMonthText.setText("");
+                //entryDateText.setText("");
                 issuedByNameText.setText("");
                 languageDropDown.setSelectedItem("");
                 stallDropDown.setSelectedItem("");
@@ -234,7 +262,7 @@ public class SatSandeshInventory implements ActionListener, ItemListener{
             {
                 JOptionPane.showMessageDialog(addSatSandeshInventoryWindow, "Please fill all the fields");
             }
-                       
+            
         }
         if(event.getSource() == cancelButton)
         {
@@ -243,7 +271,7 @@ public class SatSandeshInventory implements ActionListener, ItemListener{
             addSatSandeshInventoryWindow.dispose();
         }
     }
-
+    
     @Override
     public void itemStateChanged(ItemEvent e) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

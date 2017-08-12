@@ -7,6 +7,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Date;
+import java.util.Properties;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -16,11 +18,14 @@ import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import net.miginfocom.swing.MigLayout;
+import org.jdatepicker.impl.JDatePanelImpl;
+import org.jdatepicker.impl.JDatePickerImpl;
+import org.jdatepicker.impl.UtilDateModel;
 
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+* To change this template, choose Tools | Templates
+* and open the template in the editor.
+*/
 
 /**
  *
@@ -45,7 +50,7 @@ public class InventorySubIssueDetailsClass implements ActionListener, ItemListen
     
     JLabel issuedToLabel, issueDateLabel, descriptionLabel, subgroupLabel, receiptFromLabel, receiptToLabel;
     //JLabel revertBackFromLabel, revertBackToLabel;
-    TextFieldWithLimit issuedToText, issueDateMonthtext, issueDateYearText, issueDatetext;
+    TextFieldWithLimit issuedToText/*, issueDateMonthtext, issueDateYearText, issueDatetext*/;
     TextFieldWithLimit receiptFromText, receiptToText , descriptionText, subgroupText;
     
     //JComboBox revertBackFromDropDown, revertBackToDropDown;
@@ -55,6 +60,11 @@ public class InventorySubIssueDetailsClass implements ActionListener, ItemListen
     
     //Object [] stalls = {"Kirpal Bagh", "Kirpal Ashram"};
     
+    UtilDateModel model = new UtilDateModel();
+    Properties prop;
+    JDatePanelImpl datePanel;
+    JDatePickerImpl datePicker;
+    
     InventorySubIssueDetailsClass()
     {
         //setting environment for the Frame issueReceiptBookWindow
@@ -62,14 +72,14 @@ public class InventorySubIssueDetailsClass implements ActionListener, ItemListen
         subIssueReceiptBookWindow.setLayout(mLayout);
         subIssueReceiptBookWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         subIssueReceiptBookWindow.addWindowListener(new WindowAdapter() {
-                @Override
-                public void windowClosing(WindowEvent e) {
-                    System.exit(0);
-                }
+            @Override
+            public void windowClosing(WindowEvent e) {
+                System.exit(0);
             }
+        }
         );
         subIssueReceiptBookWindow.setSize(600,400);
-        //Getting the size of the screen, so that the window can 
+        //Getting the size of the screen, so that the window can
         // adjust itself at the center of the screen
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         Dimension frameSize = subIssueReceiptBookWindow.getSize();
@@ -77,19 +87,19 @@ public class InventorySubIssueDetailsClass implements ActionListener, ItemListen
         int y = (screenSize.height - frameSize.height) / 2;
         subIssueReceiptBookWindow.setLocation(x, y);
         
-        //adding the system look and feel to the frame 
-        try 
-        {   
+        //adding the system look and feel to the frame
+        try
+        {
             //For Mac
             //Application.getApplication().setDockIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("skrm.jpg")));
             
             subIssueReceiptBookWindow.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("skrm.jpg")));
             String cn = UIManager.getSystemLookAndFeelClassName();
             UIManager.setLookAndFeel(cn); // Use the native L&F
-        } 
-        catch (Exception cnf) 
+        }
+        catch (Exception cnf)
         {
-           // this class will create a log, helps in debugging
+            // this class will create a log, helps in debugging
             except currentException = new except(cnf, this.getClass().toString());
         }
         
@@ -98,7 +108,7 @@ public class InventorySubIssueDetailsClass implements ActionListener, ItemListen
         seriesLabel = new JLabel("<HTML>Series</HTML>");
         bookNumLabel = new JLabel("<HTML>Receipt Book No</HTML>");
         fromLabel = new JLabel("<HTML>From</HTML>");
-        toLabel = new JLabel("<HTML>To</HTML>"); 
+        toLabel = new JLabel("<HTML>To</HTML>");
         issuedToStallLabel = new JLabel("<HTML>Stall</HTML>");
         //issuedToLabel = new JLabel("<HTML>Stall</HTML>");
         issueDateLabel = new JLabel("<HTML>Issue Date</HTML>");
@@ -122,13 +132,21 @@ public class InventorySubIssueDetailsClass implements ActionListener, ItemListen
         issuedToStallText.setEnabled(false);
         
         
+        {
+            prop = new Properties();
+            prop.put("text.today", "Today");
+            prop.put("text.month", "Month");
+            prop.put("text.year", "Year");
+            datePanel = new JDatePanelImpl(model, prop);
+            datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+        }
         
-        issueDatetext = new TextFieldWithLimit( 2 , 2 );
-        issueDateMonthtext = new TextFieldWithLimit( 2 , 2 );
-        issueDateYearText = new TextFieldWithLimit( 4 , 4 );
+        //issueDatetext = new TextFieldWithLimit( 2 , 2 );
+        //issueDateMonthtext = new TextFieldWithLimit( 2 , 2 );
+        //issueDateYearText = new TextFieldWithLimit( 4 , 4 );
         
-        issueDateMonthtext.setText(""+SamsUtilities.getCurrentMonth());
-        issueDateYearText.setText(""+SamsUtilities.getCurrentYear());
+        //issueDateMonthtext.setText(""+SamsUtilities.getCurrentMonth());
+        //issueDateYearText.setText(""+SamsUtilities.getCurrentYear());
         
         descriptionLabel = new JLabel("<HTML>Description</HTML>");
         descriptionText = new TextFieldWithLimit( 32 , 32 );
@@ -138,11 +156,11 @@ public class InventorySubIssueDetailsClass implements ActionListener, ItemListen
         
         //revertBackFromLabel = new JLabel("<HTML>Revert From</HTML>");
         //revertBackFromDropDown = new JComboBox();
-                
+        
         //revertBackToLabel = new JLabel("<HTML>Revert To</HTML>");
         //revertBackToDropDown = new JComboBox();
         
-                
+        
         receiptFromLabel= new JLabel("<HTML>Receipt From</HTML>");
         receiptFromText = new TextFieldWithLimit( 5 , 5 );
         
@@ -170,9 +188,11 @@ public class InventorySubIssueDetailsClass implements ActionListener, ItemListen
         subIssueReceiptBookWindow.add(issuedToStallLabel);
         subIssueReceiptBookWindow.add(issuedToStallText, "span 2, w 120!");
         subIssueReceiptBookWindow.add(issueDateLabel);
-        subIssueReceiptBookWindow.add(issueDatetext, "split 3, w 30!");
-        subIssueReceiptBookWindow.add(issueDateMonthtext, " w 30!");
-        subIssueReceiptBookWindow.add(issueDateYearText, "w 50! , wrap 20px");
+        subIssueReceiptBookWindow.add(datePicker,"w 150!, wrap 15px");
+        
+        //subIssueReceiptBookWindow.add(issueDatetext, "split 3, w 30!");
+        //subIssueReceiptBookWindow.add(issueDateMonthtext, " w 30!");
+        //subIssueReceiptBookWindow.add(issueDateYearText, "w 50! , wrap 20px");
         
         subIssueReceiptBookWindow.add(new JSeparator(SwingConstants.HORIZONTAL),"span 5,w 400!, wrap 20px");
         subIssueReceiptBookWindow.add(descriptionLabel);
@@ -214,11 +234,17 @@ public class InventorySubIssueDetailsClass implements ActionListener, ItemListen
             String origFrom = fromText.getText();
             String origTo = toText.getText();
             
-            String issueDate = issueDateYearText.getText()+"-"+issueDateMonthtext.getText()+"-"+issueDatetext.getText();
+            Date selectedDate = (Date) datePicker.getModel().getValue();
+            int date= selectedDate.getDate();
+            int month=selectedDate.getMonth()+1;
+            int year=selectedDate.getYear()+1900;
+            String issueDate = year+"-"+month+"-"+date;
             
-            if(!seriesName.isEmpty() 
-                    && !bookNumString.isEmpty() 
-                    && !fromNum.isEmpty() 
+            //String issueDate = issueDateYearText.getText()+"-"+issueDateMonthtext.getText()+"-"+issueDatetext.getText();
+            
+            if(!seriesName.isEmpty()
+                    && !bookNumString.isEmpty()
+                    && !fromNum.isEmpty()
                     && !toNum.isEmpty()
                     && !stall.isEmpty()
                     && !issueDate.isEmpty()
@@ -237,7 +263,7 @@ public class InventorySubIssueDetailsClass implements ActionListener, ItemListen
                 
                 if( to >= from && (from >= origFromNum && from <= origToNum) && (to <= origToNum))
                 {
-                    String currDate = SamsUtilities.getCurrentYear()+"-"+SamsUtilities.getCurrentMonth()+"-"+SamsUtilities.getCurrentDate(); 
+                    String currDate = SamsUtilities.getCurrentYear()+"-"+SamsUtilities.getCurrentMonth()+"-"+SamsUtilities.getCurrentDate();
                     int option = JOptionPane.showConfirmDialog(subIssueReceiptBookWindow, "Are you sure ?");
                     //System.out.println("option :: "+option);
                     if(option == 0)
@@ -290,7 +316,7 @@ public class InventorySubIssueDetailsClass implements ActionListener, ItemListen
                         }
                         else
                             JOptionPane.showMessageDialog(subIssueReceiptBookWindow, "Entry already exist for receipt from : "+entryStart);
-                            
+                        
                         updateconnection.closeAll();
                         seriesDropDown.setSelectedItem(1);
                         bookNumDropDown.setSelectedItem(1);
@@ -303,18 +329,19 @@ public class InventorySubIssueDetailsClass implements ActionListener, ItemListen
                         fromText.setText("");
                         toText.setText("");
                         
-                        issueDateYearText.setText(""+SamsUtilities.getCurrentYear());
-                        issueDateMonthtext.setText(""+SamsUtilities.getCurrentMonth());
-                        issueDatetext.setText("");
+                        datePicker.getJFormattedTextField().setText("");
+                        //issueDateYearText.setText(""+SamsUtilities.getCurrentYear());
+                        //issueDateMonthtext.setText(""+SamsUtilities.getCurrentMonth());
+                        //issueDatetext.setText("");
                     }
                     
                 }
                 else
-                    JOptionPane.showMessageDialog(subIssueReceiptBookWindow, "Please check receipt number fields");            
+                    JOptionPane.showMessageDialog(subIssueReceiptBookWindow, "Please check receipt number fields");
                 
             }
             else
-                JOptionPane.showMessageDialog(subIssueReceiptBookWindow, "Please fill all the fields");            
+                JOptionPane.showMessageDialog(subIssueReceiptBookWindow, "Please fill all the fields");
         }
         else if(event.getSource() == cancelButton)
         {
@@ -366,11 +393,11 @@ public class InventorySubIssueDetailsClass implements ActionListener, ItemListen
                 
                 //System.out.println("Exception Caught");
                 //e.printStackTrace();
-                        
+                
             }
             fillInfo.closeAll();
-            }
-                    
+        }
+            
         }
         
     }

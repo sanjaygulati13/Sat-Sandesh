@@ -7,6 +7,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Date;
+import java.util.Properties;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -14,6 +16,9 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import net.miginfocom.swing.MigLayout;
+import org.jdatepicker.impl.JDatePanelImpl;
+import org.jdatepicker.impl.JDatePickerImpl;
+import org.jdatepicker.impl.UtilDateModel;
 
 
 /**
@@ -26,12 +31,17 @@ public class IssueReceiptBookClass implements ActionListener, ItemListener {
     JFrame issueReceiptBookWindow;
     JLabel seriesLabel, bookNumLabel, fromLabel, toLabel, issuedToLabel, issueDateLabel, issuedByLabel;
     
-    TextFieldWithLimit issueDateMonthtext, issueDateYearText, issueDatetext, fromText, toText, issuedByText;
+    TextFieldWithLimit /*issueDateMonthtext, issueDateYearText, issueDatetext, */fromText, toText, issuedByText;
     JComboBox seriesDropDown, bookNumDropDown, stallDropDown;
     JButton okButton, cancelButton;
     MigLayout mLayout= new MigLayout( "insets 30");
     
     Object [] stalls = {"Kirpal Bagh", "Kirpal Ashram"};
+    
+    UtilDateModel model = new UtilDateModel();
+    Properties prop;
+    JDatePanelImpl datePanel;
+    JDatePickerImpl datePicker;
     
     public IssueReceiptBookClass()
     {
@@ -45,7 +55,7 @@ public class IssueReceiptBookClass implements ActionListener, ItemListener {
                 System.exit(0);
             }
         }
-                );
+        );
         issueReceiptBookWindow.setSize(500,350);
         //Getting the size of the screen, so that the window can
         // adjust itself at the center of the screen
@@ -89,13 +99,23 @@ public class IssueReceiptBookClass implements ActionListener, ItemListener {
         seriesDropDown.addItemListener(this);
         bookNumDropDown.addItemListener(this);
         
-        //TextFields
-        issueDatetext = new TextFieldWithLimit( 2 , 2 );
-        issueDateMonthtext = new TextFieldWithLimit( 2 , 2 );
-        issueDateYearText = new TextFieldWithLimit( 4 , 4 );
         
-        issueDateMonthtext.setText(""+(SamsUtilities.getCurrentMonth()));
-        issueDateYearText.setText(""+(SamsUtilities.getCurrentYear()));
+        {
+            prop = new Properties();
+            prop.put("text.today", "Today");
+            prop.put("text.month", "Month");
+            prop.put("text.year", "Year");
+            datePanel = new JDatePanelImpl(model, prop);
+            datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+        }
+        
+        //TextFields
+        //issueDatetext = new TextFieldWithLimit( 2 , 2 );
+        //issueDateMonthtext = new TextFieldWithLimit( 2 , 2 );
+        //issueDateYearText = new TextFieldWithLimit( 4 , 4 );
+        
+        //issueDateMonthtext.setText(""+(SamsUtilities.getCurrentMonth()));
+        //issueDateYearText.setText(""+(SamsUtilities.getCurrentYear()));
         
         fromText = new TextFieldWithLimit( 5 , 5 );
         fromText.setEnabled(false);
@@ -130,9 +150,10 @@ public class IssueReceiptBookClass implements ActionListener, ItemListener {
         issueReceiptBookWindow.add(issuedToLabel);
         issueReceiptBookWindow.add(stallDropDown, "span 2, w 100!");
         issueReceiptBookWindow.add(issueDateLabel);
-        issueReceiptBookWindow.add(issueDatetext, "split 3, w 30!");
-        issueReceiptBookWindow.add(issueDateMonthtext, " w 30!");
-        issueReceiptBookWindow.add(issueDateYearText, "w 40! , wrap 20px");
+        issueReceiptBookWindow.add(datePicker,"w 150!, wrap 15px");
+        //issueReceiptBookWindow.add(issueDatetext, "split 3, w 30!");
+        //issueReceiptBookWindow.add(issueDateMonthtext, " w 30!");
+        //issueReceiptBookWindow.add(issueDateYearText, "w 40! , wrap 20px");
         issueReceiptBookWindow.add(issuedByLabel);
         issueReceiptBookWindow.add(issuedByText,"wrap 20px");
         issueReceiptBookWindow.add(okButton, "gapleft 80, w :90:, span 2");
@@ -158,7 +179,14 @@ public class IssueReceiptBookClass implements ActionListener, ItemListener {
             //String fromNum = fromText.getText();
             //String toNum = toText.getText();
             String issuedTo = (String)stallDropDown.getSelectedItem();
-            String issueDate = issueDateYearText.getText()+"-"+issueDateMonthtext.getText()+"-"+issueDatetext.getText();
+            //String issueDate = issueDateYearText.getText()+"-"+issueDateMonthtext.getText()+"-"+issueDatetext.getText();
+            Date selectedDate = (Date) datePicker.getModel().getValue();
+            int date= selectedDate.getDate();
+            int month=selectedDate.getMonth()+1;
+            int year=selectedDate.getYear()+1900;
+            String issueDate = year+"-"+month+"-"+date;
+            
+            
             String issuedBy = issuedByText.getText();
             if(!seriesName.isEmpty()
                     && !bookNumString.isEmpty()
@@ -191,15 +219,16 @@ public class IssueReceiptBookClass implements ActionListener, ItemListener {
                     
                 }
                 
-                issueDateMonthtext.setText(""+(SamsUtilities.getCurrentMonth()));
-                issueDateYearText.setText(""+(SamsUtilities.getCurrentYear()));
-                issueDatetext.setText(""); 
-                fromText.setText(""); 
-                toText.setText(""); 
+                datePicker.getJFormattedTextField().setText("");
+                //issueDateMonthtext.setText(""+(SamsUtilities.getCurrentMonth()));
+                //issueDateYearText.setText(""+(SamsUtilities.getCurrentYear()));
+                //issueDatetext.setText("");
+                fromText.setText("");
+                toText.setText("");
                 issuedByText.setText("");
                 
-                seriesDropDown.setSelectedIndex(0); 
-                //bookNumDropDown.setSelectedIndex(1); 
+                seriesDropDown.setSelectedIndex(0);
+                //bookNumDropDown.setSelectedIndex(1);
                 stallDropDown.setSelectedIndex(0);
                 
             }
@@ -258,34 +287,34 @@ public class IssueReceiptBookClass implements ActionListener, ItemListener {
     
     /*static public Object[] fillSeriesNameInformation()
     {
-        connect fillSerieConnection = new connect();
-        Object[] seriesNameArray = null;
-        try
-        {
-            String query = "select distinct series_name from receipt_book_inventory";
-            String countQuery = "select count(distinct series_name) from receipt_book_inventory";
-            
-            fillSerieConnection.rs = fillSerieConnection.st.executeQuery(countQuery);
-            fillSerieConnection.rs.next();
-            int ArrayCount = fillSerieConnection.rs.getInt(1);
-            //System.out.println(ArrayCount+1);
-            seriesNameArray = new Object[ArrayCount + 1];
-            seriesNameArray[0] = "";
-            fillSerieConnection.rs = fillSerieConnection.st.executeQuery(query);
-            //CodeChooser.addItem("");
-            int i = 1;
-            while (fillSerieConnection.rs.next()) {
-                seriesNameArray[i] = fillSerieConnection.rs.getString(1);
-                i++;
-            }
-            
-            fillSerieConnection.closeAll();
-        } catch (Exception exc) {
-            //exc.printStackTrace();
-            //Except.except(exc, "ADD JOB CARD--Raw Material Thread Error");
-            fillSerieConnection.closeAll();
-        }
-        return seriesNameArray;
+    connect fillSerieConnection = new connect();
+    Object[] seriesNameArray = null;
+    try
+    {
+    String query = "select distinct series_name from receipt_book_inventory";
+    String countQuery = "select count(distinct series_name) from receipt_book_inventory";
+    
+    fillSerieConnection.rs = fillSerieConnection.st.executeQuery(countQuery);
+    fillSerieConnection.rs.next();
+    int ArrayCount = fillSerieConnection.rs.getInt(1);
+    //System.out.println(ArrayCount+1);
+    seriesNameArray = new Object[ArrayCount + 1];
+    seriesNameArray[0] = "";
+    fillSerieConnection.rs = fillSerieConnection.st.executeQuery(query);
+    //CodeChooser.addItem("");
+    int i = 1;
+    while (fillSerieConnection.rs.next()) {
+    seriesNameArray[i] = fillSerieConnection.rs.getString(1);
+    i++;
+    }
+    
+    fillSerieConnection.closeAll();
+    } catch (Exception exc) {
+    //exc.printStackTrace();
+    //Except.except(exc, "ADD JOB CARD--Raw Material Thread Error");
+    fillSerieConnection.closeAll();
+    }
+    return seriesNameArray;
     }*/
     
     public static void fillRecptNumInformation(JComboBox bookNumDropDown, String series_name)

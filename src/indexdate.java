@@ -16,7 +16,7 @@ public class indexdate extends JFrame implements ActionListener
     }
     
     JLabel date/*, d1, m1, y1*/;
-    JButton ok, back, clr;
+    JButton ok, back, clr, oldOkButton;
     /*TextFieldWithLimit dt1, mt1, yt1;*/
     
     UtilDateModel model = new UtilDateModel();
@@ -53,9 +53,10 @@ public class indexdate extends JFrame implements ActionListener
         mt1=new TextFieldWithLimit(2,2);
         yt1=new TextFieldWithLimit(4,4);*/
         
-        ok=new JButton("OK");
-        clr=new JButton("Clear");
-        back=new JButton("Back");
+        ok = new JButton("OK");
+        oldOkButton = new JButton("OK old");
+        clr = new JButton("Clear");
+        back = new JButton("Back");
         
         
         date.setBounds(100,30,100,20);
@@ -111,6 +112,11 @@ public class indexdate extends JFrame implements ActionListener
         add(back);
         setVisible(true);
         
+        oldOkButton.setBounds(120,230,70,25);
+        oldOkButton.addActionListener(this);
+        oldOkButton.setMnemonic('k');
+        add(oldOkButton);
+        
     }
     
     public void actionPerformed(ActionEvent ae)
@@ -122,7 +128,17 @@ public class indexdate extends JFrame implements ActionListener
             int date= selectedDate.getDate();
             int month=selectedDate.getMonth()+1;
             int year=selectedDate.getYear()+1900;
-            new SatSandeshIndexRegister(date,month, year);
+            new SatSandeshIndexRegister(date,month, year, true);
+            this.dispose();
+            
+        }
+        if(ae.getSource() == oldOkButton)
+        {
+            Date selectedDate = (Date) datePicker.getModel().getValue();
+            int date= selectedDate.getDate();
+            int month=selectedDate.getMonth()+1;
+            int year=selectedDate.getYear()+1900;
+            new SatSandeshIndexRegister(date,month, year, false);
             this.dispose();
             
         }

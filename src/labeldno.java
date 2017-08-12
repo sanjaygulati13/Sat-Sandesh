@@ -120,8 +120,8 @@ public class labeldno implements Printable, ActionListener
             
             //System.out.println("y : "+y);
             
-            c1.st.close();
-            c1.con.close();
+            //c1.st.close();
+            //c1.con.close();
             
             numLines=x*2;
             
@@ -175,7 +175,7 @@ public class labeldno implements Printable, ActionListener
             textLines=new String[numLines][15];
             asn=new int[x];
             
-            connect c2=new connect();
+            //connect c2=new connect();
             for(i=0;i<x;i++)
             {
                 
@@ -185,18 +185,18 @@ public class labeldno implements Printable, ActionListener
                     query = "select b.asn from basic b, payment p where b.asn=p.asn and "
                             + "b.dno="+distributorCode+" and (p.asn) in "
                             + "(select asn from payment where (endm>"+(m1-1)+" and endy="+y1+") or endy>"+y1+") "
-                            + "order by p.endy, p.endm";
+                            + "order by p.endy, p.endm, b.asn";
                     
                     newQuery = "select asn from subscribers_primary_details "
                             + "where bulk_despatch_code = "+distributorCode+" "
-                            + "and ending_period > '"+endingPeriod+"' order by ending_period";
+                            + "and ending_period > '"+endingPeriod+"' order by ending_period, asn";
                     
                     if(dataFromNewTable)
-                        c2.rs=c2.st.executeQuery(newQuery);
+                        c1.rs=c1.st.executeQuery(newQuery);
                     else
-                        c2.rs=c2.st.executeQuery(query);
+                        c1.rs=c1.st.executeQuery(query);
                     
-                    while(c2.rs.next())
+                    while(c1.rs.next())
                     {
                         if(i%(linesPerPage/2)==0 && i<x)
                         {
@@ -219,7 +219,7 @@ public class labeldno implements Printable, ActionListener
                         }
                         if(i%(linesPerPage/2)>2 && i<x)
                         {
-                            asn[i]=c2.rs.getInt(1);
+                            asn[i]=c1.rs.getInt(1);
                             
                             i++;
                         }
@@ -230,16 +230,16 @@ public class labeldno implements Printable, ActionListener
                 }
                 
             }
-            c2.st.close();
-            c2.con.close();
+            //c2.st.close();
+            //c2.con.close();
             
             i=0;
-            connect c3=new connect();
-            c3.rs=c3.st.executeQuery("select district , state, distributionType from despcode where dno="+distributorCode);
-            c3.rs.next();
-            dist=c3.rs.getString(1);
-            state=c3.rs.getString(2);
-            distributionTypeText = c3.rs.getString(3);
+            //connect c3=new connect();
+            c1.rs=c1.st.executeQuery("select district , state, distributionType from despcode where dno="+distributorCode);
+            c1.rs.next();
+            dist=c1.rs.getString(1);
+            state=c1.rs.getString(2);
+            distributionTypeText = c1.rs.getString(3);
             for(i=0;i<x;i++)
             {
                 if(i<present)
@@ -314,13 +314,13 @@ public class labeldno implements Printable, ActionListener
                                 + "where asn="+asn[i];
                         
                         if(dataFromNewTable)
-                            c3.rs=c3.st.executeQuery(newQuery);
+                            c1.rs=c1.st.executeQuery(newQuery);
                         else
-                            c3.rs=c3.st.executeQuery(query);
+                            c1.rs=c1.st.executeQuery(query);
                         
-                        c3.rs.next();
-                        textLines[i][0]=""+c3.rs.getInt(1);
-                        textLines[i][1]=""+c3.rs.getString(2)+c3.rs.getString(3);
+                        c1.rs.next();
+                        textLines[i][0]=""+c1.rs.getInt(1);
+                        textLines[i][1]=""+c1.rs.getString(2)+c1.rs.getString(3);
                         if(dataFromNewTable)
                         {
                             java.util.Date endDate = c1.rs.getDate(4);
@@ -329,8 +329,8 @@ public class labeldno implements Printable, ActionListener
                         }
                         else
                         {
-                            textLines[i][2]=""+c3.rs.getInt(4);
-                            textLines[i][3]=""+c3.rs.getInt(5);
+                            textLines[i][2]=""+c1.rs.getInt(4);
+                            textLines[i][3]=""+c1.rs.getInt(5);
                         }
                         textLines[i][4]="";
                         int d= distributorCode;
@@ -359,11 +359,11 @@ public class labeldno implements Printable, ActionListener
                     
                 }
             }
-            c3.st.close();
-            c3.con.close();
+            //c3.st.close();
+            //c3.con.close();
             
             i=0;
-            connect c4=new connect();
+            //connect c4=new connect();
             for(i=0;i<x;i++)
             {
                 if(i<present)
@@ -371,17 +371,26 @@ public class labeldno implements Printable, ActionListener
                     
                     if(i%(linesPerPage/2)>2)
                     {
-                        c4.rs=c4.st.executeQuery("select * from subdetails where asn="+asn[i]);
-                        c4.rs.next();
+                        query = "select * from subdetails where asn="+asn[i];
+                        //asn, titile not required, just to minimize code change for indexing
+                        newQuery = "select asn, title, first_name, last_name, address_line1, address_line2, address_line3, "
+                                + "district, state, pin_code from subscribers_primary_details where asn = "+asn[i];
+                        
+                        if(dataFromNewTable)
+                            c1.rs=c1.st.executeQuery(newQuery);
+                        else
+                            c1.rs=c1.st.executeQuery(query);
+                        
+                        c1.rs.next();
                         String s1, s2, s3, s4, s5, s6,s7;
                         
-                        s1= c4.rs.getString(3);
-                        s2= c4.rs.getString(4);
-                        s3= c4.rs.getString(5);
-                        s4= c4.rs.getString(6);
-                        s5= c4.rs.getString(7);
-                        s6= c4.rs.getString(8);
-                        s7=c4.rs.getString(9);
+                        s1= c1.rs.getString(3);
+                        s2= c1.rs.getString(4);
+                        s3= c1.rs.getString(5);
+                        s4= c1.rs.getString(6);
+                        s5= c1.rs.getString(7);
+                        s6= c1.rs.getString(8);
+                        s7= c1.rs.getString(9);
                         
                         textLines[i][5]="";
                         textLines[i][6]="";
@@ -413,7 +422,7 @@ public class labeldno implements Printable, ActionListener
                             textLines[i][11]=s7;
                         
                         textLines[i][12]="";
-                        int c=Integer.parseInt(c4.rs.getString(10));
+                        int c=Integer.parseInt(c1.rs.getString(10));
                         if(c>0)
                         {
                             textLines[i][12]+=c;
@@ -422,12 +431,12 @@ public class labeldno implements Printable, ActionListener
                 }
             }
             //System.out.println(" : "+textLines[i-1][1]);
-            c4.st.close();
-            c4.con.close();
+            //c4.st.close();
+            //c4.con.close();
             
             
             
-            connect c5=new connect();
+            //connect c5=new connect();
             for(i=0;i<x;i++)
             {
                 if(i<present)
@@ -435,12 +444,20 @@ public class labeldno implements Printable, ActionListener
                     
                     if(i%(linesPerPage/2)>2)
                     {
-                        c5.rs=c5.st.executeQuery("select phone, email from otherdet where asn="+asn[i]);
-                        c5.rs.next();
+                        query = "select phone, email from otherdet where asn="+asn[i];
+                        
+                        newQuery = "select phone_number, email from subscribers_primary_details where asn="+asn[i];
+                        
+                        if(dataFromNewTable)
+                            c1.rs=c1.st.executeQuery(newQuery);
+                        else
+                            c1.rs=c1.st.executeQuery(query);
+                        
+                        c1.rs.next();
                         String s1, s2;
                         
-                        s1= c5.rs.getString(1);
-                        s2= c5.rs.getString(2);
+                        s1= c1.rs.getString(1);
+                        s2= c1.rs.getString(2);
                         
                         textLines[i][13]="";
                         textLines[i][14]="";
@@ -461,10 +478,11 @@ public class labeldno implements Printable, ActionListener
                     }
                 }
             }
-            c5.st.close();
-            c5.con.close();
+            //c5.st.close();
+            //c5.con.close();
             
             i=0;
+            c1.closeAll();
             
         }
         catch(Exception e)
@@ -665,7 +683,7 @@ public class labeldno implements Printable, ActionListener
                 catch(PrinterException pe)
                 {
                     JOptionPane.showMessageDialog(null, "ERROR"+pe.getMessage(),"ERROR", JOptionPane.ERROR_MESSAGE);
-                    
+                    pe.printStackTrace();
                 }
                 
                 b.setEnabled(false);

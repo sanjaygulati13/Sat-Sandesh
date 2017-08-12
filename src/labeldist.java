@@ -11,7 +11,7 @@ public class labeldist extends JFrame implements ActionListener
     }
     
     JLabel month, year, lang, dno;
-    JButton ok, back;
+    JButton ok, back, oldOkButton;
     JComboBox monthDropDown, yearDropDown;
     JComboBox langt, dnot;
     
@@ -88,6 +88,7 @@ public class labeldist extends JFrame implements ActionListener
         
         ok=new JButton("OK");
         back=new JButton("Back");
+        oldOkButton = new JButton("Ok old");
         
         langt.addItem("Hindi");
         langt.addItem("English");
@@ -124,7 +125,12 @@ public class labeldist extends JFrame implements ActionListener
         ok.addActionListener(this);
         add(ok);
         
-        back.setBounds(120,210,70,20);
+        oldOkButton.setBounds(120,210,70,20);
+        oldOkButton.setMnemonic('k');
+        oldOkButton.addActionListener(this);
+        add(oldOkButton);
+        
+        back.setBounds(210,210,70,20);
         back.setMnemonic('B');
         back.addActionListener(this);
         add(back);
@@ -138,11 +144,15 @@ public class labeldist extends JFrame implements ActionListener
     {
         if(ae.getSource()==ok)
         {
+            new labeldno(Integer.parseInt((String)dnot.getSelectedItem()),Integer.parseInt(monthDropDown.getSelectedItem().toString()),Integer.parseInt(yearDropDown.getSelectedItem().toString()), true);
+            this.dispose();
+        }
+        else if(ae.getSource()==oldOkButton)
+        {
             new labeldno(Integer.parseInt((String)dnot.getSelectedItem()),Integer.parseInt(monthDropDown.getSelectedItem().toString()),Integer.parseInt(yearDropDown.getSelectedItem().toString()), false);
             this.dispose();
         }
-        
-        if(ae.getSource()==back)
+        else if(ae.getSource()==back)
         {
             new sams();
             this.dispose();

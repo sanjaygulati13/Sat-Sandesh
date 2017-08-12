@@ -15,6 +15,8 @@ import static java.awt.print.Printable.NO_SUCH_PAGE;
 import static java.awt.print.Printable.PAGE_EXISTS;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
+import java.util.Date;
+import java.util.Properties;
 import java.util.Vector;
 
 
@@ -28,6 +30,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import net.miginfocom.swing.MigLayout;
+import org.jdatepicker.impl.JDatePanelImpl;
+import org.jdatepicker.impl.JDatePickerImpl;
+import org.jdatepicker.impl.UtilDateModel;
 
 /*
  * To change this template, choose Tools | Templates
@@ -54,7 +59,7 @@ public class SatSandeshInventoryIssue  implements ActionListener, ItemListener, 
     JPanel entryPanel;
     JScrollPane scrollPane;
     
-    TextFieldWithLimit /*customerNameText[],*/ entryDateText,entryMonthText,entryYearText, pageNumberText, issuedByText[], amountText[];
+    TextFieldWithLimit /*customerNameText[],*/ /*entryDateText,entryMonthText,entryYearText,*/ pageNumberText, issuedByText[], amountText[];
     JComboBox yearDropDown[], monthDropDown[], stallDropDown, languageDropDown[], issueTypeDropDown[];
     JComboBox customerNameDropDown[];
     JButton okButton, cancelButton, printButton, clearButton;
@@ -86,6 +91,11 @@ public class SatSandeshInventoryIssue  implements ActionListener, ItemListener, 
                         "Urdu",
                         "Punjabi"
     };
+    
+    UtilDateModel model = new UtilDateModel();
+    Properties prop;
+    JDatePanelImpl datePanel;
+    JDatePickerImpl datePicker;
     
     public SatSandeshInventoryIssue()
     {
@@ -195,14 +205,22 @@ public class SatSandeshInventoryIssue  implements ActionListener, ItemListener, 
         stallDropDown = new JComboBox(stalls);
         
         
+        {
+            prop = new Properties();
+            prop.put("text.today", "Today");
+            prop.put("text.month", "Month");
+            prop.put("text.year", "Year");
+            datePanel = new JDatePanelImpl(model, prop);
+            datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+        }
         //TextFields
-        entryDateText = new TextFieldWithLimit( 2 , 2 );
-        entryMonthText = new TextFieldWithLimit( 2 , 2 );
-        entryYearText = new TextFieldWithLimit( 4 , 4 );
+        //entryDateText = new TextFieldWithLimit( 2 , 2 );
+        //entryMonthText = new TextFieldWithLimit( 2 , 2 );
+        //entryYearText = new TextFieldWithLimit( 4 , 4 );
         pageNumberText = new TextFieldWithLimit( 4 , 4 );
         
-        entryMonthText.setText(""+SamsUtilities.getCurrentMonth());
-        entryYearText.setText(""+SamsUtilities.getCurrentYear());
+        //entryMonthText.setText(""+SamsUtilities.getCurrentMonth());
+        //entryYearText.setText(""+SamsUtilities.getCurrentYear());
         
         //quantityText  = new TextFieldWithLimit( 5 , 5 );
         
@@ -235,9 +253,10 @@ public class SatSandeshInventoryIssue  implements ActionListener, ItemListener, 
         satSandeshInventoryIssueWindow.add(pageNumberLabel,"span 2, align right");
         satSandeshInventoryIssueWindow.add(pageNumberText,"span 1");
         satSandeshInventoryIssueWindow.add(entryDateLabel,"span 2, align right");
-        satSandeshInventoryIssueWindow.add(entryDateText, "split 5, w 30!");
-        satSandeshInventoryIssueWindow.add(entryMonthText,"span 1");
-        satSandeshInventoryIssueWindow.add(entryYearText, "span 1, wrap 4px");
+        satSandeshInventoryIssueWindow.add(datePicker,"w 150!, wrap 10px");
+        //satSandeshInventoryIssueWindow.add(entryDateText, "split 5, w 30!");
+        //satSandeshInventoryIssueWindow.add(entryMonthText,"span 1");
+        //satSandeshInventoryIssueWindow.add(entryYearText, "span 1, wrap 4px");
         
         /*
         satSandeshInventoryIssueWindow.add(customerNameLabel," span 1, w 100");
@@ -352,7 +371,12 @@ public class SatSandeshInventoryIssue  implements ActionListener, ItemListener, 
             //Font font = new Font();
             
             //gather the info from user input into the frame
-            String issueDate = entryYearText.getText()+"-"+entryMonthText.getText()+"-"+entryDateText.getText();
+            Date selectedDate = (Date) datePicker.getModel().getValue();
+            int eDate= selectedDate.getDate();
+            int eMonth=selectedDate.getMonth()+1;
+            int eYear=selectedDate.getYear()+1900;
+            String issueDate = eYear+"-"+eMonth+"-"+eDate;
+            //String issueDate = entryYearText.getText()+"-"+entryMonthText.getText()+"-"+entryDateText.getText();
             for(int i = 0; i < NUM_ROWS; i++)
             {
                 String customerName = (String)customerNameDropDown[i].getSelectedItem();
@@ -501,9 +525,10 @@ public class SatSandeshInventoryIssue  implements ActionListener, ItemListener, 
                 //    JOptionPane.showMessageDialog(satSandeshInventoryIssueWindow, "Please fill all the fields");
                 //}
                 //}
-                entryDateText.setText("");
-                entryMonthText.setText(""+SamsUtilities.getCurrentMonth());
-                entryYearText.setText(""+SamsUtilities.getCurrentYear());
+                datePicker.getJFormattedTextField().setText("");
+                //entryDateText.setText("");
+                //entryMonthText.setText(""+SamsUtilities.getCurrentMonth());
+                //entryYearText.setText(""+SamsUtilities.getCurrentYear());
                 totalQuantityText.setText("");
                 totalAmountText.setText("");
             }
@@ -524,9 +549,10 @@ public class SatSandeshInventoryIssue  implements ActionListener, ItemListener, 
                 codeDropDown[i].setSelectedItem("");
                 pageNumberText.setText("");
             }
-            entryDateText.setText("");
-            entryMonthText.setText(""+SamsUtilities.getCurrentMonth());
-            entryYearText.setText(""+SamsUtilities.getCurrentYear());
+            datePicker.getJFormattedTextField().setText("");
+            //entryDateText.setText("");
+            //entryMonthText.setText(""+SamsUtilities.getCurrentMonth());
+            //entryYearText.setText(""+SamsUtilities.getCurrentYear());
             totalQuantityText.setText("");
             totalAmountText.setText("");
         }
