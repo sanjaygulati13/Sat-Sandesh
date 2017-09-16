@@ -44,7 +44,7 @@ public class sams extends JFrame implements ActionListener {
     
     
     JMenuItem inventory_management_sat_sandesh_menu_item, inventory_reports_sat_sandesh_menu_item;
-    JMenuItem receipt_add_new_series_menu_item, issue_new_receipt_book_menu_item, issue_reissue_menu_item, issue_revert_menu_item;
+    JMenuItem receipt_add_new_series_menu_item, issue_new_receipt_book_menu_item, issue_reissue_menu_item, issue_revert_menu_item, cancel_receipt_menu_item, series_issue_status_menu_item;
     JMenuItem issue_series_issue_details;
     
     JMenuItem new_inventory_menu_item, sub_issue_inventory_menu_item;
@@ -251,6 +251,13 @@ public class sams extends JFrame implements ActionListener {
         issue_revert_menu_item.setMnemonic('b');
         issue_revert_menu_item.addActionListener(this);
         
+        cancel_receipt_menu_item = new JMenuItem("Cancel Receipt");
+        cancel_receipt_menu_item.setMnemonic('c');
+        cancel_receipt_menu_item.addActionListener(this);
+        
+        series_issue_status_menu_item = new JMenuItem("Series Issue Status");
+        series_issue_status_menu_item.setMnemonic('u');
+        series_issue_status_menu_item.addActionListener(this);
             //=================================
         inventory_management_sat_sandesh_menu_item = new JMenuItem("Sat Sandesh");
         
@@ -533,6 +540,8 @@ public class sams extends JFrame implements ActionListener {
         inventory_management_menu.add(issue_reissue_menu_item);
         inventory_management_menu.add(issue_new_receipt_book_menu_item);
         inventory_management_menu.add(issue_revert_menu_item);
+        inventory_management_menu.add(cancel_receipt_menu_item);
+        inventory_management_menu.add(series_issue_status_menu_item);
         inventory_management_menu.addSeparator();
         inventory_management_menu.add(inventory_management_sat_sandesh_menu_item);
         inventory_management_menu.addSeparator();
@@ -1043,28 +1052,40 @@ public class sams extends JFrame implements ActionListener {
             this.dispose();
         }
         
-        if(ae.getSource() == new_inventory_menu_item)
+        if(ae.getSource() == cancel_receipt_menu_item)
+        {
+            new SatSandeshCancelReceiptWindow();
+            this.dispose();    
+        }
+        
+        else if(ae.getSource() == series_issue_status_menu_item)
+        {
+            new SatSandeshSeriesIssueStatusWindow();
+            this.dispose();    
+        }
+        
+        else if(ae.getSource() == new_inventory_menu_item)
         {
             this.setVisible(false);
             new SatSandeshInventory();
             this.dispose();
         }
         
-        if(ae.getSource() == sub_issue_inventory_menu_item)
+        else if(ae.getSource() == sub_issue_inventory_menu_item)
         {
             this.setVisible(false);
             new SatSandeshInventoryStoreIssue();
             this.dispose();
         }
         
-        if(ae.getSource() == distribute_inventory_menu_item)
+        else if(ae.getSource() == distribute_inventory_menu_item)
         {
             this.setVisible(false);
             new SatSandeshInventoryIssue();
             this.dispose();
         }
         
-        if(ae.getSource() == account_book_posting_inventory_menu_item)
+        else if(ae.getSource() == account_book_posting_inventory_menu_item)
         {
             this.setVisible(false);
             new SatSandeshAccountBookPosting();

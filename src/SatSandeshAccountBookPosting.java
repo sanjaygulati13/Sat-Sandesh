@@ -58,7 +58,7 @@ public class SatSandeshAccountBookPosting  implements ActionListener, Printable 
     TextFieldWithLimit  /*entryDateText,entryMonthText,entryYearText,*/ pageNumberText;
     //JComboBox yearDropDown[], monthDropDown[], stallDropDown, languageDropDown[], issueTypeDropDown[];
     //JComboBox customerNameDropDown[];
-    JComboBox stallDropDown;
+    //JComboBox stallDropDown;
     JButton okButton, cancelButton, printButton;
     MigLayout mLayout= new MigLayout( "insets 30");
     MigLayout pLayout= new MigLayout( "insets 20");
@@ -147,7 +147,7 @@ public class SatSandeshAccountBookPosting  implements ActionListener, Printable 
         }
         
         
-        stallDropDown = new JComboBox(stalls);
+        //stallDropDown = new JComboBox(stalls);
         
         
         //TextFields
@@ -189,8 +189,8 @@ public class SatSandeshAccountBookPosting  implements ActionListener, Printable 
         
         //adding the gui elements to frame and setting the layout simultaneously
         
-        satSandeshAccountBookPostingWindow.add(stallLabel,"span 1, w 100, align right");
-        satSandeshAccountBookPostingWindow.add(stallDropDown, "span 3, w 150!");
+        //satSandeshAccountBookPostingWindow.add(stallLabel,"span 1, w 100, align right");
+        //satSandeshAccountBookPostingWindow.add(stallDropDown, "span 3, w 150!");
         satSandeshAccountBookPostingWindow.add(pageNumberLabel,"span 2, align right");
         satSandeshAccountBookPostingWindow.add(pageNumberText,"span 1");
         satSandeshAccountBookPostingWindow.add(entryDateLabel,"span 2, align right");
@@ -246,7 +246,7 @@ public class SatSandeshAccountBookPosting  implements ActionListener, Printable 
         if(event.getSource() == okButton)
         {
             int status = 1;
-            String counter = (String)stallDropDown.getSelectedItem();
+            //String counter = (String)stallDropDown.getSelectedItem();
             Vector<String> queryVec = new Vector<String>();
             String pageNumber = pageNumberText.getText();
             
@@ -275,8 +275,8 @@ public class SatSandeshAccountBookPosting  implements ActionListener, Printable 
                     String rcptNumStr = (String)rcptText[i].getText();
                     
                     if(
-                            !counter.isEmpty()
-                            && !issueDate.isEmpty()
+                            /*!counter.isEmpty()
+                            &&*/ !issueDate.isEmpty()
                             && !pageNumber.isEmpty()
                             && !rcptNumStr.isEmpty()
                             )

@@ -1,8 +1,6 @@
 import java.awt.print.*;
 import java.awt.*;
 import java.awt.event.*;
-import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.standard.MediaPrintableArea;
 import javax.swing.*;
 
 

@@ -224,7 +224,6 @@ public class SatSandeshAccountBookDetails extends JFrame implements ActionListen
         
         if(ae.getSource()==printButton)
         {
-            
             try {
                 MessageFormat headerFormat = new MessageFormat("Detailed Account Book Details"); // \t (Page {0})");
                 MessageFormat footerFormat = new MessageFormat(""+d1+"-"+m1+"-"+y1+" TO "+d2+"-"+m1+"-"+y1+"\t ( Page {0} )");
