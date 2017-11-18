@@ -69,9 +69,10 @@ public class SatSandeshSubscriberReportsMain extends JFrame implements ActionLis
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         this.setSize((screenSize.width)*6/11,(screenSize.height*1)/3);
         Dimension frameSize = this.getSize();
-        x = (screenSize.width - frameSize.width)  / 2;
-        y = (screenSize.height - frameSize.height) / 3;
-        this.setLocation(x, y);
+        //x = (screenSize.width - frameSize.width)  / 2;
+        //y = (screenSize.height - frameSize.height) / 3;
+        //this.setLocation(x, y);
+        SamsUtilities.center(this);
         
         subCodeRadioButton = new JRadioButton("Sub Code");
         subCodeRadioButton.addActionListener(this);

@@ -10,7 +10,7 @@ public class allsubno implements Printable, ActionListener
     {
         new allsubno("EN");
     }
-    int present=0;
+    int present = 0;
     int[] pageBreak;
     int numLines=0;
     String[][] textLines;
@@ -19,7 +19,6 @@ public class allsubno implements Printable, ActionListener
     int x1=0;
     int i=0;
     int chk=0;
-    //int m1, y1;
     String m1;
     JButton b, back;
     JFrame f;
@@ -30,6 +29,7 @@ public class allsubno implements Printable, ActionListener
     public allsubno(String subno1)
     {
         subno=subno1;
+        f= new JFrame("Print List");
         try
         {
             f.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("skrm.jpg")));
@@ -42,7 +42,7 @@ public class allsubno implements Printable, ActionListener
             System.out.println(cnf);
         }
         
-        f= new JFrame("Print List");
+        
         f.setVisible(true);
         f.setLayout(null);
         f.setSize(300,90);
@@ -67,7 +67,8 @@ public class allsubno implements Printable, ActionListener
         {
             
             connect c1=new connect();
-            c1.rs=c1.st.executeQuery("select count(asn) from basic where subnos='"+subno+"'");
+            //c1.rs=c1.st.executeQuery("select count(asn) from basic where subnos='"+subno+"'");
+            c1.rs=c1.st.executeQuery("select count(asn) from subscribers_primary_details where subscription_code='"+subno+"'");
             while(c1.rs.next())
             {
                 x=c1.rs.getInt(1);
@@ -135,7 +136,6 @@ public class allsubno implements Printable, ActionListener
             textLines=new String[numLines][15];
             asn=new int[x];
             
-            //System.out.println("x : "+x);
             connect c2=new connect();
             for(i=0;i<x;i++)
             {
@@ -143,7 +143,7 @@ public class allsubno implements Printable, ActionListener
                 if(i==0)
                 {
                     
-                    c2.rs=c2.st.executeQuery("select b.asn from basic b, subdetails s where b.asn=s.asn and b.subnos='"+subno+"' order by s.state, s.fname, s.lname");
+                    c2.rs=c2.st.executeQuery("select asn from subscribers_primary_details where subscription_code ='"+subno+"' order by state, first_name, last_name");
                     while(c2.rs.next())
                     {
                         if(i%(linesPerPage/2)==0 && i<x)
@@ -221,10 +221,6 @@ public class allsubno implements Printable, ActionListener
                         textLines[i][5]="";
                         textLines[i][6]="";
                         textLines[i][7]="";
-                        /*textLines[i][5]="  SAT-SANDESH  ";
-                        textLines[i][6]="  (HINDI)  ";
-                        textLines[i][7]="  INDEX REGISTER AS ON  "+d+"-"+m+"-"+y1;
-                        */
                         textLines[i][8]="";
                         textLines[i][9]="";
                         textLines[i][10]="";
@@ -255,14 +251,18 @@ public class allsubno implements Printable, ActionListener
                     else if((i%(linesPerPage/2))>2)
                     {
                         
-                        c3.rs=c3.st.executeQuery("select b.asn, b.subnos, b.subno, p.endm, p.endy, b.dno from basic b, payment p where b.asn=p.asn and b.asn="+asn[i]);
+                        //c3.rs=c3.st.executeQuery("select b.asn, b.subnos, b.subno, p.endm, p.endy, b.dno from basic b, payment p where b.asn=p.asn and b.asn="+asn[i]);
+                        c3.rs=c3.st.executeQuery("select asn, subscription_code, subscription_number, ending_period, bulk_despatch_code from subscription_code where asn="+asn[i]);
                         c3.rs.next();
                         textLines[i][0]=""+c3.rs.getInt(1);
                         textLines[i][1]=""+c3.rs.getString(2)+c3.rs.getString(3);
-                        textLines[i][2]=""+c3.rs.getInt(4);
-                        textLines[i][3]=""+c3.rs.getInt(5);
+                        java.util.Date endDate = c3.rs.getDate(4);
+                        textLines[i][2]=""+(endDate.getMonth()+1);
+                        textLines[i][3]=""+(endDate.getYear()+1900);
+                        //textLines[i][2]=""+c3.rs.getInt(4);
+                        //textLines[i][3]=""+c3.rs.getInt(5);
                         textLines[i][4]="";
-                        int d=c3.rs.getInt(6);
+                        int d=c3.rs.getInt(5);
                         if(d>0)
                             textLines[i][4]=""+d;
                     }
@@ -300,17 +300,18 @@ public class allsubno implements Printable, ActionListener
                     
                     if(i%(linesPerPage/2)>2)
                     {
-                        c4.rs=c4.st.executeQuery("select * from subdetails where asn="+asn[i]);
+                        //c4.rs=c4.st.executeQuery("select fname,lname,add1,add2,add3,dist,state,pin from subdetails where asn="+asn[i]);
+                        c4.rs=c4.st.executeQuery("select first_name,last_name,address_line1,address_line2,address_line3,district,state,pin_code from subscribers_primary_details where asn="+asn[i]);
                         c4.rs.next();
                         String s1, s2, s3, s4, s5, s6,s7;
                         
-                        s1= c4.rs.getString(3);
-                        s2= c4.rs.getString(4);
-                        s3= c4.rs.getString(5);
-                        s4= c4.rs.getString(6);
-                        s5= c4.rs.getString(7);
-                        s6= c4.rs.getString(8);
-                        s7=c4.rs.getString(9);
+                        s1= c4.rs.getString(1);
+                        s2= c4.rs.getString(2);
+                        s3= c4.rs.getString(3);
+                        s4= c4.rs.getString(4);
+                        s5= c4.rs.getString(5);
+                        s6= c4.rs.getString(6);
+                        s7= c4.rs.getString(7);
                         
                         textLines[i][5]="";
                         textLines[i][6]="";
@@ -342,7 +343,7 @@ public class allsubno implements Printable, ActionListener
                             textLines[i][11]=s7;
                         
                         textLines[i][12]="";
-                        int c=Integer.parseInt(c4.rs.getString(10));
+                        int c=Integer.parseInt(c4.rs.getString(8));
                         if(c>0)
                         {
                             textLines[i][12]+=c;
@@ -364,7 +365,8 @@ public class allsubno implements Printable, ActionListener
                     
                     if(i%(linesPerPage/2)>2)
                     {
-                        c5.rs=c5.st.executeQuery("select phone, email from otherdet where asn="+asn[i]);
+                        //c5.rs=c5.st.executeQuery("select phone, email from otherdet where asn="+asn[i]);
+                        c5.rs=c5.st.executeQuery("select phone_number, email from subscribers_primary_details where asn="+asn[i]);
                         c5.rs.next();
                         String s1, s2;
                         
@@ -413,18 +415,18 @@ public class allsubno implements Printable, ActionListener
         
         //asn , subno, endm , endy, dno, fname, lname, add1, add2, add3, dist, state, pin
         
-        a[1]=metric.stringWidth("99999   ");
-        a[2]=15+a[1]+metric.stringWidth("DDDDDD ");		//after asn
+        a[1]=metric.stringWidth("99999D ");
+        a[2]=15+a[1]+metric.stringWidth("DDDDDDD");		//after asn
         a[3]=10+a[2]+metric.stringWidth("DD");				//
         a[4]=10+a[3]+metric.stringWidth("9999 ");
         a[5]=10+a[4]+metric.stringWidth("99 ");
         
         a[6]=10+a[5]+metric.stringWidth("AMIT AMIT AMITPPDD");
         a[7]=10+a[6]+metric.stringWidth("PAUL PAUL PAULPDDD");
-        a[8]=10+a[7]+metric.stringWidth("GURU HARKISHAN NAGAR GURU HARKISDDDD");
-        a[9]=10+a[8]+metric.stringWidth("GURU HARKISHAN NAGAR GURU HARKISDDDD");
+        a[8]=10+a[7]+metric.stringWidth("GURU HARKISHAN NAGAR GURU HARKISDDD");
+        a[9]=10+a[8]+metric.stringWidth("GURU HARKISHAN NAGAR GURU HARKISDDD");
         
-        a[10]=10+a[9]+metric.stringWidth("NEW DELHI NEW DELHI ND");
+        a[10]=10+a[9]+metric.stringWidth("NEW DELHI NEW DELHI NDD ");
         a[11]=10+a[10]+metric.stringWidth("MAH ");
         
         
@@ -488,10 +490,6 @@ public class allsubno implements Printable, ActionListener
             g.drawLine(a[11]-2,3*lineHeight,a[11]-2,(end-start)*lineHeight);
             g.drawLine((int)pf.getImageableWidth(),3*lineHeight,(int)pf.getImageableWidth(),(end-start)*lineHeight);
             
-            
-            
-            
-            
             for(int line=start; line<end; line+=2)
             {
                 if(i%(linesPerPage/2)==1)
@@ -531,7 +529,6 @@ public class allsubno implements Printable, ActionListener
                     g.drawString("LIST OF SAT SANDESH MEMBERS OF  '"+sub+"'" , (int)pf.getWidth()/2-200,y);
                     g.drawString("( - "+(pageIndex+1)+" - )", (int)pf.getWidth()/2+150,y);
                     g.drawString("("+SamsUtilities.getCurrentDateString()+")  (TR: "+NumberOfRecords+")",(int)pf.getWidth()/2+230 , y);
-                    
                 }
                 
                 
