@@ -25,7 +25,7 @@ public class SupplementaryIndexDate extends JFrame implements ActionListener
     }
     
     JLabel date/*, d1, m1, y1*/;
-    JButton ok, back, clr;
+    JButton ok, ok_old, back, clr;
     /*TextFieldWithLimit dt1, mt1, yt1;*/
     
     UtilDateModel model = new UtilDateModel();
@@ -48,10 +48,11 @@ public class SupplementaryIndexDate extends JFrame implements ActionListener
             System.out.println(cnf);
         }
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setTitle("SUPPL.INDEX REGISTER");
-        setSize(300,300);
+        setTitle("Suppl. Index Register");
+        setSize(400,300);
         setResizable(false);
         setLocation(10,10);
+        SamsUtilities.center(this);
         setLayout(null);
         
         date=new JLabel("Enter Start Date ");
@@ -63,6 +64,7 @@ public class SupplementaryIndexDate extends JFrame implements ActionListener
         yt1=new TextFieldWithLimit(4,4);*/
         
         ok=new JButton("OK");
+        ok_old=new JButton("OK old");
         clr=new JButton("Clear");
         back=new JButton("Back");
         
@@ -70,7 +72,6 @@ public class SupplementaryIndexDate extends JFrame implements ActionListener
         date.setBounds(80,30,100,20);
         add(date);
         
-         
         {
             prop = new Properties();
             prop.put("text.today", "Today");
@@ -107,12 +108,17 @@ public class SupplementaryIndexDate extends JFrame implements ActionListener
         ok.setMnemonic('O');
         add(ok);
         
-        clr.setBounds(120,190,70,25);
+        ok_old.setBounds(120,190,70,25);
+        ok_old.addActionListener(this);
+        ok_old.setMnemonic('l');
+        add(ok_old);
+        
+        clr.setBounds(210,190,70,25);
         clr.addActionListener(this);
         clr.setMnemonic('C');
         add(clr);
         
-        back.setBounds(210,190,70,25);
+        back.setBounds(300,190,70,25);
         back.addActionListener(this);
         back.setMnemonic('B');
         add(back);
@@ -129,13 +135,23 @@ public class SupplementaryIndexDate extends JFrame implements ActionListener
             int date= selectedDate.getDate();
             int month=selectedDate.getMonth()+1;
             int year=selectedDate.getYear()+1900;
-            new SupplementaryIndex(date,month,year);
+            new SupplementaryIndex(date,month,year, true);
             this.dispose();
             
         }
         
+        else if(ae.getSource()==ok_old)
+        {
+            Date selectedDate = (Date) datePicker.getModel().getValue();
+            int date= selectedDate.getDate();
+            int month=selectedDate.getMonth()+1;
+            int year=selectedDate.getYear()+1900;
+            new SupplementaryIndex(date,month,year, false);
+            this.dispose();
+            
+        }
         
-        if(ae.getSource()==clr)
+        else if(ae.getSource()==clr)
         {
             datePicker.getJFormattedTextField().setText("");
             /*dt1.setText("");
@@ -144,10 +160,10 @@ public class SupplementaryIndexDate extends JFrame implements ActionListener
         }
         
         
-        if(ae.getSource()==back)
+        else if(ae.getSource()==back)
         {
-            new sams();
             this.dispose();
+            new sams();
         }
         
     }

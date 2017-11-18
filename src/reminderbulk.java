@@ -153,7 +153,7 @@ public class reminderbulk extends JFrame implements ActionListener
         if(ae.getSource()==ok)
         {
             
-            new reminderd(Integer.parseInt((String)dcodet.getSelectedItem()),Integer.parseInt(monthFromDropDown.getSelectedItem().toString()),Integer.parseInt(yearToDropDown.getSelectedItem().toString()),Integer.parseInt(monthToDropDown.getSelectedItem().toString()),Integer.parseInt(yearToDropDown.getSelectedItem().toString()));
+            SatSandeshDespatchReminderLabels satSandeshDespatchReminderLabels = new SatSandeshDespatchReminderLabels(Integer.parseInt((String)dcodet.getSelectedItem()),Integer.parseInt(monthFromDropDown.getSelectedItem().toString()),Integer.parseInt(yearToDropDown.getSelectedItem().toString()),Integer.parseInt(monthToDropDown.getSelectedItem().toString()),Integer.parseInt(yearToDropDown.getSelectedItem().toString()));
             this.dispose();
             
         }

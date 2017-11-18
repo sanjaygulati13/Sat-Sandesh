@@ -855,7 +855,7 @@ public class sams extends JFrame implements ActionListener {
         }
 
         if (ae.getSource() == despatchRegisterMenuItem) {
-            new despreg();
+            new SatSandeshDespatchRegisterSelectionWindow();
             this.dispose();
         }
 

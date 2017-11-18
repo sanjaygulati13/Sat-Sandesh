@@ -5,15 +5,14 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import javax.swing.*;
 
-
 public class deactive implements Printable, ActionListener
 {
     public static void main(String args[])
     {
         new deactive();
     }
-    
     private final static int POINTS_PER_INCH = 72;
+    
     
     int[] pageBreak;
     int numLines=0;
@@ -39,6 +38,7 @@ public class deactive implements Printable, ActionListener
         }
         catch (Exception cnf)
         {
+            cnf.printStackTrace();
             System.out.println(cnf);
         }
         
@@ -69,9 +69,10 @@ public class deactive implements Printable, ActionListener
             connect c1=new connect();
             c1.rs=c1.st.executeQuery("select count(asn) from basic where status='Deactive' and subnos not in ('NA')");
             while(c1.rs.next())
-            {
                 x=c1.rs.getInt(1);
-            }
+            
+            System.out.println("Deactive summary records : "+x);
+            
             c1.st.close();
             c1.con.close();
             
@@ -202,7 +203,6 @@ public class deactive implements Printable, ActionListener
     
     public int print(Graphics g, PageFormat pf, int pageindex)
     {
-        
         paper.setSize(8.27 * POINTS_PER_INCH, 11.69 * POINTS_PER_INCH);
         paper.setImageableArea(.25 * POINTS_PER_INCH, .25 * POINTS_PER_INCH,7.77 * POINTS_PER_INCH, 11.19 * POINTS_PER_INCH);
         pf.setPaper(paper);
@@ -211,6 +211,7 @@ public class deactive implements Printable, ActionListener
         FontMetrics metric=g.getFontMetrics(f1);
         int lineHeight=metric.getHeight();
         
+        //pf.setOrientation(PageFormat.LANDSCAPE);
         if(pageBreak==null)
         {
             
@@ -237,7 +238,6 @@ public class deactive implements Printable, ActionListener
         Graphics2D g2d=(Graphics2D)g;
         g2d.translate(pf.getImageableX(), pf.getImageableY());
         
-        
         int y=0;
         
         g.setFont( new Font("SERIF", Font.PLAIN, 8));
@@ -258,7 +258,6 @@ public class deactive implements Printable, ActionListener
         
         
         
-        
         int z=(int)pf.getImageableWidth()/6;
         
         
@@ -268,8 +267,8 @@ public class deactive implements Printable, ActionListener
             GregorianCalendar cal=new GregorianCalendar();
             int month=(cal.get(Calendar.MONTH)+1);
             int year=cal.get(Calendar.YEAR);
-            
             int md=(month+6)%12;
+
             int yd=year;
             if(md==0)
                 md=12;
@@ -277,9 +276,8 @@ public class deactive implements Printable, ActionListener
                 yd--;
             
             g.setFont(new Font("Sans Serif", Font.BOLD, 9));
-            g.drawString("Summary List Of Deactive Sat Sandesh Members Whose Period Has Ended B/W "+(month-1)+"-"+(year-1)+" & "+(md-1)+"-"+yd, (int)pf.getWidth()/2-230,y+lineHeight-3);
-            
-            
+            g.drawString("Summary List Of Deactive Sat Sandesh Members Whose Period Has Ended B/W "+(month-1)+"-"+(year-1)+" & "+(md-1)+"-"+yd
+			    , (int)pf.getWidth()/2-230,y+lineHeight-3);
             
             for(int line=start;line<end && i<x; line++)
             {
@@ -370,7 +368,7 @@ public class deactive implements Printable, ActionListener
                 catch(PrinterException pe)
                 {
                     JOptionPane.showMessageDialog(null, "ERROR"+pe,"ERROR", JOptionPane.ERROR_MESSAGE);
-                    
+                    pe.printStackTrace();
                 }
                 
             }

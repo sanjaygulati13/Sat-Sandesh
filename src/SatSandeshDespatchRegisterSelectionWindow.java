@@ -2,17 +2,17 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-public class despreg extends JFrame implements ActionListener, ItemListener {
+public class SatSandeshDespatchRegisterSelectionWindow extends JFrame implements ActionListener, ItemListener {
 
     public static void main(String args[]) {
-        new despreg();
+        new SatSandeshDespatchRegisterSelectionWindow();
     }
     JLabel lang, hdr, subnof, subnot, ftr, start, end, blank;
     JTextField hdrt, subnoft, subnott, ftrt, startt, endt, blankt;
-    JButton ok, clr, back;
+    JButton ok,ok_old, clr, back;
     JComboBox subt1, subt2;
 
-    public despreg() {
+    public SatSandeshDespatchRegisterSelectionWindow() {
 
         try {
             this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("skrm.jpg")));
@@ -51,6 +51,7 @@ public class despreg extends JFrame implements ActionListener, ItemListener {
         hdrt.setText(""+SamsUtilities.getCurrentYear());
         
         ok = new JButton("OK");
+        ok_old = new JButton("OK old");
         clr = new JButton("Clear");
         back = new JButton("Back");
 
@@ -151,19 +152,22 @@ public class despreg extends JFrame implements ActionListener, ItemListener {
         add(blankt);
         blankt.setEnabled(false);
 
-
-
-        ok.setBounds(80, 270, 70, 30);
+        ok.setBounds(40, 270, 70, 30);
         ok.addActionListener(this);
         ok.setMnemonic('O');
         add(ok);
 
-        clr.setBounds(180, 270, 70, 30);
+        ok_old.setBounds(140, 270, 70, 30);
+        ok_old.addActionListener(this);
+        ok_old.setMnemonic('O');
+        add(ok_old);
+        
+        clr.setBounds(240, 270, 70, 30);
         clr.addActionListener(this);
         clr.setMnemonic('C');
         add(clr);
 
-        back.setBounds(280, 270, 70, 30);
+        back.setBounds(340, 270, 70, 30);
         back.addActionListener(this);
         back.setMnemonic('B');
         add(back);
@@ -172,16 +176,22 @@ public class despreg extends JFrame implements ActionListener, ItemListener {
 
     public void actionPerformed(ActionEvent ae) {
         if (ae.getSource() == ok) {
-            new despatch((String) subt1.getSelectedItem(), Integer.parseInt(subnoft.getText()), Integer.parseInt(subnott.getText()), hdrt.getText(), ftrt.getText());
+            new SatSandeshDespatchRegisterPrintWindow((String) subt1.getSelectedItem(), Integer.parseInt(subnoft.getText()), Integer.parseInt(subnott.getText()), hdrt.getText(), ftrt.getText(), true);
+            this.dispose();
+        }
+        
+        if (ae.getSource() == ok_old) {
+            new SatSandeshDespatchRegisterPrintWindow((String) subt1.getSelectedItem(), Integer.parseInt(subnoft.getText()), Integer.parseInt(subnott.getText()), hdrt.getText(), ftrt.getText(), false);
             this.dispose();
         }
 
         if (ae.getSource() == clr) {
+            
         }
 
         if (ae.getSource() == back) {
-            new sams();
             this.dispose();
+            new sams();
         }
     }
 
@@ -200,13 +210,15 @@ public class despreg extends JFrame implements ActionListener, ItemListener {
                  * */
                 //st=Integer.parseInt(startt.getText());
 
-                c1.rs = c1.st.executeQuery("select max(subno) from basic where subnos='" + (String) subt1.getSelectedItem() + "'");
+                //c1.rs = c1.st.executeQuery("select max(subno) from basic where subnos='" + (String) subt1.getSelectedItem() + "'");
+                c1.rs = c1.st.executeQuery("select max(subscription_number) from subscribers_primary_details where subscription_code ='" + (String) subt1.getSelectedItem() + "'");
                 c1.rs.next();
                 en = c1.rs.getInt(1);
                 endt.setText("" + en);
                 //subnott.setText(""+(en+100));
 
-                c1.rs = c1.st.executeQuery("select count(subno) from basic where subnos='" + (String) subt1.getSelectedItem() + "'");
+                //c1.rs = c1.st.executeQuery("select count(subno) from basic where subnos='" + (String) subt1.getSelectedItem() + "'");
+                c1.rs = c1.st.executeQuery("select count(subscription_number) from subscribers_primary_details where subscription_code ='" + (String) subt1.getSelectedItem() + "'");
                 c1.rs.next();
                 bl = c1.rs.getInt(1);
 

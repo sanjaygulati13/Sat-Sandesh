@@ -77,11 +77,12 @@ public class SatSandeshOldSubscriberStatusWindow implements ActionListener{
         //Getting the size of the screen, so that the window can
         // adjust itself at the center of the screen
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        satSandeshSubscriberStatusWindow.setSize((screenSize.width)*4/10,(screenSize.height*2)/5);
+        satSandeshSubscriberStatusWindow.setSize((screenSize.width)*3/10,(screenSize.height*1)/5);
         Dimension frameSize = satSandeshSubscriberStatusWindow.getSize();
         int x = (screenSize.width - frameSize.width)  / 2;
         int y = (screenSize.height - frameSize.height) / 3;
         satSandeshSubscriberStatusWindow.setLocation(x, y);
+        SamsUtilities.center(satSandeshSubscriberStatusWindow);
         
         
         statusTypeLabel = new JLabel("Status");
@@ -99,12 +100,12 @@ public class SatSandeshOldSubscriberStatusWindow implements ActionListener{
         printButton = new JButton("Get List");
         printButton.addActionListener(this);
         printButton.setMnemonic('p');
-        satSandeshSubscriberStatusWindow.add(printButton,"span 2");
+        satSandeshSubscriberStatusWindow.add(printButton,"gapleft 50!, span 2");
         
         backButton = new JButton("Back");
         backButton.addActionListener(this);
         backButton.setMnemonic('b');
-        satSandeshSubscriberStatusWindow.add(backButton,"span 2");
+        satSandeshSubscriberStatusWindow.add(backButton,"gapleft 20!,span 2");
         
         satSandeshSubscriberStatusWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         satSandeshSubscriberStatusWindow.setVisible(true);
@@ -119,23 +120,29 @@ public class SatSandeshOldSubscriberStatusWindow implements ActionListener{
             if(statusType.equals("Freeze")){
                 
                 if(detailsType.equals("Detailed"))
-                    new freezed();
+                    new SatSandeshOldRecordsDetailed(1);
+                    //new freezed();
                 else
-                    new freeze();
+                    new SatSandeshOldRecordSummary(1);
+                    //new freeze();
             }
             else if(statusType.equals("Deactive"))
             {
                 if(detailsType.equals("Detailed"))
-                    new deactived();
+                    new SatSandeshOldRecordsDetailed(2);
+                    //new deactived();
                 else
-                    new deactive();
+                    new SatSandeshOldRecordSummary(2);
+                    //new deactive();
                 
             }
             else{ //Inactive
                 if(detailsType.equals("Detailed"))
-                    new inactived();
+                    new SatSandeshOldRecordsDetailed(3);
+                    //new inactived();
                 else
-                    new inactive();
+                    new SatSandeshOldRecordSummary(3);
+                    //new inactive();
             }
             satSandeshSubscriberStatusWindow.dispose();
         }

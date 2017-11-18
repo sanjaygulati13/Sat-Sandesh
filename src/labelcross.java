@@ -9,7 +9,7 @@ public class labelcross extends JFrame implements Printable, ActionListener
 {
     public static void main(String args[])
     {
-        new labelcross("2015",4001, 4050);
+        new labelcross("2015",4001, 4050,true);
     }
     
     int[] pageBreak;
@@ -25,9 +25,11 @@ public class labelcross extends JFrame implements Printable, ActionListener
     JButton b, back;
     //JFrame f;
     int NumberOfRecords=0;
+    boolean useNewTable = true;
     
-    public labelcross(String series, int s, int e)
+    public labelcross(String series, int s, int e, boolean newTable)
     {
+        useNewTable = newTable;
         s1=s;
         e1=e;
         seriesName = series;
@@ -77,8 +79,11 @@ public class labelcross extends JFrame implements Printable, ActionListener
             
             connect c1=new connect();
             
-            String sqlQuery = "select count(asn) from basic where series_name = '"+seriesName+"' and  rcpt between "+s1+" and "+e1;
-            System.out.println(sqlQuery);
+            String sqlQuery = "select count(asn) from subscribers_primary_details where series_name = '"+seriesName+"' and  receipt_number between "+s1+" and "+e1;
+            if(!useNewTable)
+                sqlQuery = "select count(asn) from basic where series_name = '"+seriesName+"' and  rcpt between "+s1+" and "+e1;
+            
+            //System.out.println(sqlQuery);
             c1.rs=c1.st.executeQuery(sqlQuery);
             while(c1.rs.next())
             {
@@ -98,7 +103,12 @@ public class labelcross extends JFrame implements Printable, ActionListener
             
             connect c2=new connect();
             
-            c2.rs=c2.st.executeQuery("select asn from basic where series_name = '"+seriesName+"' and rcpt between "+s1+" and "+e1+" order by rcpt");
+            sqlQuery = "select asn from subscribers_primary_details where series_name = '"+seriesName+"' "
+                    + "and receipt_number between "+s1+" and "+e1+" order by receipt_number";
+            
+            if(!useNewTable)
+                sqlQuery = "select asn from basic where series_name = '"+seriesName+"' and rcpt between "+s1+" and "+e1+" order by rcpt";
+            c2.rs=c2.st.executeQuery(sqlQuery);
             while(c2.rs.next())
             {
                 asn[i]=c2.rs.getInt(1);
@@ -109,9 +119,16 @@ public class labelcross extends JFrame implements Printable, ActionListener
             for(i=0;i<x;i++)
             {
                 connect c10=new connect();
-                c10.rs=c10.st.executeQuery("select * from basic where asn="+asn[i]);
+                if(useNewTable)
+                    c10.rs=c10.st.executeQuery("select subscription_code, subscription_number, receipt_number from subscribers_primary_details where asn="+asn[i]);
+                else
+                    c10.rs=c10.st.executeQuery("select subnos,subno,rcpt from basic where asn="+asn[i]);
+                
                 c10.rs.next();
-                textLines[i][0]="SUB # "+ c10.rs.getString(2)+" "+ c10.rs.getString(3)+" / "+c10.rs.getInt(5)+" / ";
+                textLines[i][0]="SUB # "+ c10.rs.getString(1)+" "+ c10.rs.getString(2)+" / "+c10.rs.getInt(3)+" / ";
+                
+                if(!useNewTable)
+                    textLines[i][0]="SUB # "+ c10.rs.getString(1)+" "+ c10.rs.getString(2)+" / "+c10.rs.getInt(3)+" / ";
             }
             
             
@@ -123,9 +140,17 @@ public class labelcross extends JFrame implements Printable, ActionListener
             connect c3=new connect();
             for(i=0;i<x;i++)
             {
-                c3.rs=c3.st.executeQuery("select * from payment where asn="+asn[i]);
+                if(useNewTable)
+                    c3.rs=c3.st.executeQuery("select ending_period from subscribers_primary_details where asn="+asn[i]);
+                else
+                    c3.rs=c3.st.executeQuery("select endm,endy from payment where asn="+asn[i]);
                 c3.rs.next();
-                textLines[i][0]+="   "+c3.rs.getInt(10)+"/"+c3.rs.getInt(11);
+                if(useNewTable){
+                    java.util.Date endDate = c3.rs.getDate(1);
+                    textLines[i][0] += "   "+(endDate.getMonth()+1)+"/"+(endDate.getYear()+1900);
+                }
+                else
+                    textLines[i][0] += "   "+c3.rs.getInt(1)+"/"+c3.rs.getInt(12);
             }
             
             c3.st.close();
@@ -136,17 +161,20 @@ public class labelcross extends JFrame implements Printable, ActionListener
             for(i=0;i<x;i++)
             {
                 
-                c4.rs=c4.st.executeQuery("select * from subdetails where asn="+asn[i]);
+                if(useNewTable)
+                    c4.rs=c4.st.executeQuery("select first_name,last_name,address_line1,address_line2,address_line3,district,state,pin_code from subscribers_primary_details where asn="+asn[i]);
+                else
+                    c4.rs=c4.st.executeQuery("select fname,lname,add1,add2,add3,dist,state,pin from subdetails where asn="+asn[i]);
                 c4.rs.next();
                 String string1, s2, s3, s4, s5,s6, stateCode;
                 
-                string1=c4.rs.getString(3);
-                s2=c4.rs.getString(4);
-                s3=c4.rs.getString(5);
-                s4=c4.rs.getString(6);
-                s5=c4.rs.getString(7);
-                s6=c4.rs.getString(8);
-                stateCode=c4.rs.getString(9);
+                string1=c4.rs.getString(1);
+                s2=c4.rs.getString(2);
+                s3=c4.rs.getString(3);
+                s4=c4.rs.getString(4);
+                s5=c4.rs.getString(5);
+                s6=c4.rs.getString(6);
+                stateCode=c4.rs.getString(7);
                 
                 textLines[i][1]="";
                 textLines[i][2]="";
@@ -178,12 +206,15 @@ public class labelcross extends JFrame implements Printable, ActionListener
                 if(stateCode!=null)
                     textLines[i][6]+=stateCode;
                 
-                int pinCode=Integer.parseInt(c4.rs.getString(10));
+                int pinCode=Integer.parseInt(c4.rs.getString(8));
                 if(pinCode>0)
                 {
                     textLines[i][6]+=" - "+pinCode;
                 }
-                c4.rs=c4.st.executeQuery("select dno from basic where asn="+asn[i]);
+                if(useNewTable)
+                    c4.rs=c4.st.executeQuery("select bulk_despatch_code from subscribers_primary_details where asn="+asn[i]);
+                else
+                    c4.rs=c4.st.executeQuery("select dno from basic where asn="+asn[i]);
                 c4.rs.next();
                 int despatchCode = c4.rs.getInt(1);
                 if(despatchCode > 0)
@@ -200,8 +231,10 @@ public class labelcross extends JFrame implements Printable, ActionListener
             
             for(i=0;i<x;i++)
             {
-                
-                c5.rs=c5.st.executeQuery("select phone , email from otherdet where asn="+asn[i]);
+                if(useNewTable)
+                    c5.rs=c5.st.executeQuery("select phone_number , email from subscribers_primary_details where asn="+asn[i]);
+                else
+                    c5.rs=c5.st.executeQuery("select phone , email from otherdet where asn="+asn[i]);
                 c5.rs.next();
                 
                 String s8, s9;

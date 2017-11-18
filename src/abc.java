@@ -541,7 +541,7 @@ public class abc implements Printable, ActionListener {
         }
         if (ae.getSource() == back) {
             f.dispose();
-            new despreg();
+            new SatSandeshDespatchRegisterSelectionWindow();
         }
     }
 }

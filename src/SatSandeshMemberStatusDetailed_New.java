@@ -328,7 +328,8 @@ public class SatSandeshMemberStatusDetailed_New extends JFrame implements Action
                 a1=a2=a3=a4=a5=a6=a7=a8=a9=a10=a11=a12=a13=a14=0;
                 connect c13=new connect();
                 
-                String query = "select count(asn) from subscribers_primary_details where language='"+lang+"' and state='"+state1[i]+"' and distribution_type='By Hand'";
+                String query = "select count(asn) from subscribers_primary_details where "
+                        + "language='"+lang+"' and state='"+state1[i]+"' and distribution_type='By Hand'";
                 c13.rs=c13.st.executeQuery(query);
                 if(c13.rs.next())
                 {
@@ -337,7 +338,8 @@ public class SatSandeshMemberStatusDetailed_New extends JFrame implements Action
                 }
                 //System.out.println(query);
                 
-                query = "select count(asn) from subscribers_primary_details where language='"+lang+"' and state='"+state1[i]+"' and distribution_type='By Post'";
+                query = "select count(asn) from subscribers_primary_details where "
+                        + "language='"+lang+"' and state='"+state1[i]+"' and distribution_type='By Post'";
                 c13.rs=c13.st.executeQuery(query);
                 if(c13.rs.next())
                 {
@@ -345,7 +347,8 @@ public class SatSandeshMemberStatusDetailed_New extends JFrame implements Action
                 }
                 //System.out.println(query);
                 
-                query = "select count(asn) from subscribers_primary_details where language='"+lang+"' and state='"+state1[i]+"' and distribution_type='Distributor'";
+                query = "select count(asn) from subscribers_primary_details where "
+                        + "language='"+lang+"' and state='"+state1[i]+"' and distribution_type='Distributor'";
                 c13.rs=c13.st.executeQuery(query);
                 if(c13.rs.next())
                 {
@@ -380,7 +383,10 @@ public class SatSandeshMemberStatusDetailed_New extends JFrame implements Action
                 //System.out.println(deactiveStartDate +" <--> " + inactiveStartDate + " <--> " + activeDate );
                 
                 //query = "select count(asn) from subscribers_primary_details where language ='"+lang+"' and state='"+state1[i]+"' and membership_status='Active'";
-                query = "select count(asn) from subscribers_primary_details where language ='"+lang+"' and state='"+state1[i]+"' and ending_period > '" + activeDate + "' and membership_status not in ('STOPPED')";
+                query = "select count(asn) from subscribers_primary_details where "
+                        + "language ='"+lang+"' and state='"+state1[i]+"' and "
+                        + "ending_period > '" + activeDate + "' and "
+                        + "membership_status not in ('STOPPED')";
                 //System.out.println(query);
                 c1.rs=c1.st.executeQuery(query);
                 if(c1.rs.next())
@@ -389,7 +395,11 @@ public class SatSandeshMemberStatusDetailed_New extends JFrame implements Action
                 }
                 
                 //query = "select count(asn) from subscribers_primary_details where language ='"+lang+"' and state='"+state1[i]+"' and membership_status='Inactive' and membership_status not in ('STOPPED')";
-                query = "select count(asn) from subscribers_primary_details where language ='"+lang+"' and state='"+state1[i]+"' and ending_period > '" + inactiveStartDate + "' and ending_period <= '" + activeDate + "'  and membership_status not in ('STOPPED')";
+                query = "select count(asn) from subscribers_primary_details where "
+                        + "language ='"+lang+"' and state='"+state1[i]+"' and "
+                        + "ending_period > '" + inactiveStartDate + "' and "
+                        + "ending_period <= '" + activeDate + "'  and "
+                        + "membership_status not in ('STOPPED')";
                 //System.out.println(query);
                 c1.rs=c1.st.executeQuery(query);
                 if(c1.rs.next())
@@ -400,7 +410,10 @@ public class SatSandeshMemberStatusDetailed_New extends JFrame implements Action
                 //query = "select count(asn) from subscribers_primary_details where language ='"+lang+"' and state='"+state1[i]+"' and membership_status='Freeze' and membership_status not in ('STOPPED')";
                 
                 //System.out.println(query);
-                query = "select count(asn) from subscribers_primary_details where language ='"+lang+"' and state='"+state1[i]+"' and ending_period <= '" + deactiveStartDate + "'  and membership_status not in ('STOPPED')";
+                query = "select count(asn) from subscribers_primary_details where "
+                        + "language ='"+lang+"' and state='"+state1[i]+"' and "
+                        + "ending_period <= '" + deactiveStartDate + "'  and "
+                        + "membership_status not in ('STOPPED')";
                 c1.rs=c1.st.executeQuery(query);
                 if(c1.rs.next())
                 {
@@ -408,7 +421,11 @@ public class SatSandeshMemberStatusDetailed_New extends JFrame implements Action
                 }
                 
                 //query = "select count(asn) from subscribers_primary_details where language ='"+lang+"' and state='"+state1[i]+"' and membership_status='Deactive' and membership_status not in ('STOPPED')";
-                query = "select count(asn) from subscribers_primary_details where language ='"+lang+"' and state='"+state1[i]+"' and ending_period > '" + deactiveStartDate + "' and ending_period <= '" + inactiveStartDate + "' and membership_status not in ('STOPPED')";
+                query = "select count(asn) from subscribers_primary_details where "
+                        + "language ='"+lang+"' and state='"+state1[i]+"' and "
+                        + "ending_period > '" + deactiveStartDate + "' and "
+                        + "ending_period <= '" + inactiveStartDate + "' and "
+                        + "membership_status not in ('STOPPED')";
                 //System.out.println(query);
                 c1.rs=c1.st.executeQuery(query);
                 if(c1.rs.next())

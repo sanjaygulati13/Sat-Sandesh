@@ -1,18 +1,18 @@
 import java.awt.print.*;
 import java.awt.*;
 import java.awt.event.*;
+import static java.awt.print.Printable.NO_SUCH_PAGE;
+import static java.awt.print.Printable.PAGE_EXISTS;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import javax.swing.*;
 
 
-public class SupplementaryIndex implements Printable, ActionListener
+public class SatSandeshOldRecordsDetailed implements Printable, ActionListener
 {
     public static void main(String args[])
     {
-        new SupplementaryIndex(
-                SamsUtilities.getCurrentDate()
-                ,SamsUtilities.getCurrentMonth()
-                ,SamsUtilities.getCurrentYear()
-                , true);
+        new SatSandeshOldRecordsDetailed(1);
     }
     int present=0;
     int[] pageBreak;
@@ -27,54 +27,59 @@ public class SupplementaryIndex implements Printable, ActionListener
     String m1;
     JButton b, back;
     JFrame f;
-    int d, m, y1;
+    String typeStr = "Freeze";
+    
     int linesPerPage;
     int NumberOfRecords=0;
-    String StartDate, CurrentDate;
-    boolean useNewTable;
     
-    public SupplementaryIndex(int d2,int m2, int y2, boolean newTable)
+    public SatSandeshOldRecordsDetailed(int type)
     {
-        useNewTable = newTable;
+        //System.out.println("Hello "+ type );
+        switch(type)
+        {
+            case 1:
+                typeStr = "Freeze";
+                break;
+            case 2:
+                typeStr = "Deactive";
+                break;
+            case 3:
+                typeStr = "Inactive";
+                break;
+            default:
+                break;
+        }
         
-        d=d2;
-        m=m2;
-        y1=y2;
-        
-        StartDate=""+y1+"-"+m+"-"+d;
-        CurrentDate=SamsUtilities.getCurrentSqlDate();
-        f= new JFrame("Print Suppl. Index Register");
-        //System.out.println(StartDate +":::::::::::::"+ CurrentDate);
-        
+        f= new JFrame("Print "+typeStr+" Records");
         try
         {
-            String cn = UIManager.getSystemLookAndFeelClassName();
-            UIManager.setLookAndFeel(cn); // Use the native L&F
             f.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("skrm.jpg")));
+            String cn = UIManager.getSystemLookAndFeelClassName();
+            
+            UIManager.setLookAndFeel(cn); // Use the native L&F
         }
         catch (Exception cnf)
         {
             System.out.println(cnf);
-            cnf.printStackTrace();
         }
+        
         
         f.setVisible(true);
         f.setLayout(null);
-        f.setSize(500,85);
-        SamsUtilities.center(f);
+        f.setSize(300,85);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.addWindowListener(new WindowAdapter() {@Override
-        public void windowClosing(WindowEvent e){System.exit(0);}});
-        b = new JButton("<html>Print S. Index</html>");
+        f.addWindowListener(new WindowAdapter() {public void windowClosing(WindowEvent e){System.exit(0);}});
+        b=new JButton("Print List");
         b.addActionListener(this);
         back=new JButton("Back");
         back.addActionListener(this);
         f.add(b);
-        b.setBounds(50,10,150,25);
+        b.setBounds(10,10,100,25);
         b.setMnemonic('P');
         f.add(back);
+        SamsUtilities.center(f);
         back.setMnemonic('B');
-        back.setBounds(300,10,150,25);
+        back.setBounds(150,10,100,25);
         
     }
     
@@ -84,20 +89,16 @@ public class SupplementaryIndex implements Printable, ActionListener
         {
             
             connect c1=new connect();
-            String query = "select count(asn) from subscribers_primary_details where entry_date >= '"+StartDate+"'";
-            
-            if(!useNewTable)
-                query = "select count(asn) from payment where InsertionDate>='"+StartDate+"'";
-            c1.rs=c1.st.executeQuery(query);
+            //c1.rs=c1.st.executeQuery("select count(asn) from basic where status='"+typeStr+"' and subnos not in ('NA')");
+            c1.rs=c1.st.executeQuery("select count(asn) from subscribers_primary_details where membership_status='"+typeStr
+                    +"' and subscription_code not in ('NA')");
             while(c1.rs.next())
             {
                 x=c1.rs.getInt(1);
             }
             NumberOfRecords=x;
-            
-            //System.out.println(NumberOfRecords);
             numLines=x*2;
-            //System.out.println("x : "+x);
+            //System.out.println("Freeze records : "+x);
             
             int y=(numLines%linesPerPage);
             
@@ -155,47 +156,43 @@ public class SupplementaryIndex implements Printable, ActionListener
             
             numLines=x*2;
             
-            //System.out.println("NumLines : "+ numLines);
             textLines=new String[numLines][15];
             asn=new int[x];
             
             connect c2=new connect();
             for(i=0;i<x;i++)
             {
-                //System.out.println("i : "+i);
+                
                 if(i==0)
                 {
-                    query = "select asn from subscribers_primary_details where entry_date >= '"+StartDate+"' order by state, first_name, last_name";
-                    if(!useNewTable)
-                        query = "select p.asn from payment p, subdetails s where p.asn=s.asn and p.InsertionDate>='"+StartDate+"' order by s.state, s.fname, s.lname";
                     
-                    c2.rs=c2.st.executeQuery(query);
+                    c2.rs=c2.st.executeQuery("select asn from subscribers_primary_details where membership_status='"+typeStr
+                            +"' and subscription_code not in ('NA') order by state, first_name, last_name");
                     while(c2.rs.next())
                     {
-                        //System.out.println(asn[i]);
                         if(i%(linesPerPage/2)==0 && i<x)
                         {
                             asn[i]=0;
-                            //System.out.println(asn[i]);
+                            
                             i++;
                             
                         }
                         if(i%(linesPerPage/2)==1 && i<x)
                         {
                             asn[i]=0;
-                            //System.out.println(asn[i]);
+                            
                             i++;
                         }
                         if(i%(linesPerPage/2)==2 && i<x)
                         {
                             asn[i]=0;
-                            //System.out.println(asn[i]);
+                            
                             i++;
                         }
                         if(i%(linesPerPage/2)>2 && i<x)
                         {
                             asn[i]=c2.rs.getInt(1);
-                            //System.out.println("a ["+i+"] := "+asn[i]);
+                            
                             i++;
                         }
                         
@@ -204,17 +201,13 @@ public class SupplementaryIndex implements Printable, ActionListener
                     }
                 }
                 
-                if(i<x)
-                    asn[i]=0;
-                //System.out.println("a ["+i+"] := "+asn[i]);
             }
             c2.st.close();
             c2.con.close();
             
-            
-            
             i=0;
             connect c3=new connect();
+            
             for(i=0;i<x;i++)
             {
                 if(i<present)
@@ -249,10 +242,6 @@ public class SupplementaryIndex implements Printable, ActionListener
                         textLines[i][5]="";
                         textLines[i][6]="";
                         textLines[i][7]="";
-                        /*textLines[i][5]="  SAT-SANDESH  ";
-                        textLines[i][6]="  (HINDI)  ";
-                        textLines[i][7]="  INDEX REGISTER AS ON  "+d+"-"+m+"-"+y1;
-                        */
                         textLines[i][8]="";
                         textLines[i][9]="";
                         textLines[i][10]="";
@@ -283,28 +272,19 @@ public class SupplementaryIndex implements Printable, ActionListener
                     else if((i%(linesPerPage/2))>2)
                     {
                         
-                        query = "select asn, subscription_code, subscription_number, ending_period, bulk_despatch_code from subscribers_primary_details where asn="+asn[i];
-                        if(!useNewTable)
-                            query = "select b.asn, b.subnos, b.subno, p.endm, p.endy, b.dno from basic b, payment p where b.asn=p.asn and b.asn="+asn[i];
-                        c3.rs=c3.st.executeQuery(query);
+                        c3.rs=c3.st.executeQuery("select asn, subscription_code, subscription_number, ending_period, bulk_despatch_code from "
+                                + " subscribers_primary_details where asn="+asn[i]);
                         c3.rs.next();
                         textLines[i][0]=""+c3.rs.getInt(1);
                         textLines[i][1]=""+c3.rs.getString(2)+c3.rs.getString(3);
+                        java.util.Date endDate = c3.rs.getDate(4);
+                        textLines[i][2]=""+(endDate.getMonth()+1);
+                        textLines[i][3]=""+(endDate.getYear()+1900);
                         textLines[i][4]="";
-                        int d=c3.rs.getInt((useNewTable)?5:6);
+
+                        int d=c3.rs.getInt(5);
                         if(d>0)
                             textLines[i][4]=""+d;
-                        if(useNewTable)
-                        {
-                            java.util.Date endDate = c3.rs.getDate(4);
-                            textLines[i][2]=""+(endDate.getMonth()+1);
-                            textLines[i][3]=""+(endDate.getYear()+1900);
-                        }
-                        else
-                        {
-                            textLines[i][2]=""+c3.rs.getInt(4);
-                            textLines[i][3]=""+c3.rs.getInt(5);
-                        }
                     }
                 }
                 else if(i>=present)
@@ -340,11 +320,9 @@ public class SupplementaryIndex implements Printable, ActionListener
                     
                     if(i%(linesPerPage/2)>2)
                     {
-                        query = "select first_name,last_name,address_line1,address_line2,address_line3,district,state,pin_code from subscribers_primary_details where asn="+asn[i];
-                        if(!useNewTable)
-                            query = "select fname,lname,add1,add2,add3,dist,state,pin from subdetails where asn="+asn[i];
-                        
-                        c4.rs=c4.st.executeQuery(query);
+                        //c4.rs=c4.st.executeQuery("select fname,lname,add1,add2,add3,dist,state,pin from subdetails where asn="+asn[i]);
+                        c4.rs=c4.st.executeQuery("select first_name,last_name,address_line1,address_line2,address_line3,district,state,pin_code "
+                                + "from subscribers_primary_details where asn="+asn[i]);
                         c4.rs.next();
                         String s1, s2, s3, s4, s5, s6,s7;
                         
@@ -371,10 +349,10 @@ public class SupplementaryIndex implements Printable, ActionListener
                             textLines[i][6]=s2;
                         
                         if(s3!=null)
-                            textLines[i][7]=s3 + " " + s4;
+                            textLines[i][7]=s3;
                         
-                        //if(s4!=null)
-                        //    textLines[i][8]=s4;
+                        if(s4!=null)
+                            textLines[i][8]=s4;
                         
                         if(s5!=null)
                             textLines[i][9]=s5;
@@ -394,7 +372,7 @@ public class SupplementaryIndex implements Printable, ActionListener
                     }
                 }
             }
-            
+            //System.out.println(" : "+textLines[i-1][1]);
             c4.st.close();
             c4.con.close();
             
@@ -408,10 +386,7 @@ public class SupplementaryIndex implements Printable, ActionListener
                     
                     if(i%(linesPerPage/2)>2)
                     {
-                        query = "select phone_number, email from subscribers_primary_details where asn="+asn[i];
-                        if(!useNewTable)
-                            query = "select phone, email from otherdet where asn="+asn[i];
-                        c5.rs=c5.st.executeQuery(query);
+                        c5.rs=c5.st.executeQuery("select phone_number, email from subscribers_primary_details where asn="+asn[i]);
                         c5.rs.next();
                         String s1, s2;
                         
@@ -460,18 +435,18 @@ public class SupplementaryIndex implements Printable, ActionListener
         
         //asn , subno, endm , endy, dno, fname, lname, add1, add2, add3, dist, state, pin
         
-        a[1]=metric.stringWidth("99999   ");
-        a[2]=15+a[1]+metric.stringWidth("DDDDDD  ");		//after asn
+        a[1]=metric.stringWidth("99999 ");
+        a[2]=15+a[1]+metric.stringWidth("DDDDDDD");		//after asn
         a[3]=10+a[2]+metric.stringWidth("DD");				//
         a[4]=10+a[3]+metric.stringWidth("9999 ");
         a[5]=10+a[4]+metric.stringWidth("99 ");
         
         a[6]=10+a[5]+metric.stringWidth("AMIT AMIT AMITPPDD");
         a[7]=10+a[6]+metric.stringWidth("PAUL PAUL PAULPDDD");
-        a[8]=10+a[7]+metric.stringWidth("GURU HARKISHAN NAGAR GURU HARKISDDDDD");
-        a[9]=10+a[8]+metric.stringWidth("GURU HARKISHAN NAGAR GURU HARKISDDDDD");
+        a[8]=10+a[7]+metric.stringWidth("GURU HARKISHAN NAGAR GURU HARKISDDD");
+        a[9]=10+a[8]+metric.stringWidth("GURU HARKISHAN NAGAR GURU HARKISDDD");
         
-        a[10]=10+a[9]+metric.stringWidth("NEW DELHI NEW DELHI ND");
+        a[10]=10+a[9]+metric.stringWidth("NEW DELHI NEW DELHI NDD ");
         a[11]=10+a[10]+metric.stringWidth("MAH ");
         
         
@@ -519,6 +494,7 @@ public class SupplementaryIndex implements Printable, ActionListener
                 end=pageBreak[pageIndex]-1;
         }
         
+        
         if(chk%2==1 && (end-start)!=lineHeight)
         {
             
@@ -535,7 +511,9 @@ public class SupplementaryIndex implements Printable, ActionListener
             g.drawLine(a[11]-2,3*lineHeight,a[11]-2,(end-start)*lineHeight);
             g.drawLine((int)pf.getImageableWidth(),3*lineHeight,(int)pf.getImageableWidth(),(end-start)*lineHeight);
             
-            
+            GregorianCalendar cal=new GregorianCalendar();
+            int month=(cal.get(Calendar.MONTH)+1);
+            int year=cal.get(Calendar.YEAR);
             
             
             
@@ -544,15 +522,61 @@ public class SupplementaryIndex implements Printable, ActionListener
                 if(i%(linesPerPage/2)==1)
                 {
                     g.setFont(new Font("SERIF", Font.BOLD, 10));
-                    g.drawString("SAT SANDESH - INDEX REGISTER (Suppl) w.e.f. "+d+"-"+m+"-"+y1, (int)pf.getWidth()/2-120,y);
-                    g.drawString("( - "+(pageIndex+1)+" - )", (int)pf.getWidth()/2+150,y);
-                    g.drawString("("+SamsUtilities.getCurrentDateString()+")  (TR: "+NumberOfRecords+")",(int)pf.getWidth()/2+200 , y);
+                    
+                    if(typeStr.equals("Freeze")){
+                        int mf=(month-1)%12;
+                        //int mf=month;
+                        int yf=year-1;
+                        if(mf==0)
+                            mf=12;
+                        if(mf==12)
+                            yf--;
+                        g.drawString("Detailed List of "+typeStr+" Sat Sandesh Members Whose Period Has Ended Before "+mf+"-"+yf, (int)pf.getWidth()/2-350,y);
+                        g.drawString("(Page Number "+(pageIndex+1)+")", (int)pf.getWidth()/2+200,y);
+                        g.drawString("("+SamsUtilities.getCurrentDateString()+")  (TR: "+NumberOfRecords+")",(int)pf.getWidth()/2+280 , y);
+                    }
+                    else if(typeStr.equals("Deactive")){
+                        int md=(month+6)%12;
+                        
+                        int yd=year;
+                        if(md==0)
+                            md=12;
+                        if(md>6)
+                            yd--;
+                        
+                        g.drawString("Detailed List Of Deactive Sat Sandesh Members Whose Period Has Ended B/W "+(month-1)+"-"+(year-1)+" & "+(md-1)+"-"+yd, (int)pf.getWidth()/2-350,y);
+                        g.drawString("( - "+(pageIndex+1)+" - )", (int)pf.getWidth()/2+250,y);
+                        g.drawString("("+SamsUtilities.getCurrentDateString()+")  (TR: "+NumberOfRecords+")",(int)pf.getWidth()/2+290 , y);
+                    }
+                    else if(typeStr.equals("Inactive")){
+                        int mi=(month+6)%12;
+                        
+                        int yi=year;
+                        if(mi==0)
+                            mi=12;
+                        if(mi>6)
+                            yi--;
+                        
+                        g.drawString("Detailed List Of Inactive Sat Sandesh Members Whose Period Has Ended B/W "+mi+"-"+yi+" & "+(month-1)+"-"+year, (int)pf.getWidth()/2-350,y);
+                        g.drawString("( - "+(pageIndex+1)+" - )", (int)pf.getWidth()/2+270,y);
+                        g.drawString("("+SamsUtilities.getCurrentDateString()+")  (TR: "+NumberOfRecords+")",(int)pf.getWidth()/2+310 , y);
+                        
+                    }
                 }
+                
                 
                 g.setFont(new Font("SERIF", Font.PLAIN, 8));
                 
+                
                 if(i%(linesPerPage/2)>1)
                 {
+                    
+                    if(i%(linesPerPage/2)==2)
+                        g.setFont(new Font("SERIF", Font.BOLD, 9));
+                    else
+                        g.setFont(new Font("SERIF", Font.PLAIN, 8));
+                    
+                    
                     g.drawLine(3,y+lineHeight,(int)pf.getWidth()+1,y+lineHeight); //horizontal lines
                     
                     g.drawString(" "+textLines[i][0], 5, y);
@@ -582,19 +606,11 @@ public class SupplementaryIndex implements Printable, ActionListener
                     g.drawString(" "+textLines[i][11], a[10], y);
                     
                     g.drawString(" "+textLines[i][12], a[11], y);
-                    
-                    
-                    
-                    
                 }
-                
                 y+=2*lineHeight;
-                
-                
                 
                 i++;
             }
-            //g.drawString(" Page Number "+(pageIndex+1), 300, ((int)pf.getImageableHeight())-10);
             
         }
         else
@@ -647,7 +663,8 @@ public class SupplementaryIndex implements Printable, ActionListener
         
         if(ae.getSource()==back)
         {
-            new sams();
+            //new sams();
+            new SatSandeshOldSubscriberStatusWindow();
             f.dispose();
         }
         

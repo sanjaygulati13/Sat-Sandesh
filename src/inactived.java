@@ -25,8 +25,9 @@ public class inactived implements Printable, ActionListener
     String m1;
     JButton b, back;
     JFrame f;
-    int NumberOfRecords=0;
+    
     int linesPerPage;
+    int NumberOfRecords=0;
     
     public inactived()
     {
@@ -73,7 +74,6 @@ public class inactived implements Printable, ActionListener
             {
                 x=c1.rs.getInt(1);
             }
-            
             NumberOfRecords=x;
             numLines=x*2;
             //System.out.println("x : "+x);
@@ -486,8 +486,8 @@ public class inactived implements Printable, ActionListener
             GregorianCalendar cal=new GregorianCalendar();
             int month=(cal.get(Calendar.MONTH)+1);
             int year=cal.get(Calendar.YEAR);
-            
             int mi=(month+6)%12;
+
             int yi=year;
             if(mi==0)
                 mi=12;
@@ -497,14 +497,12 @@ public class inactived implements Printable, ActionListener
             
             for(int line=start; line<end; line+=2)
             {
-                
                 if(i%(linesPerPage/2)==1)
                 {
                     g.setFont(new Font("SERIF", Font.BOLD, 10));
                     g.drawString("Detailed List Of Inactive Sat Sandesh Members Whose Period Has Ended B/W "+mi+"-"+yi+" & "+(month-1)+"-"+year, (int)pf.getWidth()/2-350,y);
                     g.drawString("( - "+(pageIndex+1)+" - )", (int)pf.getWidth()/2+270,y);
                     g.drawString("("+SamsUtilities.getCurrentDateString()+")  (TR: "+NumberOfRecords+")",(int)pf.getWidth()/2+310 , y);
-                    
                 }
                 
                 
@@ -522,7 +520,7 @@ public class inactived implements Printable, ActionListener
                     
                     g.drawLine(3,y+lineHeight,(int)pf.getWidth()+1,y+lineHeight); //horizontal lines
                     
-                    g.drawString(""+textLines[i][0], 5, y);
+                    g.drawString(" "+textLines[i][0], 5, y);
                     
                     g.drawString(" "+textLines[i][1], 10+a[1], y);
                     
@@ -550,7 +548,6 @@ public class inactived implements Printable, ActionListener
                     
                     g.drawString(" "+textLines[i][12], a[11], y);
                 }
-                
                 y+=2*lineHeight;
                 
                 i++;

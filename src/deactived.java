@@ -76,7 +76,6 @@ public class deactived implements Printable, ActionListener
                 x=c1.rs.getInt(1);
             }
             NumberOfRecords=x;
-            
             numLines=x*2;
             //System.out.println("x : "+x);
             
@@ -488,8 +487,8 @@ public class deactived implements Printable, ActionListener
             GregorianCalendar cal=new GregorianCalendar();
             int month=(cal.get(Calendar.MONTH)+1);
             int year=cal.get(Calendar.YEAR);
-            
             int md=(month+6)%12;
+
             int yd=year;
             if(md==0)
                 md=12;

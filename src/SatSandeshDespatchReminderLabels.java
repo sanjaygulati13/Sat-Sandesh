@@ -3,11 +3,11 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-public class reminderd implements Printable, ActionListener
+public class SatSandeshDespatchReminderLabels implements Printable, ActionListener
 {
     public static void main(String args[])
     {
-        new reminderd(2,1,2009,12,2009);
+        new SatSandeshDespatchReminderLabels(2,1,2009,12,2009);
     }
     
     int present;
@@ -29,7 +29,7 @@ public class reminderd implements Printable, ActionListener
     int NumberOfRecords=0;
     
     
-    public reminderd(int d,int m, int y, int m3, int y3)
+    public SatSandeshDespatchReminderLabels(int d,int m, int y, int m3, int y3)
     {
         dno=d;
         m1=m;
@@ -81,7 +81,11 @@ public class reminderd implements Printable, ActionListener
         {
             
             connect c1=new connect();
-            c1.rs=c1.st.executeQuery("select count(b.asn) from basic b, payment p where b.asn=p.asn  and b.dist='Distributor' and b.dno="+dno+" and ( p.endm>"+(m1-1)+" and p.endy="+y1+")  and (p.endm <"+(m2+1)+" and p.endy="+y2+")");
+            String oldQuery = "select count(b.asn) from basic b, payment p where b.asn=p.asn  and "
+                    + "b.dist='Distributor' and b.dno="+dno+" and ( p.endm>"+(m1-1)+" and p.endy="+y1+")  "
+                    + "and (p.endm <"+(m2+1)+" and p.endy="+y2+")";
+            //String newQuery = "";
+            c1.rs=c1.st.executeQuery(oldQuery);
             while(c1.rs.next())
             {
                 x=c1.rs.getInt(1);
@@ -156,7 +160,9 @@ public class reminderd implements Printable, ActionListener
                 if(i==0)
                 {
                     
-                    c2.rs=c2.st.executeQuery("select b.asn from basic b, payment p where b.asn=p.asn  and b.dist='Distributor' and b.dno="+dno+" and ( p.endm>"+(m1-1)+" and p.endy="+y1+")  and (p.endm <"+(m2+1)+" and p.endy="+y2+") order by b.subnos, b.subno");
+                    c2.rs=c2.st.executeQuery("select b.asn from basic b, payment p where b.asn=p.asn  "
+                            + "and b.dist='Distributor' and b.dno="+dno+" and ( p.endm>"+(m1-1)+" and p.endy="+y1+")  "
+                            + "and (p.endm <"+(m2+1)+" and p.endy="+y2+") order by b.subnos, b.subno");
                     while(c2.rs.next())
                     {
                         if(i%(linesPerPage/2)==0 && i<x)
@@ -266,7 +272,8 @@ public class reminderd implements Printable, ActionListener
                     else if((i%(linesPerPage/2))>2)
                     {
                         
-                        c3.rs=c3.st.executeQuery("select b.asn, b.subnos, b.subno, p.endm, p.endy, b.dno from basic b, payment p where b.asn=p.asn and b.asn="+asn[i]);
+                        c3.rs=c3.st.executeQuery("select b.asn, b.subnos, b.subno, p.endm, p.endy, b.dno "
+                                + "from basic b, payment p where b.asn=p.asn and b.asn="+asn[i]);
                         c3.rs.next();
                         textLines[i][0]=""+c3.rs.getInt(1);
                         textLines[i][1]=""+c3.rs.getString(2)+c3.rs.getString(3);

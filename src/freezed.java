@@ -1,7 +1,6 @@
 import java.awt.print.*;
 import java.awt.*;
 import java.awt.event.*;
-
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import javax.swing.*;
@@ -28,6 +27,7 @@ public class freezed implements Printable, ActionListener
     JFrame f;
     
     int linesPerPage;
+    int NumberOfRecords=0;
     
     public freezed()
     {
@@ -63,8 +63,6 @@ public class freezed implements Printable, ActionListener
         
     }
     
-    private int NumberOfRecords=0;
-    
     public void initLines()
     {
         try
@@ -76,10 +74,9 @@ public class freezed implements Printable, ActionListener
             {
                 x=c1.rs.getInt(1);
             }
-            
             NumberOfRecords=x;
             numLines=x*2;
-            System.out.println("Freeze records : "+x);
+            //System.out.println("Freeze records : "+x);
             
             int y=(numLines%linesPerPage);
             
@@ -523,7 +520,7 @@ public class freezed implements Printable, ActionListener
                     
                     g.drawLine(3,y+lineHeight,(int)pf.getWidth()+1,y+lineHeight); //horizontal lines
                     
-                    g.drawString(""+textLines[i][0], 5, y);
+                    g.drawString(" "+textLines[i][0], 5, y);
                     
                     g.drawString(" "+textLines[i][1], 10+a[1], y);
                     

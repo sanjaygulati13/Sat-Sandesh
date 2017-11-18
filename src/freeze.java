@@ -76,6 +76,15 @@ public class freeze implements Printable, ActionListener
             c1.st.close();
             c1.con.close();
             
+            //JOptionPane.showMessageDialog(null, "NO RECORDS FOUND"+x ,"NO RECORDS", JOptionPane.INFORMATION_MESSAGE);
+            
+            if(x==0)
+            {
+                JOptionPane.showMessageDialog(null, "NO RECORDS FOUND" ,"NO RECORDS", JOptionPane.INFORMATION_MESSAGE);
+                new sams();
+                f.dispose();
+            }
+            
             numLines=x;
             x+=(numLines/linesPerPage)*3;
             
@@ -95,7 +104,6 @@ public class freeze implements Printable, ActionListener
             c2.rs=c2.st.executeQuery("select b.asn from basic b, payment p, subdetails s where b.asn=p.asn and b.asn=s.asn and b.status='Freeze' and b.subnos not in ('NA')  order by p.endy, p.endm, s.fname, s.lname ");
             while(c2.rs.next())
             {
-                
                 if(i%linesPerPage==0 && i<x)
                 {
                     asn[i]=0;
@@ -110,7 +118,6 @@ public class freeze implements Printable, ActionListener
                 if(i%linesPerPage==2 && i<x)
                 {
                     asn[i]=0;
-                    
                     i++;
                 }
                 if(i%linesPerPage>2 && i<x)
@@ -147,7 +154,6 @@ public class freeze implements Printable, ActionListener
                     textLines[i][4]="";
                     
                 }
-                
                 else if(i%linesPerPage==2)
                 {
                     textLines[i][0]=" ASN ";
@@ -205,13 +211,9 @@ public class freeze implements Printable, ActionListener
         FontMetrics metric=g.getFontMetrics(f1);
         int lineHeight=metric.getHeight();
         
-        
-        
         //pf.setOrientation(PageFormat.LANDSCAPE);
-        
         if(pageBreak==null)
         {
-            
             
             linesPerPage=(int)(pf.getImageableHeight()/lineHeight);
             initLines();
@@ -307,7 +309,6 @@ public class freeze implements Printable, ActionListener
                     g.drawLine(23+4*z+90, y-2, 23+4*z+90, y+lineHeight-2);
                 }
                 
-                
                 y+=lineHeight;
                 //System.out.println("i value : "+i);
                 i++;
@@ -353,15 +354,10 @@ public class freeze implements Printable, ActionListener
             PageFormat pf1 = job.validatePage(pf);
             
             
-            
-            
-            
-            
             //pf.setOrientation(PageFormat.LANDSCAPE);
             //pf = job.pageDialog(pf);
             
             boolean ok=job.printDialog();
-            
             
             if(ok)
             {
@@ -372,7 +368,7 @@ public class freeze implements Printable, ActionListener
                 catch(PrinterException pe)
                 {
                     JOptionPane.showMessageDialog(null, "ERROR"+pe,"ERROR", JOptionPane.ERROR_MESSAGE);
-                    
+                    pe.printStackTrace();
                 }
                 
             }

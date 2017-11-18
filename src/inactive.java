@@ -5,15 +5,14 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import javax.swing.*;
 
-
 public class inactive implements Printable, ActionListener
 {
     public static void main(String args[])
     {
         new inactive();
     }
-    
     private final static int POINTS_PER_INCH = 72;
+    
     
     int[] pageBreak;
     int numLines=0;
@@ -39,6 +38,7 @@ public class inactive implements Printable, ActionListener
         }
         catch (Exception cnf)
         {
+            cnf.printStackTrace();
             System.out.println(cnf);
         }
         
@@ -69,9 +69,10 @@ public class inactive implements Printable, ActionListener
             connect c1=new connect();
             c1.rs=c1.st.executeQuery("select count(asn) from basic where status='Inactive' and subnos not in ('NA') ");
             while(c1.rs.next())
-            {
                 x=c1.rs.getInt(1);
-            }
+            
+            System.out.println("Inactive summary records : "+x);
+            
             c1.st.close();
             c1.con.close();
             //System.out.println("x : "+x);
@@ -85,7 +86,6 @@ public class inactive implements Printable, ActionListener
             
             numLines=x;
             x+=(numLines/linesPerPage)*3;
-            //System.out.println(linesPerPage+"x : "+x);
             
             
             int y=(numLines%linesPerPage);
@@ -104,26 +104,22 @@ public class inactive implements Printable, ActionListener
                 if(i%linesPerPage==0 && i<x)
                 {
                     asn[i]=0;
-                    
                     i++;
                 }
                 if(i%linesPerPage==1 && i<x)
                 {
                     asn[i]=0;
-                    //System.out.println(i+" "+asn[i]);
+                    
                     i++;
                 }
                 if(i%linesPerPage==2 && i<x)
                 {
                     asn[i]=0;
-                    
                     i++;
                 }
-                
                 if(i%linesPerPage>1 && i<x)
                 {
                     asn[i]=c2.rs.getInt(1);
-                    //System.out.println(i+" "+asn[i]);
                     i++;
                 }
             }
@@ -212,6 +208,7 @@ public class inactive implements Printable, ActionListener
         FontMetrics metric=g.getFontMetrics(f1);
         int lineHeight=metric.getHeight();
         
+        //pf.setOrientation(PageFormat.LANDSCAPE);
         if(pageBreak==null)
         {
             
@@ -224,9 +221,9 @@ public class inactive implements Printable, ActionListener
             //System.out.println("numLines : "+numLines);
             numBreaks=(numLines/linesPerPage);
             pageBreak=new int[numBreaks];
-            for(int b=0;b<numBreaks;b++)
+            for(int b1=0;b1<numBreaks;b1++)
             {
-                pageBreak[b]=(b+1)*linesPerPage;
+                pageBreak[b1]=(b1+1)*linesPerPage;
             }
         }
         
@@ -267,8 +264,8 @@ public class inactive implements Printable, ActionListener
             GregorianCalendar cal=new GregorianCalendar();
             int month=(cal.get(Calendar.MONTH)+1);
             int year=cal.get(Calendar.YEAR);
-            
             int mi=(month+6)%12;
+
             int yi=year;
             if(mi==0)
                 mi=12;
@@ -276,8 +273,8 @@ public class inactive implements Printable, ActionListener
                 yi--;
             
             g.setFont(new Font("Sans Serif", Font.BOLD, 9));
-            g.drawString("Summary List Of Inactive Sat Sandesh Members Whose Period Has Ended B/W "+mi+"-"+yi+" & "+(month-1)+"-"+year, (int)pf.getWidth()/2-230,y+lineHeight-3);
-            
+            g.drawString("Summary List Of Inactive Sat Sandesh Members Whose Period Has Ended B/W "+mi+"-"+yi+" & "+(month-1)+"-"+year
+			    , (int)pf.getWidth()/2-230,y+lineHeight-3);
             
             for(int line=start;line<end && i<x; line++)
             {
@@ -289,7 +286,6 @@ public class inactive implements Printable, ActionListener
                 {
                     g.setFont(f1);
                 }
-                
                 g.drawString(""+textLines[i][0], 25, y);
                 g.drawString(""+textLines[i][1], 25+z, y);
                 g.drawString(""+textLines[i][2], 25+2*z, y);
@@ -335,7 +331,6 @@ public class inactive implements Printable, ActionListener
     PageFormat pf;
     Paper paper;
     
-    
     public void actionPerformed(ActionEvent ae)
     {
         
@@ -344,7 +339,6 @@ public class inactive implements Printable, ActionListener
             
             PrinterJob job=PrinterJob.getPrinterJob();
             job.setPrintable(this);
-            
             
             paper=new Paper();
             paper.setSize(8.27 * POINTS_PER_INCH, 11.69 * POINTS_PER_INCH);

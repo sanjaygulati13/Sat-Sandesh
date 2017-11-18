@@ -149,7 +149,8 @@ public class leftout extends JFrame implements ActionListener, Printable
             connect c=new connect();
             while(i1 < rcpt.length)
             {
-                c.rs=c.st.executeQuery("select asn from basic where series_name = '"+seriesName+"' and rcpt="+rcpt[i1]);
+                c.rs=c.st.executeQuery("select asn from subscribers_primary_details where series_name = '"+seriesName+"' and receipt_number="+rcpt[i1]);
+                //c.rs=c.st.executeQuery("select asn from basic where series_name = '"+seriesName+"' and rcpt="+rcpt[i1]);
                 while(c.rs.next())
                 {
                     asn[i1]=c.rs.getInt(1);
@@ -183,13 +184,16 @@ public class leftout extends JFrame implements ActionListener, Printable
             * }
             */
             //i1=0;
+            connect c10=new connect();
             for(i1=0;i1<x;i1++)
             {
-                connect c10=new connect();
-                c10.rs=c10.st.executeQuery("select * from basic where asn="+asn[i1]);
+                
+                c10.rs=c10.st.executeQuery("select subscription_code, subscription_number, receipt_number from subscribers_primary_details where asn="+asn[i1]);
+                //c10.rs=c10.st.executeQuery("select subnos,subno,rcpt from basic where asn="+asn[i1]);
                 c10.rs.next();
-                textLines[i1][0]="SUB # "+ c10.rs.getString(2)+" "+ c10.rs.getString(3)+" / "+c10.rs.getInt(5)+" / ";
+                textLines[i1][0]="SUB # "+ c10.rs.getString(1)+" "+ c10.rs.getString(2)+" / "+c10.rs.getInt(3)+" / ";
             }
+            c10.closeAll();
             
             
             //c2.st.close();
@@ -206,31 +210,33 @@ public class leftout extends JFrame implements ActionListener, Printable
             connect c3=new connect();
             for(i1=0;i1<x;i1++)
             {
-                c3.rs=c3.st.executeQuery("select * from payment where asn="+asn[i1]);
+                c3.rs=c3.st.executeQuery("select ending_period from subscribers_primary_details where asn="+asn[i1]);
+                //c3.rs=c3.st.executeQuery("select * from payment where asn="+asn[i1]);
                 c3.rs.next();
-                textLines[i1][0]+=m1+"   "+c3.rs.getInt(10)+"/"+c3.rs.getInt(11);
+                java.util.Date endDate = c3.rs.getDate(1);
+                textLines[i1][0] += m1+"   "+(endDate.getMonth()+1)+"/"+(endDate.getYear()+1900);
+                //textLines[i1][0]+=m1+"   "+c3.rs.getInt(10)+"/"+c3.rs.getInt(11);
             }
-            
-            c3.st.close();
-            c3.con.close();
+            c3.closeAll();
             
             //i1=0;
             connect c4=new connect();
             for(i1=0;i1<x;i1++)
             {
-                
-                c4.rs=c4.st.executeQuery("select * from subdetails where asn="+asn[i1]);
+
+                c4.rs=c4.st.executeQuery("select first_name,last_name,address_line1,address_line2,address_line3,district,state,pin_code from subscribers_primary_details where asn="+asn[i1]);
+                //c4.rs=c4.st.executeQuery("select fname,lname,add1,add2,add3,dist,state,pin from subdetails where asn="+asn[i1]);
                 c4.rs.next();
                 
                 String s1, s2, s3, s4, s5,s6, s7;
                 
-                s1=c4.rs.getString(3);
-                s2=c4.rs.getString(4);
-                s3=c4.rs.getString(5);
-                s4=c4.rs.getString(6);
-                s5=c4.rs.getString(7);
-                s6=c4.rs.getString(8);
-                s7=c4.rs.getString(9);
+                s1=c4.rs.getString(1);
+                s2=c4.rs.getString(2);
+                s3=c4.rs.getString(3);
+                s4=c4.rs.getString(4);
+                s5=c4.rs.getString(5);
+                s6=c4.rs.getString(6);
+                s7=c4.rs.getString(7);
                 
                 textLines[i1][1]="";
                 textLines[i1][2]="";
@@ -264,15 +270,14 @@ public class leftout extends JFrame implements ActionListener, Printable
                 
                 
                 
-                int c1=Integer.parseInt(c4.rs.getString(10));
+                int c1=Integer.parseInt(c4.rs.getString(8));
                 if(c1>0)
                 {
                     textLines[i1][6]+=" - "+c1;
                 }
             }
             
-            c4.st.close();
-            c4.con.close();
+            c4.closeAll();
             
             //i1=0;
             

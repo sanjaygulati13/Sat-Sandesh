@@ -11,7 +11,7 @@ public class crosschk extends JFrame implements ActionListener
     }
     
     JLabel from, to, rcpt, seriesLabel;
-    JButton ok, back, clr;
+    JButton ok, ok_old, back, clr;
     JComboBox seriesDropDown;
     TextFieldWithLimit fromt, tot;
     
@@ -31,7 +31,7 @@ public class crosschk extends JFrame implements ActionListener
         }
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle("Cross Checking Report");
-        setSize(300,300);
+        setSize(400,300);
         setResizable(false);
         SamsUtilities.center(this);
         //setLocation(10,10);
@@ -46,6 +46,7 @@ public class crosschk extends JFrame implements ActionListener
         tot=new TextFieldWithLimit(5,5);
         
         ok=new JButton("OK");
+        ok_old=new JButton("OK old");
         clr=new JButton("Clear");
         back=new JButton("Back");
         
@@ -79,12 +80,17 @@ public class crosschk extends JFrame implements ActionListener
         ok.setMnemonic('O');
         add(ok);
         
-        clr.setBounds(120,190,70,20);
+        ok_old.setBounds(120,190,70,20);
+        ok_old.addActionListener(this);
+        ok_old.setMnemonic('O');
+        add(ok_old);
+        
+        clr.setBounds(210,190,70,20);
         clr.addActionListener(this);
         clr.setMnemonic('C');
         add(clr);
         
-        back.setBounds(210,190,70,20);
+        back.setBounds(300,190,70,20);
         back.addActionListener(this);
         back.setMnemonic('B');
         add(back);
@@ -98,7 +104,13 @@ public class crosschk extends JFrame implements ActionListener
         
         if(ae.getSource()==ok)
         {
-            new labelcross((String)seriesDropDown.getSelectedItem(),Integer.parseInt(fromt.getText()),Integer.parseInt(tot.getText()));
+            new labelcross((String)seriesDropDown.getSelectedItem(),Integer.parseInt(fromt.getText()),Integer.parseInt(tot.getText()), true);
+            this.dispose();
+            
+        }
+        else if(ae.getSource()==ok_old)
+        {
+            new labelcross((String)seriesDropDown.getSelectedItem(),Integer.parseInt(fromt.getText()),Integer.parseInt(tot.getText()), false);
             this.dispose();
             
         }
