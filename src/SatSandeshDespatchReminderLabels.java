@@ -7,7 +7,7 @@ public class SatSandeshDespatchReminderLabels implements Printable, ActionListen
 {
     public static void main(String args[])
     {
-        new SatSandeshDespatchReminderLabels(2,1,2009,12,2009);
+        new SatSandeshDespatchReminderLabels(2,SamsUtilities.getCurrentMonth(),SamsUtilities.getCurrentYear(),12,SamsUtilities.getCurrentYear());
     }
     
     int present;
@@ -81,11 +81,15 @@ public class SatSandeshDespatchReminderLabels implements Printable, ActionListen
         {
             
             connect c1=new connect();
-            String oldQuery = "select count(b.asn) from basic b, payment p where b.asn=p.asn  and "
-                    + "b.dist='Distributor' and b.dno="+dno+" and ( p.endm>"+(m1-1)+" and p.endy="+y1+")  "
-                    + "and (p.endm <"+(m2+1)+" and p.endy="+y2+")";
-            //String newQuery = "";
-            c1.rs=c1.st.executeQuery(oldQuery);
+            /*String oldQuery = "select count(b.asn) from basic b, payment p where b.asn=p.asn  and "
+            + "b.dist='Distributor' and b.dno="+dno+" and ( p.endm>"+(m1-1)+" and p.endy="+y1+")  "
+            + "and (p.endm <"+(m2+1)+" and p.endy="+y2+")";*/
+            
+            String ending_period1 = y1+"-"+m1+"-28";
+            String ending_period2 = y2+"-"+m2+"-28";
+            String newQuery = "select count(asn) from subscribers_primary_details where distribution_type = 'Distributor' "
+                    + " and bulk_despatch_code="+dno+" and ending_period >= '"+ending_period1+"' and ending_period <= '"+ending_period2+"'";
+            c1.rs=c1.st.executeQuery(newQuery);
             while(c1.rs.next())
             {
                 x=c1.rs.getInt(1);
@@ -160,9 +164,15 @@ public class SatSandeshDespatchReminderLabels implements Printable, ActionListen
                 if(i==0)
                 {
                     
-                    c2.rs=c2.st.executeQuery("select b.asn from basic b, payment p where b.asn=p.asn  "
-                            + "and b.dist='Distributor' and b.dno="+dno+" and ( p.endm>"+(m1-1)+" and p.endy="+y1+")  "
-                            + "and (p.endm <"+(m2+1)+" and p.endy="+y2+") order by b.subnos, b.subno");
+                    /*c2.rs=c2.st.executeQuery("select b.asn from basic b, payment p where b.asn=p.asn  "
+                    + "and b.dist='Distributor' and b.dno="+dno+" and ( p.endm>"+(m1-1)+" and p.endy="+y1+")  "
+                    + "and (p.endm <"+(m2+1)+" and p.endy="+y2+") order by b.subnos, b.subno");*/
+                    
+                    c2.rs=c2.st.executeQuery("select asn from subscribers_primary_details where "
+                            + " distribution_type='Distributor' and bulk_despatch_code="+dno+" and   "
+                            + "ending_period >= '"+ending_period1+"' and ending_period <= '"+ending_period2+"' "
+                            + " order by subscription_code, subscription_number");
+                    
                     while(c2.rs.next())
                     {
                         if(i%(linesPerPage/2)==0 && i<x)
@@ -272,16 +282,19 @@ public class SatSandeshDespatchReminderLabels implements Printable, ActionListen
                     else if((i%(linesPerPage/2))>2)
                     {
                         
-                        c3.rs=c3.st.executeQuery("select b.asn, b.subnos, b.subno, p.endm, p.endy, b.dno "
-                                + "from basic b, payment p where b.asn=p.asn and b.asn="+asn[i]);
+                        c3.rs=c3.st.executeQuery("select asn, subscription_code, subscription_number, ending_period, bulk_despatch_code "
+                                + "from subscribers_primary_details where asn="+asn[i]);
                         c3.rs.next();
                         textLines[i][0]=""+c3.rs.getInt(1);
                         textLines[i][1]=""+c3.rs.getString(2)+c3.rs.getString(3);
-                        textLines[i][2]=""+c3.rs.getInt(4);
-                        textLines[i][3]=""+c3.rs.getInt(5);
+                        java.util.Date endDate = c3.rs.getDate(4);
+                        textLines[i][2] = ""+(endDate.getMonth()+1);
+                        textLines[i][3] = ""+(endDate.getYear()+1900);
+                        //textLines[i][2]=""+c3.rs.getInt(4);
+                        //textLines[i][3]=""+c3.rs.getInt(3);
                         textLines[i][4]="";
-                        int d=c3.rs.getInt(6);
-                        if(d>0)
+                        int d = c3.rs.getInt(5);
+                        if(d > 0)
                             textLines[i][4]=""+d;
                     }
                 }
@@ -318,17 +331,18 @@ public class SatSandeshDespatchReminderLabels implements Printable, ActionListen
                     
                     if(i%(linesPerPage/2)>2)
                     {
-                        c4.rs=c4.st.executeQuery("select * from subdetails where asn="+asn[i]);
+                        //c4.rs=c4.st.executeQuery("select fname,lname,add1,add2,add3,dist,state,pin from subdetails where asn="+asn[i]);
+                        c4.rs=c4.st.executeQuery("select first_name,last_name,address_line1,address_line2,address_line3,district,state,pin_code from subscribers_primary_details where asn="+asn[i]);
                         c4.rs.next();
                         String s1, s2, s3, s4, s5, s6,s7;
                         
-                        s1= c4.rs.getString(3);
-                        s2= c4.rs.getString(4);
-                        s3= c4.rs.getString(5);
-                        s4= c4.rs.getString(6);
-                        s5= c4.rs.getString(7);
-                        s6= c4.rs.getString(8);
-                        s7=c4.rs.getString(9);
+                        s1= c4.rs.getString(1);
+                        s2= c4.rs.getString(2);
+                        s3= c4.rs.getString(3);
+                        s4= c4.rs.getString(4);
+                        s5= c4.rs.getString(5);
+                        s6= c4.rs.getString(6);
+                        s7=c4.rs.getString(7);
                         
                         textLines[i][5]="";
                         textLines[i][6]="";
@@ -360,7 +374,7 @@ public class SatSandeshDespatchReminderLabels implements Printable, ActionListen
                             textLines[i][11]=s7;
                         
                         textLines[i][12]="";
-                        int c=Integer.parseInt(c4.rs.getString(10));
+                        int c=Integer.parseInt(c4.rs.getString(8));
                         if(c>0)
                         {
                             textLines[i][12]+=c;
@@ -382,7 +396,7 @@ public class SatSandeshDespatchReminderLabels implements Printable, ActionListen
                     
                     if(i%(linesPerPage/2)>2)
                     {
-                        c5.rs=c5.st.executeQuery("select phone, email from otherdet where asn="+asn[i]);
+                        c5.rs=c5.st.executeQuery("select phone_number, email from subscribers_primary_details where asn="+asn[i]);
                         c5.rs.next();
                         String s1, s2;
                         

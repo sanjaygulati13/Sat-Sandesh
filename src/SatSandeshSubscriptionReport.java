@@ -184,7 +184,7 @@ public class SatSandeshSubscriptionReport extends JFrame implements ActionListen
                 else
                     dates  = new String[0];
                 
-                //sqlQuery = "select distinct datd from payment where datm=" + m1 + " and daty=" + y1 + " order by datd, datm, daty";
+                //sqlQuery = "select distinct datd from subscribers_primary_details where MONTH(receipt_date)=" + m1 + " and YEAR(receipt_date)=" + y1 + " order by datd, MONTH(receipt_date), YEAR(receipt_date)";
                 //c1.rs = c1.st.executeQuery(countQuery);
                 //c1.rs.next();
                 //i = c1.rs.getInt(1);
@@ -211,26 +211,26 @@ public class SatSandeshSubscriptionReport extends JFrame implements ActionListen
                         String renewSqlQuery="";
                         if(dataSelectionType == 1)
                         {
-                            newSqlQuery = "select count(asn) from payment where datm = "+month+" and daty = "+year+" and subscription_type = 'New'";
-                            renewSqlQuery = "select count(asn) from payment where datm = "+month+" and daty = "+year+" and subscription_type = 'Renew'";
+                            newSqlQuery = "select count(asn) from subscribers_primary_details where MONTH(receipt_date) = "+month+" and YEAR(receipt_date) = "+year+" and subscription_type = 'New'";
+                            renewSqlQuery = "select count(asn) from subscribers_primary_details where MONTH(receipt_date) = "+month+" and YEAR(receipt_date) = "+year+" and subscription_type = 'Renew'";
                         }
                         else if(dataSelectionType == 2)
                         {
-                            newSqlQuery = "select count(asn) from payment where datm = "+(z+1)+" and daty = "+year+" and subscription_type = 'New'";
-                            renewSqlQuery = "select count(asn) from payment where datm = "+(z+1)+" and daty = "+year+" and subscription_type = 'Renew'";
+                            newSqlQuery = "select count(asn) from subscribers_primary_details where MONTH(receipt_date) = "+(z+1)+" and YEAR(receipt_date) = "+year+" and subscription_type = 'New'";
+                            renewSqlQuery = "select count(asn) from subscribers_primary_details where MONTH(receipt_date) = "+(z+1)+" and YEAR(receipt_date) = "+year+" and subscription_type = 'Renew'";
                         }
                         else if(dataSelectionType == 3)
                         {
                             int month_temp = ((z+3)%12)+1;
                             if(month_temp > 3)
                             {
-                                newSqlQuery = "select count(asn) from payment where datm = "+month_temp+" and daty = "+year+" and subscription_type = 'New'";
-                                renewSqlQuery = "select count(asn) from payment where datm = "+month_temp+" and daty = "+year+" and subscription_type = 'Renew'";
+                                newSqlQuery = "select count(asn) from subscribers_primary_details where MONTH(receipt_date) = "+month_temp+" and YEAR(receipt_date) = "+year+" and subscription_type = 'New'";
+                                renewSqlQuery = "select count(asn) from subscribers_primary_details where MONTH(receipt_date) = "+month_temp+" and YEAR(receipt_date) = "+year+" and subscription_type = 'Renew'";
                             }
                             else
                             {
-                                newSqlQuery = "select count(asn) from payment where datm = "+month_temp+" and daty = "+(year+1)+" and subscription_type = 'New'";
-                                renewSqlQuery = "select count(asn) from payment where datm = "+month_temp+" and daty = "+(year+1)+" and subscription_type = 'Renew'";
+                                newSqlQuery = "select count(asn) from subscribers_primary_details where MONTH(receipt_date) = "+month_temp+" and YEAR(receipt_date) = "+(year+1)+" and subscription_type = 'New'";
+                                renewSqlQuery = "select count(asn) from subscribers_primary_details where MONTH(receipt_date) = "+month_temp+" and YEAR(receipt_date) = "+(year+1)+" and subscription_type = 'Renew'";
                             }
                             
                         }

@@ -3,11 +3,11 @@ import java.awt.event.*;
 import javax.swing.*;
 
 
-public class remstatus1 extends JFrame implements ActionListener
+public class SatSandeshReminderStatus extends JFrame implements ActionListener
 {
     public static void main(String args[])
     {
-        new remstatus1();
+        new SatSandeshReminderStatus();
     }
     
     JLabel month, year, lang;
@@ -15,7 +15,7 @@ public class remstatus1 extends JFrame implements ActionListener
     JComboBox monthDropDown, yearDropDown;
     
     
-    public remstatus1()
+    public SatSandeshReminderStatus()
     {
         
         try
@@ -100,7 +100,7 @@ public class remstatus1 extends JFrame implements ActionListener
             int month1=Integer.parseInt(monthDropDown.getSelectedItem().toString());
             int year1=Integer.parseInt(yearDropDown.getSelectedItem().toString());
             
-            new remstatus(month1,year1);
+            new SatSandeshReminderStatusPrint(month1,year1);
             this.dispose();
         }
         

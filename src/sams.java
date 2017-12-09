@@ -727,7 +727,7 @@ public class sams extends JFrame implements ActionListener {
 
 
         if (ae.getSource() == reminderStatusMenuItem) {
-            remstatus1 remstatus1 = new remstatus1();
+            SatSandeshReminderStatus remstatus1 = new SatSandeshReminderStatus();
             this.dispose();
         }
 

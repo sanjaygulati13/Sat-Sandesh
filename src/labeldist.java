@@ -36,6 +36,7 @@ public class labeldist extends JFrame implements ActionListener
         setResizable(false);
         setLocation(10,10);
         setLayout(null);
+        SamsUtilities.center(this);
         
         dno=new JLabel("D#");
         month=new JLabel("Month");

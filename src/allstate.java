@@ -251,7 +251,7 @@ public class allstate implements Printable, ActionListener
                     else if((i%(linesPerPage/2))>2)
                     {
                         
-                        c3.rs=c3.st.executeQuery("select asn, subscription_code, subscription_number, ending_period, bulk_despatch_code from subscription_code where asn="+asn[i]);
+                        c3.rs=c3.st.executeQuery("select asn, subscription_code, subscription_number, ending_period, bulk_despatch_code from subscribers_primary_details where asn="+asn[i]);
                         c3.rs.next();
                         textLines[i][0]=""+c3.rs.getInt(1);
                         textLines[i][1]=""+c3.rs.getString(2)+c3.rs.getString(3);

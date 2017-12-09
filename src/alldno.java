@@ -253,7 +253,7 @@ public class alldno implements Printable, ActionListener
                     {
                         
                         //c3.rs=c3.st.executeQuery("select b.asn, b.subnos, b.subno, p.endm, p.endy, b.dno from basic b, payment p where b.asn=p.asn and b.asn="+asn[i]);
-                        c3.rs=c3.st.executeQuery("select asn, subscription_code, subscription_number, ending_period, bulk_despatch_code from subscription_code where asn="+asn[i]);
+                        c3.rs=c3.st.executeQuery("select asn, subscription_code, subscription_number, ending_period, bulk_despatch_code from subscribers_primary_details where asn="+asn[i]);
                         c3.rs.next();
                         textLines[i][0]=""+c3.rs.getInt(1);
                         textLines[i][1]=""+c3.rs.getString(2)+c3.rs.getString(3);
