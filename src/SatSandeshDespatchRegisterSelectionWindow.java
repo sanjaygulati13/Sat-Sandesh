@@ -160,7 +160,7 @@ public class SatSandeshDespatchRegisterSelectionWindow extends JFrame implements
         ok_old.setBounds(140, 270, 70, 30);
         ok_old.addActionListener(this);
         ok_old.setMnemonic('O');
-        add(ok_old);
+        //add(ok_old);
         
         clr.setBounds(240, 270, 70, 30);
         clr.addActionListener(this);

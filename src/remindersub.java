@@ -128,12 +128,12 @@ public class remindersub extends JFrame implements ActionListener
         listFormatButton.setMnemonic('i');
         
         ok_old.setBounds(30,280,90,60);
-        add(ok_old);
+        //add(ok_old);
         ok_old.addActionListener(this);
         ok_old.setMnemonic('l');
         
         listFormatButton_old.setBounds(300,280,90,60);
-        add(listFormatButton_old);
+        //add(listFormatButton_old);
         listFormatButton_old.addActionListener(this);
         listFormatButton_old.setMnemonic('i');
         

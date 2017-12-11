@@ -98,7 +98,7 @@ public class SatSandeshDespatchRemindersLabel implements Printable, ActionListen
             System.out.println(sqlQuery);
             System.out.println(newSqlQuery);
             
-            c1.rs=c1.st.executeQuery(sqlQuery);
+            c1.rs=c1.st.executeQuery(newSqlQuery);
             if(c1.rs.next())
                 totalNumberOfLabels=c1.rs.getInt(1);
             

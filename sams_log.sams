@@ -28,3 +28,15 @@ java.sql.SQLException: Illegal operation on empty result set. % class returnback
 java.sql.SQLException: Illegal operation on empty result set. % class returnback
 15/05/2017 23:18:21
 com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: Unknown column 'return_issue_month' in 'field list' % class returnback
+11/11/2017 15:57:17
+java.lang.NullPointerException % class SatSandeshDespatchRegisterPrintWindow
+11/11/2017 15:59:13
+java.lang.NullPointerException % class SatSandeshDespatchRegisterPrintWindow
+26/11/2017 15:26:49
+com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '='STOPPED' order by ending_period, first_name, last_name' at line 1 % class returnlist
+09/12/2017 23:11:21
+com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ')' at line 1 % class returnback
+09/12/2017 23:11:54
+com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ')' at line 1 % class returnback
+09/12/2017 23:12:12
+com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: Unknown column 'subsubscription_number' in 'where clause' % class returnback

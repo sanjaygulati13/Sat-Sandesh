@@ -2,14 +2,13 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.Savepoint;
 import javax.swing.*;
-//done till sub no, nd status
 
 
 public class SatSandeshModifySubscriptionData extends JFrame implements ActionListener, ItemListener,FocusListener
 {
     public static void main(String args[])
     {
-        new SatSandeshModifySubscriptionData(26408);
+        new SatSandeshModifySubscriptionData(27447);
     }
     
     JLabel  subd1, asn1, sub1, status1, rec1, dist1, d1, subt1, lang1;				//subscription details
@@ -62,6 +61,7 @@ public class SatSandeshModifySubscriptionData extends JFrame implements ActionLi
         catch (Exception cnf)
         {
             System.out.println(cnf);
+            cnf.printStackTrace();
         }
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         //setVisible(true);
@@ -254,49 +254,59 @@ public class SatSandeshModifySubscriptionData extends JFrame implements ActionLi
         try
         {
             connect c1=new connect();
-            c1.rs=c1.st.executeQuery("select * from basic where asn="+num);
-            c1.rs.next();
-            originalSubNumberCode = c1.rs.getString(2);
-            originalSubNumber = c1.rs.getString(3);
-            
-            subNumberCodeDropDown.setSelectedItem(originalSubNumberCode);
-            subNumberText.setText(originalSubNumber);
-            
-            statust1.setText(c1.rs.getString(4));
-            originalRcptNumber = ""+c1.rs.getInt(5);
-            receiptNumberText.setText(originalRcptNumber);
-            
-            String s1=""+c1.rs.getString(6);
-            if(s1.equals("BY POST") || s1.equals("by post"))
-                s1="By Post";
-            if(s1.equals("BY HAND") || s1.equals("by hand"))
-                s1="By Hand";
-            if(s1.equals("DISTRIBUTOR") || s1.equals("distributor"))
-                s1="Distributor";
-            
-            distributionTypeDropDown.setSelectedItem(s1);
-            if(s1.equals("Distributor"))
-            {
-                //JOptionPane.showMessageDialog(this, "", "Info", , );
-                districtText.setEnabled(false);
-                stateCodeDropDown.setEnabled(false);
-                stateNameDropDown.setEnabled(false);
+            //c1.rs=c1.st.executeQuery("select subnos,subno,status,rcpt,dist,dno,subt,lang,series_name from basic where asn="+num);
+            c1.rs=c1.st.executeQuery("select subscription_code,subscription_number,membership_status,"
+                    + "receipt_number,distribution_type,bulk_despatch_code,subscription_period,"
+                    + "language,series_name from subscribers_primary_details where asn="+num);
+            if(c1.rs.next()){
+                originalSubNumberCode = c1.rs.getString(1);
+                originalSubNumber = c1.rs.getString(2);
+                
+                subNumberCodeDropDown.setSelectedItem(originalSubNumberCode);
+                subNumberText.setText(originalSubNumber);
+                
+                statust1.setText(c1.rs.getString(3));
+                originalRcptNumber = ""+c1.rs.getInt(4);
+                receiptNumberText.setText(originalRcptNumber);
+                
+                String s1=""+c1.rs.getString(5);
+                if(s1.equals("BY POST") || s1.equals("by post"))
+                    s1="By Post";
+                if(s1.equals("BY HAND") || s1.equals("by hand"))
+                    s1="By Hand";
+                if(s1.equals("DISTRIBUTOR") || s1.equals("distributor"))
+                    s1="Distributor";
+                
+                distributionTypeDropDown.setSelectedItem(s1);
+                if(s1.equals("Distributor"))
+                {
+                    //JOptionPane.showMessageDialog(this, "", "Info", , );
+                    districtText.setEnabled(false);
+                    stateCodeDropDown.setEnabled(false);
+                    stateNameDropDown.setEnabled(false);
+                }
+                
+                d=c1.rs.getInt(6);
+                distributionCodeDropDown.setSelectedItem(""+d);
+                subtt1.setSelectedItem(c1.rs.getString(7));
+                languageDropDown.setSelectedItem(c1.rs.getString(8));
+                originalSeriesName = c1.rs.getString(9);
+                seriesNameDropDown.setSelectedItem(originalSeriesName);
+                
             }
-            
-            d=c1.rs.getInt(7);
-            distributionCodeDropDown.setSelectedItem(""+d);
-            subtt1.setSelectedItem(c1.rs.getString(8));
-            languageDropDown.setSelectedItem(c1.rs.getString(9));
-            originalSeriesName = c1.rs.getString(10);
-            seriesNameDropDown.setSelectedItem(originalSeriesName);
-            
-            
+            else{
+                JOptionPane.showMessageDialog(this, "ERROR: Invalid ASN", "ERROR", JOptionPane.ERROR_MESSAGE);
+                this.dispose();
+                new SatSandeshSearchBySubNumber();
+            }
             c1.st.close();
             c1.con.close();
+            
         }
         catch(Exception e1)
         {
             JOptionPane.showMessageDialog(this, "ERROR"+e1, "ERROR", JOptionPane.ERROR_MESSAGE);
+            e1.printStackTrace();
         }
         
         x=num;
@@ -379,18 +389,27 @@ public class SatSandeshModifySubscriptionData extends JFrame implements ActionLi
         try
         {
             connect c10=new connect();
-            c10.rs=c10.st.executeQuery("select * from payment where asn="+x);
+            //c10.rs=c10.st.executeQuery("select payt,chno,datd,datm,daty,amt,startm,starty,endm,endy from payment where asn="+x);
+            c10.rs=c10.st.executeQuery("select payment_type,instrument_number,"
+                    + "receipt_date,amount,starting_period,ending_period "
+                    + "from subscribers_primary_details where asn="+x);
             c10.rs.next();
             
-            paymentTypeDropDown.setSelectedItem(c10.rs.getString(2));
-            chequeInstrumentNumberText.setText(""+c10.rs.getInt(3));
-            datt1.setText(""+c10.rs.getInt(4));
-            datt2.setText(""+c10.rs.getInt(5));
-            datt3.setText(""+c10.rs.getInt(6));
-            amt1.setText(""+c10.rs.getInt(7));
-            startm1.setText(""+c10.rs.getInt(8));
-            starty1.setText(""+c10.rs.getInt(9));
-            endt1.setText(""+c10.rs.getInt(10)+"/"+c10.rs.getInt(11));
+            paymentTypeDropDown.setSelectedItem(c10.rs.getString(1));
+            chequeInstrumentNumberText.setText(""+c10.rs.getInt(2));
+            
+            java.util.Date subscriptionDate = c10.rs.getDate(3);
+            
+            datt1.setText(""+subscriptionDate.getDate());
+            datt2.setText(""+(subscriptionDate.getMonth()+1));
+            datt3.setText(""+(subscriptionDate.getYear()+1900));
+            amt1.setText(""+c10.rs.getInt(4));
+            
+            java.util.Date startDate = c10.rs.getDate(5);
+            startm1.setText(""+(startDate.getMonth()+1));
+            starty1.setText(""+(startDate.getYear()+1900));
+            java.util.Date endDate = c10.rs.getDate(6);
+            endt1.setText(""+(endDate.getMonth()+1)+"/"+(endDate.getYear()+1900));
             //startm1.setText(""+(c10.rs.getInt(10)+1));
             //starty1.setText(""+c10.rs.getInt(11));
             
@@ -401,6 +420,7 @@ public class SatSandeshModifySubscriptionData extends JFrame implements ActionLi
         catch(Exception e)
         {
             JOptionPane.showMessageDialog(this, "ERROR"+e, "ERROR", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
         }
         
         p2.add(pay1);
@@ -450,183 +470,185 @@ public class SatSandeshModifySubscriptionData extends JFrame implements ActionLi
         amt1.setBounds(640,45,40,20);
         amt1.setEnabled(false);
         amt1.setFont(f);
-//amt1.setText("100");
-
-p2.add(starm1);
-starm1.setBounds(700,45,100,20);
-
-p2.add(stary1);
-stary1.setBounds(830,45,10,20);
-
-p2.add(startm1);
-startm1.setBounds(800,45,25,20);
-startm1.setEnabled(false);
-startm1.setFont(f);
-
-p2.add(starty1);
-starty1.setBounds(845,45,50,20);
-starty1.setEnabled(false);
-starty1.setFont(f);
-
-
-p2.add(end1);
-end1.setBounds(30,75,100,20);
-
-p2.add(endt1);
-endt1.setBounds(130,75,80,20);
-endt1.setEnabled(false);
-endt1.setFont(f);
-
-
-
-try
-{
-    connect c2=new connect();
-    c2.rs=c2.st.executeQuery("select * from subdetails where asn="+x);
-    
-    while(c2.rs.next())
-    {
-        titt1.setText(c2.rs.getString(2));
-        namt1.setText(c2.rs.getString(3));
-        lnamt1.setText(c2.rs.getString(4));
-        addt11.setText(c2.rs.getString(5));
-        addt21.setText(c2.rs.getString(6));
-        addt31.setText(c2.rs.getString(7));
-        districtText.setText(c2.rs.getString(8));
-        String stateCode = c2.rs.getString(9);
-        stateCodeDropDown.setSelectedItem(stateCode);
-        stateNameDropDown.setSelectedItem(SamsUtilities.getStateNameForStateCode(stateCode));
-        pint1.setText(""+c2.rs.getInt(10));
-    }
-    
-    c2.st.close();
-    c2.con.close();
-}
-catch(Exception e1)
-{
-    JOptionPane.showMessageDialog(this, "ERROR"+e1, "ERROR", JOptionPane.ERROR_MESSAGE);
-}
-
-
-p3.add(mem1);
-mem1.setBounds(30,0,200,30);
-
-p3.add(tit1);
-tit1.setBounds(30,45,50,20);
-
-p3.add(titt1);
-//titt1.setEnabled(false);
-titt1.setBounds(80,45,30,20);
-
-p3.add(nam1);
-nam1.setBounds(120,45,40,20);
-
-p3.add(namt1);
-namt1.setBounds(160,45,145,20);
-
-p3.add(lnam1);
-lnam1.setBounds(310,45,40,20);
-
-p3.add(lnamt1);
-lnamt1.setBounds(350,45,145,20);
-
-
-add1.setBounds(520,45,60,20);
-p3.add(add1);
-
-
-addt11.setBounds(600,30,240,20);
-p3.add(addt11);
-
-p3.add(addt21);
-addt21.setBounds(600,55,240,20);
-
-p3.add(addt31);
-addt31.setBounds(600,80,240,20);
-
-
-
-p3.add(dis1);
-dis1.setBounds(30,115,60,20);
-
-p3.add(districtText);
-//dist21.setEnabled(false);
-districtText.setBounds(90,115,240,20);
-
-p3.add(stat1);
-
-stat1.setBounds(340,115,40,20);
-
-p3.add(stateNameDropDown);
-stateNameDropDown.setFont(f);
-stateNameDropDown.setBounds(375,115,200,20);
-
-p3.add(stateCodeDropDown);
-//statt1.setEnabled(false);
-stateCodeDropDown.setFont(f);
-stateCodeDropDown.setBounds(580,115,80,20);
-
-p3.add(pin1);
-pin1.setBounds(700,115,80,20);
-
-p3.add(pint1);
-//pint1.setEnabled(false);
-pint1.setBounds(800,115,50,20);
-
-//_______________________________________________________________________________________
-
-
-try
-{
-    
-    connect c3=new connect();
-    c3.rs=c3.st.executeQuery("select * from otherdet where asn="+x);
-    
-    while(c3.rs.next())
-    {
-        telt1.setText(c3.rs.getString(2));
-        counterDropDown.setSelectedItem(c3.rs.getString(3));
-        emailt1.setText(c3.rs.getString(4));
-        rett1.setText(""+c3.rs.getString(5));
-        remt1.setText(c3.rs.getString(6));
-    }
-    
-    c3.st.close();
-    c3.con.close();
-    
-}
-catch(Exception e)
-{
-    JOptionPane.showMessageDialog(this, "ERROR"+e, "ERROR", JOptionPane.ERROR_MESSAGE);
-}
-
-
-p4.add(oth1);
-oth1.setBounds(30,10,200,30);
-
-p4.add(tel1);
-tel1.setBounds(30,45,80,20);
-
-p4.add(telt1);
-//telt1.setEnabled(false);
-telt1.setBounds(110,45,110,20);
-
-p4.add(hist1);
-hist1.setBounds(240,45,60,20);
-
-p4.add(counterDropDown);
-counterDropDown.setEnabled(false);
-counterDropDown.setFont(f);
-counterDropDown.setBounds(300,45,150,20);
-
-p4.add(email1);
-email1.setBounds(30,105,60,20);
-//setBounds(470,45,60,20);
-
-
-p4.add(emailt1);
-//emailt1.setEnabled(false);
-emailt1.setBounds(110,105,380,20);
+        
+        p2.add(starm1);
+        starm1.setBounds(700,45,100,20);
+        
+        p2.add(stary1);
+        stary1.setBounds(830,45,10,20);
+        
+        p2.add(startm1);
+        startm1.setBounds(800,45,25,20);
+        startm1.setEnabled(false);
+        startm1.setFont(f);
+        
+        p2.add(starty1);
+        starty1.setBounds(845,45,50,20);
+        starty1.setEnabled(false);
+        starty1.setFont(f);
+        
+        
+        p2.add(end1);
+        end1.setBounds(30,75,100,20);
+        
+        p2.add(endt1);
+        endt1.setBounds(130,75,80,20);
+        endt1.setEnabled(false);
+        endt1.setFont(f);
+        
+        
+        
+        try
+        {
+            connect c2=new connect();
+            //c2.rs=c2.st.executeQuery("select title,fname,lname,add1,add2,add3,dist,state,pin from subdetails where asn="+x);
+            c2.rs=c2.st.executeQuery("select title,first_name,last_name,"
+                    + "address_line1,address_line2,address_line3,district,state,pin_code "
+                    + "from subscribers_primary_details where asn="+x);
+            
+            while(c2.rs.next())
+            {
+                titt1.setText(c2.rs.getString(1));
+                namt1.setText(c2.rs.getString(2));
+                lnamt1.setText(c2.rs.getString(3));
+                addt11.setText(c2.rs.getString(4));
+                addt21.setText(c2.rs.getString(5));
+                addt31.setText(c2.rs.getString(6));
+                districtText.setText(c2.rs.getString(7));
+                String stateCode = c2.rs.getString(8);
+                stateCodeDropDown.setSelectedItem(stateCode);
+                stateNameDropDown.setSelectedItem(SamsUtilities.getStateNameForStateCode(stateCode));
+                pint1.setText(""+c2.rs.getInt(9));
+            }
+            
+            c2.st.close();
+            c2.con.close();
+        }
+        catch(Exception e1)
+        {
+            JOptionPane.showMessageDialog(this, "ERROR"+e1, "ERROR", JOptionPane.ERROR_MESSAGE);
+            e1.printStackTrace();
+        }
+        
+        
+        p3.add(mem1);
+        mem1.setBounds(30,0,200,30);
+        
+        p3.add(tit1);
+        tit1.setBounds(30,45,50,20);
+        
+        p3.add(titt1);
+        titt1.setBounds(80,45,30,20);
+        
+        p3.add(nam1);
+        nam1.setBounds(120,45,40,20);
+        
+        p3.add(namt1);
+        namt1.setBounds(160,45,145,20);
+        
+        p3.add(lnam1);
+        lnam1.setBounds(310,45,40,20);
+        
+        p3.add(lnamt1);
+        lnamt1.setBounds(350,45,145,20);
+        
+        
+        add1.setBounds(520,45,60,20);
+        p3.add(add1);
+        
+        
+        addt11.setBounds(600,30,240,20);
+        p3.add(addt11);
+        
+        p3.add(addt21);
+        addt21.setBounds(600,55,240,20);
+        
+        p3.add(addt31);
+        addt31.setBounds(600,80,240,20);
+        
+        
+        
+        p3.add(dis1);
+        dis1.setBounds(30,115,60,20);
+        
+        p3.add(districtText);
+        districtText.setBounds(90,115,240,20);
+        
+        p3.add(stat1);
+        
+        stat1.setBounds(340,115,40,20);
+        
+        p3.add(stateNameDropDown);
+        stateNameDropDown.setFont(f);
+        stateNameDropDown.setBounds(375,115,200,20);
+        
+        p3.add(stateCodeDropDown);
+        
+        stateCodeDropDown.setFont(f);
+        stateCodeDropDown.setBounds(580,115,80,20);
+        
+        p3.add(pin1);
+        pin1.setBounds(700,115,80,20);
+        
+        p3.add(pint1);
+        
+        pint1.setBounds(800,115,50,20);
+        
+        
+        try
+        {
+            
+            connect c3=new connect();
+            //c3.rs=c3.st.executeQuery("select phone,history,email,ret,remarks from otherdet where asn="+x);
+            c3.rs=c3.st.executeQuery("select phone_number, counter_name, email, "
+                    + "return_issue_month, remarks from "
+                    + "subscribers_primary_details where asn="+x);
+            
+            while(c3.rs.next())
+            {
+                telt1.setText(c3.rs.getString(1));
+                counterDropDown.setSelectedItem(c3.rs.getString(2));
+                emailt1.setText(c3.rs.getString(3));
+                rett1.setText(""+c3.rs.getString(4));
+                remt1.setText(c3.rs.getString(5));
+            }
+            
+            c3.st.close();
+            c3.con.close();
+            
+        }
+        catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(this, "ERROR"+e, "ERROR", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+        
+        
+        p4.add(oth1);
+        oth1.setBounds(30,10,200,30);
+        
+        p4.add(tel1);
+        tel1.setBounds(30,45,80,20);
+        
+        p4.add(telt1);
+        
+        telt1.setBounds(110,45,110,20);
+        
+        p4.add(hist1);
+        hist1.setBounds(240,45,60,20);
+        
+        p4.add(counterDropDown);
+        counterDropDown.setEnabled(false);
+        counterDropDown.setFont(f);
+        counterDropDown.setBounds(300,45,150,20);
+        
+        p4.add(email1);
+        email1.setBounds(30,105,60,20);
+        
+        
+        p4.add(emailt1);
+        
+        emailt1.setBounds(110,105,380,20);
 //setBounds(550,45,240,20);
 
 p4.add(ret1);
@@ -836,13 +858,14 @@ setVisible(true);
                 String seriesName = (String)seriesNameDropDown.getSelectedItem();
                 //System.out.println(seriesName);
                 
-                String basicQuery = "update basic set subnos='"+subno1+"', subno="+subno+" ,rcpt="+rcpt+", dist='"+dist+"', dno="+dno+", series_name='"+seriesName+"', updated_by = '"+SamsUtilities.getUserName()+"'  where asn="+asn;
+                
                 connect c14=new connect();
                 
                 Savepoint save1;
                 save1 = c14.con.setSavepoint();
                 c14.con.setAutoCommit(false);
                 //System.out.println(basicQuery);
+                /*String basicQuery = "update basic set subnos='"+subno1+"', subno="+subno+" ,rcpt="+rcpt+", dist='"+dist+"', dno="+dno+", series_name='"+seriesName+"', updated_by = '"+SamsUtilities.getUserName()+"'  where asn="+asn;
                 c14.a=c14.st.executeUpdate(basicQuery);
                 
                 if(c14.a == 1) flag++;
@@ -861,6 +884,8 @@ setVisible(true);
                 //System.out.println(c5.a);
                 
                 if(c14.a == 1) flag++;
+                
+                */
                 
                 if( seriesName.equals(originalSeriesName) == false || rcptText.equals(originalRcptNumber) == false ){
                     String sqlQuery = "update receipt_book_details set series_name = '"+seriesName+"', receipt_number = "+rcpt+", updated_by = '"+SamsUtilities.getUserName()+"' where asn ="+asn+" and series_name = '"+originalSeriesName+"' and receipt_number = "+originalRcptNumber+"";
@@ -888,7 +913,7 @@ setVisible(true);
                 
                 if(c14.a == 1) flag=flag+1;
                 
-                if(flag==5)
+                if(flag==(5-3))
                 {
                     JOptionPane.showMessageDialog(this, "RECORD MODIFIED SUCCESSFULLY", "SUCCESS", JOptionPane.INFORMATION_MESSAGE);
                     flag=0;
@@ -1020,12 +1045,12 @@ setVisible(true);
                             String distributionType = (String)distributionTypeDropDown.getSelectedItem();
                             //if( distributionType.equals("Distributor"))
                             {
-                                JOptionPane.showMessageDialog(this,"Already used receipt number", "Invalid receipt number", JOptionPane.ERROR_MESSAGE);
-                                receiptNumberText.setText("");
-                                receiptNumberText.requestFocus();
-                                fillSeriesConnection.closeAll();
-                                return;
-                            }
+                            JOptionPane.showMessageDialog(this,"Already used receipt number", "Invalid receipt number", JOptionPane.ERROR_MESSAGE);
+                            receiptNumberText.setText("");
+                            receiptNumberText.requestFocus();
+                            fillSeriesConnection.closeAll();
+                            return;
+                        }
                         }
                     }
                     
@@ -1055,7 +1080,11 @@ setVisible(true);
                 subNum  = Integer.parseInt(subNumber);
                 if(subNumber.equals(originalSubNumber) == false && subNumberCode.equals(originalSubNumberCode) == false)
                 {
-                    String countQuery = "select count(asn) from basic where subnos = '"+subNumberCode+"' and subno = "+subNum;
+                    //String countQuery = "select count(asn) from basic where subnos = '"+subNumberCode+"' and subno = "+subNum;
+                    String countQuery = "select count(asn) from "
+                            + "subscribers_primary_details where "
+                            + "subscription_code = '"+subNumberCode+"' "
+                            + "and subscription_number = "+subNum;
                     //String sqlQuery = "select count(asn) from basic where subnos = '"+subNumberCode+"' and subno = "+subNum;
                     //System.out.println(countQuery);
                     connect fillSeriesConnection = new connect();
@@ -1238,7 +1267,7 @@ setVisible(true);
             
             catch(Exception e)
             {
-                
+                e.printStackTrace();
             }
             
         }
@@ -1264,6 +1293,7 @@ setVisible(true);
             }
             catch(Exception e)
             {
+                e.printStackTrace();
                 
             }
         }

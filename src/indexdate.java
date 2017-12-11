@@ -115,7 +115,7 @@ public class indexdate extends JFrame implements ActionListener
         oldOkButton.setBounds(120,230,70,25);
         oldOkButton.addActionListener(this);
         oldOkButton.setMnemonic('k');
-        add(oldOkButton);
+        //add(oldOkButton);
         
     }
     

@@ -31,10 +31,10 @@ public class SatSandeshSearchBySubNumber implements ActionListener
     int mode;
     int x,y;
     
-    /*public static void main(String args[])
+    public static void main(String args[])
     {
         new SatSandeshSearchBySubNumber();
-    }*/
+    }
     
     SatSandeshSearchBySubNumber()
     {
@@ -251,8 +251,8 @@ public class SatSandeshSearchBySubNumber implements ActionListener
         
         if(ae.getSource()==closeButton)
         {
-            new sams();
             satSandeshSearchWindow.dispose();
+            new sams();
         }
         
         if(ae.getSource() == subNumberRadioButton)
@@ -280,7 +280,8 @@ public class SatSandeshSearchBySubNumber implements ActionListener
         try
         {
             connect c1=new connect();
-            c1.rs=c1.st.executeQuery("select b.asn, s.fname, s.lname, s.dist, s.state from basic b, subdetails s where b.asn=s.asn and b.subno="+subNumber+" and b.subnos='"+stateCode+"'");
+            //c1.rs=c1.st.executeQuery("select b.asn, s.fname, s.lname, s.dist, s.state from basic b, subdetails s where b.asn=s.asn and b.subno="+subNumber+" and b.subnos='"+stateCode+"'");
+            c1.rs=c1.st.executeQuery("select asn from subscribers_primary_details where subscription_number="+subNumber+" and subscription_code='"+stateCode+"'");		
             while(c1.rs.next())
             {
                 i++;
@@ -297,7 +298,8 @@ public class SatSandeshSearchBySubNumber implements ActionListener
                 
                 connect c2=new connect();
                 
-                c2.rs=c2.st.executeQuery("select b.asn, s.fname, s.lname, s.dist, s.state from basic b, subdetails s where b.asn=s.asn and b.subno="+subNumber+" and b.subnos='"+stateCode+"'");		//select asn from basic where subno="+Integer.parseInt(subNumberText.getText())+" or subnos='"+stateCodeDropDown.getSelectedItem()+"'order by asn");
+                //c2.rs=c2.st.executeQuery("select b.asn, s.fname, s.lname, s.dist, s.state from basic b, subdetails s where b.asn=s.asn and b.subno="+subNumber+" and b.subnos='"+stateCode+"'");		//select asn from basic where subno="+Integer.parseInt(subNumberText.getText())+" or subnos='"+stateCodeDropDown.getSelectedItem()+"'order by asn");
+                c2.rs=c2.st.executeQuery("select asn, first_name, last_name, district, state from subscribers_primary_details where subscription_number="+subNumber+" and subscription_code='"+stateCode+"'");		
                 Object data[][]= new Object[i][5];
                 int z=0;
                 int j=0;
@@ -347,7 +349,8 @@ public class SatSandeshSearchBySubNumber implements ActionListener
         try
         {
             connect c1=new connect();
-            c1.rs=c1.st.executeQuery("select b.asn, s.fname, s.lname, s.dist, s.state from basic b, subdetails s where b.asn=s.asn and (s.add1 like '"+address+"%' or s.add2 like '%"+address+"%' or s.add3 like '%"+address+"%' )");
+            //c1.rs=c1.st.executeQuery("select b.asn, s.fname, s.lname, s.dist, s.state from basic b, subdetails s where b.asn=s.asn and (s.add1 like '"+address+"%' or s.add2 like '%"+address+"%' or s.add3 like '%"+address+"%' )");
+            c1.rs=c1.st.executeQuery("select asn from subscribers_primary_details where (address_line1 like '"+address+"%' or address_line2 like '%"+address+"%' or address_line3 like '%"+address+"%' )");
             while(c1.rs.next())
             {
                 i++;
@@ -364,7 +367,8 @@ public class SatSandeshSearchBySubNumber implements ActionListener
                 
                 connect c2=new connect();
                 
-                c2.rs=c2.st.executeQuery("select b.asn, s.fname, s.lname, s.dist, s.state from basic b, subdetails s where b.asn=s.asn and (s.add1 like '"+address+"%' or s.add2 like '%"+address+"%' or s.add3 like '%"+address+"%')");
+                //c2.rs=c2.st.executeQuery("select b.asn, s.fname, s.lname, s.dist, s.state from basic b, subdetails s where b.asn=s.asn and (s.add1 like '"+address+"%' or s.add2 like '%"+address+"%' or s.add3 like '%"+address+"%')");
+                c2.rs=c2.st.executeQuery("select asn, first_name, last_name, district, state from subscribers_primary_details where (address_line1 like '"+address+"%' or address_line2 like '%"+address+"%' or address_line3 like '%"+address+"%')");
                 Object data[][]= new Object[i][5];
                 int z=0;
                 int j=0;
@@ -435,23 +439,29 @@ public class SatSandeshSearchBySubNumber implements ActionListener
         {
             String percentile = "%%";
             connect c1=new connect();
-            String searchQuery = "select s.asn , s.fname , s.lname , s.dist , s.state from subdetails s, basic b where b.asn=s.asn ";
+            //String searchQuery = "select s.asn , s.fname , s.lname , s.dist , s.state from subdetails s, basic b where b.asn=s.asn ";
+            String searchQuery = "select asn , first_name , last_name , district , state from subscribers_primary_details where asn>0 ";
             
             if(firstName.length()>0)
-                searchQuery += "and s.fname like '"+firstName+"%' ";
+                searchQuery += "and first_name like '"+firstName+"%' ";
+            //searchQuery += "and s.fname like '"+firstName+"%' ";
             
             if(lastName.length()>0)
-                searchQuery += "and s.lname like '"+lastName+"%' ";
+                searchQuery += "and last_name like '"+lastName+"%' ";
+            //searchQuery += "and s.lname like '"+lastName+"%' ";
             
             
             if(district.length()>0)
-                searchQuery += "and s.dist like '"+district+"%' ";
+                searchQuery += "and district like '"+district+"%' ";
+            //searchQuery += "and s.dist like '"+district+"%' ";
             
             
             if(state.length()>0)
-                searchQuery += "and s.state like '"+state+"%' ";
+                searchQuery += "and state like '"+state+"%' ";
+            //searchQuery += "and s.state like '"+state+"%' ";
             
-            searchQuery += "order by s.asn";
+            //searchQuery += "order by s.asn";
+            searchQuery += "order by asn";
             //System.out.println(searchQuery);
             
             i=0;
@@ -497,8 +507,8 @@ public class SatSandeshSearchBySubNumber implements ActionListener
                 sp=new JScrollPane(tb1);
                 //sp.setBounds(20,220,545,410);   //410
                 satSandeshSearchWindow.add(sp);
-                c2.st.close();
-                c2.con.close();
+                c2.closeAll();
+                
             }
         }
         catch(Exception e)
@@ -514,7 +524,8 @@ public class SatSandeshSearchBySubNumber implements ActionListener
         {
             
             connect c1=new connect();
-            c1.rs=c1.st.executeQuery("select b.asn, s.fname, s.lname, s.dist, s.state from basic b, subdetails s where b.asn=s.asn and b.series_name = '"+seriesName+"' and b.rcpt="+rcptNumber);
+            //c1.rs=c1.st.executeQuery("select b.asn, s.fname, s.lname, s.dist, s.state from basic b, subdetails s where b.asn=s.asn and b.series_name = '"+seriesName+"' and b.rcpt="+rcptNumber);
+            c1.rs=c1.st.executeQuery("select asn, first_name, last_name, district, state from subscribers_primary_details where series_name = '"+seriesName+"' and receipt_number="+rcptNumber);
             while(c1.rs.next())
             {
                 i++;
@@ -531,7 +542,8 @@ public class SatSandeshSearchBySubNumber implements ActionListener
                 
                 connect c2=new connect();
                 
-                c2.rs=c2.st.executeQuery("select b.asn, s.fname, s.lname, s.dist, s.state from basic b, subdetails s where b.asn=s.asn and  b.series_name = '"+seriesName+"' and b.rcpt="+rcptNumber);
+                //c2.rs=c2.st.executeQuery("select b.asn, s.fname, s.lname, s.dist, s.state from basic b, subdetails s where b.asn=s.asn and  b.series_name = '"+seriesName+"' and b.rcpt="+rcptNumber);
+                c2.rs=c2.st.executeQuery("select asn, first_name, last_name, district, state from subscribers_primary_details where series_name = '"+seriesName+"' and receipt_number="+rcptNumber);
                 Object data[][]= new Object[i][5];
                 int z=0;
                 int j=0;

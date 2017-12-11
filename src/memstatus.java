@@ -11,7 +11,7 @@ public class memstatus extends JFrame implements ActionListener
     }
     
     JLabel month, year, lang;
-    JButton ok, ok_new, back;
+    JButton ok_old, ok, back;
     JComboBox monthDropDown, yearDropDown;
     JComboBox langt;
     
@@ -59,8 +59,8 @@ public class memstatus extends JFrame implements ActionListener
         
         langt=new JComboBox();
         
-        ok=new JButton("OK");
-        ok_new = new JButton("<html>OK New</html>");
+        ok_old=new JButton("OK");
+        ok = new JButton("<html>OK</html>");
         back=new JButton("Back");
         
         langt.addItem("Hindi");
@@ -86,20 +86,20 @@ public class memstatus extends JFrame implements ActionListener
         langt.setBounds(110,110,100,20);
         add(langt);
         
-        ok.setBounds(30,170,70,45);
-        ok.addActionListener(this);
-        ok.setMnemonic('O');
-        add(ok);
+        ok_old.setBounds(210,170,70,45);
+        ok_old.addActionListener(this);
+        ok_old.setMnemonic('O');
+        //add(ok_old);
         
         back.setBounds(120,170,70,45);
         back.addActionListener(this);
         back.setMnemonic('B');
         add(back);
         
-        ok_new.setBounds(210,170,70,45);
-        ok_new.addActionListener(this);
-        ok_new.setMnemonic('O');
-        add(ok_new);
+        ok.setBounds(30,170,70,45);
+        ok.addActionListener(this);
+        ok.setMnemonic('O');
+        add(ok);
         
         setVisible(true);
         
@@ -108,7 +108,7 @@ public class memstatus extends JFrame implements ActionListener
     public void actionPerformed(ActionEvent ae)
     {
         
-        if(ae.getSource()==ok)
+        if(ae.getSource()==ok_old)
         {
             int month1=Integer.parseInt(monthDropDown.getSelectedItem().toString());
             int year1=Integer.parseInt(yearDropDown.getSelectedItem().toString());
@@ -121,7 +121,7 @@ public class memstatus extends JFrame implements ActionListener
             this.dispose();
         }
         
-        if(ae.getSource()==ok_new)
+        if(ae.getSource()==ok)
         {
             int month1=Integer.parseInt(monthDropDown.getSelectedItem().toString());
             int year1=Integer.parseInt(yearDropDown.getSelectedItem().toString());

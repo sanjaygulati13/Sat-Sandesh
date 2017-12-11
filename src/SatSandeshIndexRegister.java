@@ -164,7 +164,10 @@ public class SatSandeshIndexRegister implements Printable, ActionListener
                             + "language not in ('Other') and subscription_code not in ('NA') "
                             + "order by state, first_name, last_name";
                     
-                    c2.rs=c2.st.executeQuery(query);
+                    if(dataFromNewTable)
+                        c2.rs=c2.st.executeQuery(newQuery);
+                    else
+                        c2.rs=c2.st.executeQuery(query);
                     while(c2.rs.next())
                     {
                         if(i%(linesPerPage/2)==0 && i<x)

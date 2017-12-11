@@ -140,13 +140,13 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
         receiptNumberText = new TextFieldWithLimit(5,5);
         //dateText = new TextFieldWithLimit(2,2);
         {
-            prop = new Properties();
-            prop.put("text.today", "Today");
-            prop.put("text.month", "Month");
-            prop.put("text.year", "Year");
-            datePanel = new JDatePanelImpl(model, prop);
-            datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
-        }
+        prop = new Properties();
+        prop.put("text.today", "Today");
+        prop.put("text.month", "Month");
+        prop.put("text.year", "Year");
+        datePanel = new JDatePanelImpl(model, prop);
+        datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+    }
         
         //monthText=new TextFieldWithLimit(2,2);
         //yearText=new TextFieldWithLimit(4,4);
@@ -261,52 +261,52 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
         
         //set the ending period
         {
+        
+        int startMonth = Integer.parseInt((String)startingPeriodMonthDropDown.getSelectedItem());
+        int startYear = Integer.parseInt((String)startingPeriodYearDropDown.getSelectedItem());
+        String language = (String)languageDropDown.getSelectedItem();
+        int numberOfYears=0, numberOfMonths=0;
+        try
+        {
             
-            int startMonth = Integer.parseInt((String)startingPeriodMonthDropDown.getSelectedItem());
-            int startYear = Integer.parseInt((String)startingPeriodYearDropDown.getSelectedItem());
-            String language = (String)languageDropDown.getSelectedItem();
-            int numberOfYears=0, numberOfMonths=0;
-            try
+            connect c22 = new connect();
+            c22.rs = c22.st.executeQuery("select year1, month1 from amountdet where duration='"+subscriptionDurationDropDown.getSelectedItem()+"' and language = '"+language+"'");
+            if(c22.rs.next())
             {
-                
-                connect c22 = new connect();
-                c22.rs = c22.st.executeQuery("select year1, month1 from amountdet where duration='"+subscriptionDurationDropDown.getSelectedItem()+"' and language = '"+language+"'");
-                if(c22.rs.next())
-                {
-                    numberOfYears = c22.rs.getInt(1);
-                    numberOfMonths = c22.rs.getInt(2);
-                    //System.out.println("year : "+numberOfYears+" month : "+numberOfMonths);
-                }
-                c22.closeAll();
+                numberOfYears = c22.rs.getInt(1);
+                numberOfMonths = c22.rs.getInt(2);
+                //System.out.println("year : "+numberOfYears+" month : "+numberOfMonths);
             }
-            catch(Exception e)
-            {
-                JOptionPane.showMessageDialog(satSandeshBulkSubscriptionWindow, "ERROR : "+e, "ERROR", JOptionPane.ERROR_MESSAGE);
-            }
-            
-            endingMonth=((startMonth-1)+numberOfMonths)%12;
-            
-           
-            int tempFlag=0;
-            
-            if(endingMonth==0)
-                endingMonth=12;
-            
-            if(endingMonth>0 && endingMonth <numberOfMonths)
-                tempFlag++;
-            if(endingMonth<12)
-                endingYear=startYear+numberOfYears+tempFlag;
-            else
-                endingYear=startYear+numberOfYears-1+tempFlag;
-            
-            if(endingMonth==12 && numberOfMonths>0)
-            {
-                endingYear++;
-            }
-            
-            
-            endingPeriodText.setText(""+endingMonth+"/"+endingYear);
+            c22.closeAll();
         }
+        catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(satSandeshBulkSubscriptionWindow, "ERROR : "+e, "ERROR", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        endingMonth=((startMonth-1)+numberOfMonths)%12;
+        
+        
+        int tempFlag=0;
+        
+        if(endingMonth==0)
+            endingMonth=12;
+        
+        if(endingMonth>0 && endingMonth <numberOfMonths)
+            tempFlag++;
+        if(endingMonth<12)
+            endingYear=startYear+numberOfYears+tempFlag;
+        else
+            endingYear=startYear+numberOfYears-1+tempFlag;
+        
+        if(endingMonth==12 && numberOfMonths>0)
+        {
+            endingYear++;
+        }
+        
+        
+        endingPeriodText.setText(""+endingMonth+"/"+endingYear);
+    }
         
         //------------------------------------------------end------------------------------------------------//
         
@@ -413,7 +413,7 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
             {
                 JOptionPane.showMessageDialog(satSandeshBulkSubscriptionWindow, "Please enter D#", "ERROR", JOptionPane.ERROR_MESSAGE);
                 distributionNumberDropDown.requestFocus();
-                return;   
+                return;
             }
             int distributionNumber = Integer.parseInt(dNumString);
             
@@ -429,7 +429,8 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
                 currentAsn = c1.rs.getInt(1);
                 //c1.closeAll();
                 
-                c1.rs=c1.st.executeQuery("select max(subno) from basic where subnos='BD'");
+                //c1.rs=c1.st.executeQuery("select max(subno) from basic where subnos='BD'");
+                c1.rs=c1.st.executeQuery("select max(subscription_number) from subscribers_primary_details where subscription_code='BD'");
                 c1.rs.next();
                 currentSubNumber = c1.rs.getInt(1);
                 //System.out.println(currentSubNumber);
@@ -461,7 +462,8 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
                     connect c1=new connect();
                     while(true){
                         
-                        c1.rs=c1.st.executeQuery("select subno from basic where subnos='BD' and subno = "+currentSubNumber );
+                        //c1.rs=c1.st.executeQuery("select subno from basic where subnos='BD' and subno = "+currentSubNumber );
+                        c1.rs=c1.st.executeQuery("select subscription_number from subscribers_primary_details where subscription_code='BD' and subscription_number = "+currentSubNumber );
                         if(c1.rs.next())
                             ++currentSubNumber;
                         else break;
@@ -662,26 +664,27 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
                     
                     int subNum;
                     String subNumberCode = "BD";
-                   
                     
-                        subNum  = Integer.parseInt(subNumber);
-                        String countQuery = "select count(asn) from basic where subnos = '"+subNumberCode+"' and subno = "+subNum;
-                        //String sqlQuery = "select count(asn) from basic where subnos = '"+subNumberCode+"' and subno = "+subNum;
-                        //System.out.println(countQuery);
-                        connect fillSeriesConnection = new connect();
-                        
-                        fillSeriesConnection.rs = fillSeriesConnection.st.executeQuery(countQuery);
-                        fillSeriesConnection.rs.next();
-                        int ArrayCount = fillSeriesConnection.rs.getInt(1);
-                        if(ArrayCount > 0)
-                        {
-                            bulkEntryTable.changeSelection(i, 3, false, false);
-                            JOptionPane.showMessageDialog(satSandeshBulkSubscriptionWindow, "Sub number "+subNumber+" already issued. Please re fill it in row "+(i+1), "ERROR", JOptionPane.ERROR_MESSAGE);
-                            fillSeriesConnection.closeAll();
-                            return;
-                        }
+                    
+                    subNum  = Integer.parseInt(subNumber);
+                    //String countQuery = "select count(asn) from basic where subnos = '"+subNumberCode+"' and subno = "+subNum;
+                    //String sqlQuery = "select count(asn) from basic where subnos = '"+subNumberCode+"' and subno = "+subNum;
+                    String countQuery = "select count(asn) from subscribers_primary_details where subscription_code = '"+subNumberCode+"' and subscription_number = "+subNum;
+                    //System.out.println(countQuery);
+                    connect fillSeriesConnection = new connect();
+                    
+                    fillSeriesConnection.rs = fillSeriesConnection.st.executeQuery(countQuery);
+                    fillSeriesConnection.rs.next();
+                    int ArrayCount = fillSeriesConnection.rs.getInt(1);
+                    if(ArrayCount > 0)
+                    {
+                        bulkEntryTable.changeSelection(i, 3, false, false);
+                        JOptionPane.showMessageDialog(satSandeshBulkSubscriptionWindow, "Sub number "+subNumber+" already issued. Please re fill it in row "+(i+1), "ERROR", JOptionPane.ERROR_MESSAGE);
                         fillSeriesConnection.closeAll();
-                        
+                        return;
+                    }
+                    fillSeriesConnection.closeAll();
+                    
                 }
                 catch(Exception e)
                 {
@@ -770,53 +773,44 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
                     {
                         int page_number = 0;
                         String subscription_type = "New";
+                        String chequeNumber = chequeDDText.getText();
+                        if(chequeNumber.isEmpty()) chequeNumber = "0";
                         
+                        /*
                         c2.a=c2.st.executeUpdate("insert into basic values("+asnNumbers[i]+",'BD',"+
-                                subNumbers[i]+",'Active',"+rcptNum+",'"+
-                                distributionType+"',"+distributionNumber+",'"+subscriptionType+"','"+language+"','"+
-                                seriesName+"',"+page_number+", '"+SamsUtilities.getUserName()+"')");
+                        subNumbers[i]+",'Active',"+rcptNum+",'"+
+                        distributionType+"',"+distributionNumber+",'"+subscriptionType+"','"+language+"','"+
+                        seriesName+"',"+page_number+", '"+SamsUtilities.getUserName()+"')");
                         
                         if(c2.a==1)
-                            flag=flag+1;
-                        //c2.closeAll();
-                        
-                        
-                        //if(distributionNumber>0)
-                        
-                        //connect c10=new connect();
-                        /*
-                        c2.a=c2.st.executeUpdate("insert into d"+distributionNumber+" values ("+asnNumbers[i]+")");
-                        */
-                        //c2.closeAll();
-                    
+                        flag=flag+1;
                         
                         //database query for payment fragment
                         
-                        String chequeNumber = chequeDDText.getText();
-                        if(chequeNumber.isEmpty()) chequeNumber = "0";
+                        
                         //int chequeNumber = Integer.parseInt();
                         //connect c3=new connect();
                         String paymentUpdate = "insert into payment values("+asnNumbers[i]+",'"+
-                                paymentType+"',"+chequeNumber+","+entryDate+","+entryMonth+","+entryYear+","+amount+","+
-                                startMonth+","+startYear+","+endingMonth+","+endingYear+",'"+
-                                SamsUtilities.getCurrentSqlDate()+"','"+subscription_type+"')";
+                        paymentType+"',"+chequeNumber+","+entryDate+","+entryMonth+","+entryYear+","+amount+","+
+                        startMonth+","+startYear+","+endingMonth+","+endingYear+",'"+
+                        SamsUtilities.getCurrentSqlDate()+"','"+subscription_type+"')";
                         //System.out.println(paymentUpdate);
                         c2.a=c2.st.executeUpdate(paymentUpdate);
                         
                         if(c2.a==1)
-                            flag=flag+1;
+                        flag=flag+1;
                         //c3.closeAll();
                         
                         //database query for subscription details fragment
                         
                         //connect c4=new connect();
                         String subDetailsQuery = "insert into subdetails values ("+asnNumbers[i]+",'"+
-                                title+"','"+firstNames[i]+"','"+lastNames[i]+"','"+addressPart1+"','"+addressPart2+"','"+
-                                addressPart3+"','"+district+"','"+state+"',"+pin+")";
+                        title+"','"+firstNames[i]+"','"+lastNames[i]+"','"+addressPart1+"','"+addressPart2+"','"+
+                        addressPart3+"','"+district+"','"+state+"',"+pin+")";
                         c2.a=c2.st.executeUpdate(subDetailsQuery);
                         //System.out.println(subDetailsQuery);
                         if(c2.a==1)
-                            flag=flag+1;
+                        flag=flag+1;
                         //c4.closeAll();
                         
                         
@@ -824,10 +818,11 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
                         
                         //connect c5=new connect();
                         c2.a=c2.st.executeUpdate("insert into otherdet values("+asnNumbers[i]+",'"+
-                                phone+"','"+history+"','"+email+"',"+returnBack+",'"+
-                                remarks+"','','','')");
+                        phone+"','"+history+"','"+email+"',"+returnBack+",'"+
+                        remarks+"','','','')");
                         if(c2.a==1)
-                            flag=flag+1;
+                        flag=flag+1;
+                        */
                         
                         String startDate = startYear+"-"+startMonth+"-1";
                         String endDate =  endingYear+"-"+endingMonth+"-28";
@@ -846,14 +841,14 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
                         
                         
                         String mainTableQuery = "insert into subscribers_primary_details values("
-                                                +asnNumbers[i]+",'BD',"+subNumbers[i]+",'Active',"+rcptNum+",'"
-                                                +distributionType+"',"+distributionNumber+",'"+subscriptionType+"','"
-                                                +language+"','"+seriesName+"','"+paymentType+"',"+chequeNumber+",'"
-                                                +entryYear+"-"+entryMonth+"-"+entryDate+"',"+amount+",'"+startDate+"','"
-                                                +endDate+"','"+title+"','"+firstNames[i]+"','"+lastNames[i]+"','"
-                                                +addressPart1+"','"+addressPart2+"','"+addressPart3+"','"+district+"','"+state+"',"
-                                                +pin+",'"+phone+"','"+history+"','"+email+"',"+page_number+",'"+subscription_type+"' ,'"
-                                                +SamsUtilities.getCurrentSqlDate()+"',"+returnBack+",'"+remarks+"','','','','"+SamsUtilities.getUserName()+"')";
+                                +asnNumbers[i]+",'BD',"+subNumbers[i]+",'Active',"+rcptNum+",'"
+                                +distributionType+"',"+distributionNumber+",'"+subscriptionType+"','"
+                                +language+"','"+seriesName+"','"+paymentType+"',"+chequeNumber+",'"
+                                +entryYear+"-"+entryMonth+"-"+entryDate+"',"+amount+",'"+startDate+"','"
+                                +endDate+"','"+title+"','"+firstNames[i]+"','"+lastNames[i]+"','"
+                                +addressPart1+"','"+addressPart2+"','"+addressPart3+"','"+district+"','"+state+"',"
+                                +pin+",'"+phone+"','"+history+"','"+email+"',"+page_number+",'"+subscription_type+"' ,'"
+                                +SamsUtilities.getCurrentSqlDate()+"',"+returnBack+",'"+remarks+"','','','','"+SamsUtilities.getUserName()+"')";
                         //System.out.println(mainTableQuery);
                         c2.a=c2.st.executeUpdate(mainTableQuery);
                         
@@ -861,7 +856,7 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
                         //c5.closeAll();
                     }
                     
-                    if(flag == 6*numItems){
+                    if(flag == (6-4)*numItems){
                         int z;
                         z = globalAsn + numItems;
                         connect c6=new connect();
@@ -885,7 +880,7 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
                 catch(Exception e){
                     //c2.con.rollback(save1);
                     //c2.cloaseAll;
-                    c2.closeAll();  
+                    c2.closeAll();
                     e.printStackTrace();
                     
                 }
@@ -981,7 +976,7 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
                 chequeDDText.setText("");
                 chequeDDText.setEnabled(true);
             }
-        
+            
         }
         
         if(ie.getSource()==startingPeriodMonthDropDown || ie.getSource()==startingPeriodYearDropDown || ie.getSource() == languageDropDown)

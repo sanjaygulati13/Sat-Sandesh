@@ -235,7 +235,7 @@ public class SatSandeshBulkRenewSubscription implements ActionListener, ItemList
             c13.con.close();
         }
         catch(Exception e){
-            //e.printStackTrace();
+            e.printStackTrace();
         }
         distributionNumberDropDown.addItemListener(this);
         
@@ -480,7 +480,7 @@ public class SatSandeshBulkRenewSubscription implements ActionListener, ItemList
                 state = "";
                 pin = "";
                 //subscriptionType = "";
-                
+                e.printStackTrace();
             }
             
             {
@@ -556,6 +556,7 @@ public class SatSandeshBulkRenewSubscription implements ActionListener, ItemList
                 catch(Exception e)
                 {
                     subNumber = "";
+                    e.printStackTrace();
                 }
                 
                 //System.out.print(subNumber);
@@ -575,7 +576,8 @@ public class SatSandeshBulkRenewSubscription implements ActionListener, ItemList
                     int subNum;
                     
                     subNum  = Integer.parseInt(subNumber);
-                    String countQuery = "select count(asn) from basic where subnos = '"+subNumberCode+"' and subno = "+subNum;
+                    //String countQuery = "select count(asn) from basic where subnos = '"+subNumberCode+"' and subno = "+subNum;
+                    String countQuery = "select count(asn) from subscribers_primary_details where subscription_code = '"+subNumberCode+"' and subscription_number = "+subNum;
                     //String sqlQuery = "select count(asn) from basic where subnos = '"+subNumberCode+"' and subno = "+subNum;
                     //System.out.println(countQuery);
                     connect fillSeriesConnection = new connect();
@@ -601,7 +603,8 @@ public class SatSandeshBulkRenewSubscription implements ActionListener, ItemList
                 
                 try{
                     connect asnFindQuery = new connect();
-                    String countQuery = "select asn from basic where subnos = '"+subNumberCode+"' and subno = "+subNumber;
+                    //String countQuery = "select asn from basic where subnos = '"+subNumberCode+"' and subno = "+subNumber;
+                    String countQuery = "select asn from subscribers_primary_details where subscription_code = '"+subNumberCode+"' and subscription_number = "+subNumber;
                     asnFindQuery.rs = asnFindQuery.st.executeQuery(countQuery);
                     asnFindQuery.rs.next();
                     asnNumbers[i] = asnFindQuery.rs.getInt(1);
@@ -692,7 +695,8 @@ public class SatSandeshBulkRenewSubscription implements ActionListener, ItemList
                     
                     for(int i = 0 ; i < numItems; i++ )
                     {
-                        String basicQuery = "update basic set subnos = 'BD',"+
+                        
+                        /*String basicQuery = "update basic set subnos = 'BD',"+
                                 "subno="+subNumbers[i]+",status='Active',rcpt="+rcptNum+",dist='"+
                                 distributionType+"',dno="+distributionNumber+",subt='"+subscriptionType+"',lang='"+language+"',series_name='"+
                                 seriesName+"',page_number=0 , updated_by = '"+SamsUtilities.getUserName()+"' where asn = "+asnNumbers[i];
@@ -747,7 +751,7 @@ public class SatSandeshBulkRenewSubscription implements ActionListener, ItemList
                         
                         if(c2.a==1)
                             flag++;
-                        
+                        */
                         String endDate = endingYear+"-"+endingMonth+"-28";
                         String sqlQuery = "insert into receipt_book_details values ('"
                                 +seriesName+"',"
@@ -785,7 +789,7 @@ public class SatSandeshBulkRenewSubscription implements ActionListener, ItemList
                         //c5.closeAll();
                     }
                     
-                    if(flag == 6*numItems){
+                    if(flag == (6-4)*numItems){
                         //int z;
                         //z = globalAsn + numItems;
                         //connect c6=new connect();
@@ -1112,7 +1116,8 @@ public class SatSandeshBulkRenewSubscription implements ActionListener, ItemList
                 
                 //subNum  = Integer.parseInt(subNumber);
                 if(subNumber.isEmpty()) return;
-                String countQuery = "select asn, dno from basic where subnos = '"+subNumberCode+"' and subno = "+subNumber;
+                //String countQuery = "select asn, dno from basic where subnos = '"+subNumberCode+"' and subno = "+subNumber;
+                String countQuery = "select asn, bulk_despatch_code from subscribers_primary_details where subscription_code = '"+subNumberCode+"' and subscription_number = "+subNumber;
                 //String sqlQuery = "select count(asn) from basic where subnos = '"+subNumberCode+"' and subno = "+subNumber;
                 //System.out.println(countQuery);
                 connect fillSeriesConnection = new connect();
@@ -1151,7 +1156,8 @@ public class SatSandeshBulkRenewSubscription implements ActionListener, ItemList
                     return;
                 }
                 
-                String nameQuery = "select fname, lname from subdetails where asn="+asn;
+                //String nameQuery = "select fname, lname from subdetails where asn="+asn;
+                String nameQuery = "select first_name, last_name from subscribers_primary_details where asn="+asn;
                 fillSeriesConnection.rs = fillSeriesConnection.st.executeQuery(nameQuery);
                 fillSeriesConnection.rs.next();
                 

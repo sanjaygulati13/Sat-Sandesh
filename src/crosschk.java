@@ -83,7 +83,7 @@ public class crosschk extends JFrame implements ActionListener
         ok_old.setBounds(120,190,70,20);
         ok_old.addActionListener(this);
         ok_old.setMnemonic('O');
-        add(ok_old);
+        //add(ok_old);
         
         clr.setBounds(210,190,70,20);
         clr.addActionListener(this);

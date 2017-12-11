@@ -111,7 +111,7 @@ public class SupplementaryIndexDate extends JFrame implements ActionListener
         ok_old.setBounds(120,190,70,25);
         ok_old.addActionListener(this);
         ok_old.setMnemonic('l');
-        add(ok_old);
+        //add(ok_old);
         
         clr.setBounds(210,190,70,25);
         clr.addActionListener(this);

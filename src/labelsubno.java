@@ -110,12 +110,12 @@ public class labelsubno extends JFrame implements ActionListener
         ok_old.setBounds(30,220,70,40);
         ok_old.addActionListener(this);
         ok_old.setMnemonic('O');
-        add(ok_old);
+        //add(ok_old);
         
         stickerLabelButton_old.setBounds(110,220,70,40);
         stickerLabelButton_old.addActionListener(this);
         stickerLabelButton_old.setMnemonic('O');
-        add(stickerLabelButton_old);
+        //add(stickerLabelButton_old);
         
         
         setVisible(true);

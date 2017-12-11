@@ -129,7 +129,7 @@ public class labeldist extends JFrame implements ActionListener
         oldOkButton.setBounds(120,210,70,20);
         oldOkButton.setMnemonic('k');
         oldOkButton.addActionListener(this);
-        add(oldOkButton);
+        //add(oldOkButton);
         
         back.setBounds(210,210,70,20);
         back.setMnemonic('B');

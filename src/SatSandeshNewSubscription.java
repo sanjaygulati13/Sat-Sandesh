@@ -871,7 +871,7 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
                 save1 = c2.con.setSavepoint();
                 c2.con.setAutoCommit(false);
                 
-                String basicQuery = "insert into basic values("+asn+",'"+subscriptionCode+"',"+subno+",'"+status+"',"+rcpt+",'"+dist+"',"+dno+",'"+subt+"','"+lang+"','"+seriesName+"',"+page_number+",'"+userName+"')";
+                /*String basicQuery = "insert into basic values("+asn+",'"+subscriptionCode+"',"+subno+",'"+status+"',"+rcpt+",'"+dist+"',"+dno+",'"+subt+"','"+lang+"','"+seriesName+"',"+page_number+",'"+userName+"')";
                 //System.out.println(basicQuery);
                 c2.a=c2.st.executeUpdate(basicQuery);
                 if(c2.a == 1) flag++;
@@ -893,7 +893,7 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
                 //System.out.println(otherDetailsQuery);
                 c2.a=c2.st.executeUpdate(otherDetailsQuery);
                 if(c2.a == 1) flag++;
-                
+                */
                 
                 String sqlQuery = "insert into receipt_book_details values ('"+seriesName+"',"+rcpt+","+asn+",'"+payt+"','"+dat3+"-"+dat2+"-"+date1+"',"+amt+",'"+history+"','0','"+SamsUtilities.getUserName()+"', '"+endingPeriod+"', "+dno+")";
                 c2.a=c2.st.executeUpdate(sqlQuery);
@@ -906,7 +906,7 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
                 
                 
                 
-                if(flag==6)
+                if(flag==(6-4))
                 {
                     JOptionPane.showMessageDialog(this, "RECORD ADDED SUCCESSFULLY", "SUCCESS", JOptionPane.INFORMATION_MESSAGE);
                     int z;

@@ -108,7 +108,7 @@ public class leftout extends JFrame implements ActionListener, Printable
                 catch(PrinterException pe)
                 {
                     System.out.println(pe);
-                    //pe.printStackTrace();
+                    pe.printStackTrace();
                     
                 }
                 
@@ -285,7 +285,7 @@ public class leftout extends JFrame implements ActionListener, Printable
         catch(Exception e)
         {
             System.out.println(e);
-            //e.printStackTrace();
+            e.printStackTrace();
         }
         
     }

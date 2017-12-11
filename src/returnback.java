@@ -36,6 +36,7 @@ public class returnback extends JFrame implements ActionListener {
         setSize(500, 100);
         setLocation(10, 10);
         setLayout(null);
+        SamsUtilities.center(this);
         subs = new JComboBox();
         
         l1 = new JLabel("Sub No");
@@ -126,8 +127,8 @@ public class returnback extends JFrame implements ActionListener {
             post_t.setBounds(130, 90, 180, 20);
             add(post_t);
             
-            rec_date = new JLabel("Recieving Date");
-            rec_date.setBounds(30, 120, 80, 20);
+            rec_date = new JLabel("<html>Recieving Date</html>");
+            rec_date.setBounds(30, 120, 80, 28);
             add(rec_date);
             
             
@@ -158,12 +159,12 @@ public class returnback extends JFrame implements ActionListener {
                 
                 String mainTableQuery = "select asn ,return_issue_month, return_back_reason,return_back_stop_date, return_back_other_remarks from  "
                         + "subscribers_primary_details where subscription_code='"
-                        + subs.getSelectedItem().toString() + "' and subsubscription_numberno=" + t1.getText() + ")";
+                        + subs.getSelectedItem().toString() + "' and subscription_number=" + t1.getText();
                 
                 
-                //System.out.println(sqlQuery);
-                c1.rs = c1.st.executeQuery(sqlQuery);
-                //c1.rs = c1.st.executeQuery(mainTableQuery);
+                System.out.println(mainTableQuery);
+                if(false)c1.rs = c1.st.executeQuery(sqlQuery);
+                c1.rs = c1.st.executeQuery(mainTableQuery);
                 
                 
                 if (c1.rs.next()) {
@@ -183,8 +184,8 @@ public class returnback extends JFrame implements ActionListener {
                     this.setSize(500, 300);
                 }
                 else
-                        JOptionPane.showMessageDialog(null, "Record Not Found", "ERROR", JOptionPane.ERROR_MESSAGE);
-
+                    JOptionPane.showMessageDialog(null, "Record Not Found", "ERROR", JOptionPane.ERROR_MESSAGE);
+                
                 
                 
             } catch (Exception e) {
@@ -208,15 +209,15 @@ public class returnback extends JFrame implements ActionListener {
                             + rec_date_t.getText() + "' , return_back_other_remarks='"
                             + other_t.getText() + "'  where asn=" + asn;
                     
-                    c2.a = c2.st.executeUpdate(updateCommand);
+                    if(false)c2.a = c2.st.executeUpdate(updateCommand);
+                    c2.a = c2.st.executeUpdate(mainTableUpdateCommand);
                     if (c2.a > 0) {
                         JOptionPane.showMessageDialog(null, "Return Back Marked Successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
-                        c2.a = c2.st.executeUpdate(mainTableUpdateCommand);
+                        this.dispose();
+                        new sams();
+                        /*c2.a = c2.st.executeUpdate(mainTableUpdateCommand);
                         if (c2.a > 0) {
-                            JOptionPane.showMessageDialog(null, "Return Back Marked Successfully in Main table", "Success", JOptionPane.INFORMATION_MESSAGE);
-                            this.dispose();
-                            new sams();
-                        }
+                        }*/
                     }
                     c2.closeAll();
                     
@@ -239,9 +240,10 @@ public class returnback extends JFrame implements ActionListener {
             try {
                 String ret_status="";
                 connect c3 = new connect();
-                c3.rs=c3.st.executeQuery("select ret from otherdet where asn="+asn);
+                //c3.rs=c3.st.executeQuery("select ret from otherdet where asn="+asn);
+                
                 //main table query
-                //c3.rs=c3.st.executeQuery("select return_issue_month from subscribers_primary_details where asn="+asn);
+                c3.rs=c3.st.executeQuery("select return_issue_month from subscribers_primary_details where asn="+asn);
                 
                 while(c3.rs.next())
                 {
@@ -258,15 +260,15 @@ public class returnback extends JFrame implements ActionListener {
                         + "' , return_back_other_remarks ='" + other_t.getText()
                         +"' where asn=" + asn;
                 
-                c3.a = c3.st.executeUpdate(otherDetCommand);
+                if(false)c3.a = c3.st.executeUpdate(otherDetCommand);
                 c3.a += c3.st.executeUpdate(mainTableUpdateCommand);
                 
-                String basicCommand = "update basic set status='STOPPED' where asn=" + asn;
+                //String basicCommand = "update basic set status='STOPPED' where asn=" + asn;
                 String mainTableCommand = "update subscribers_primary_details set membership_status = 'STOPPED' where asn = " +asn;
-                c3.a += c3.st.executeUpdate(basicCommand);
+                //c3.a += c3.st.executeUpdate(basicCommand);
                 c3.a += c3.st.executeUpdate(mainTableCommand);
                 
-                if (c3.a > 3) {
+                if (c3.a == 2 ) {
                     JOptionPane.showMessageDialog(null, "Account Stopped Successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
                     this.dispose();
                     new sams();
@@ -286,14 +288,14 @@ public class returnback extends JFrame implements ActionListener {
             try {
                 //System.out.println(asn);
                 connect c4 = new connect();
-                int a = c4.st.executeUpdate("update otherdet set ret='0',  post='' , rec_date='' , oth_remarks='' where asn=" + asn);
-                a += c4.st.executeUpdate("update subscribers_primary_details set return_issue_month='0',  return_back_reason='' , return_back_stop_date='' , return_back_other_remarks='' where asn=" + asn);
+                //int a = c4.st.executeUpdate("update otherdet set ret='0',  post='' , rec_date='' , oth_remarks='' where asn=" + asn);
+                int a = c4.st.executeUpdate("update subscribers_primary_details set return_issue_month='0',  return_back_reason='' , return_back_stop_date='' , return_back_other_remarks='' where asn=" + asn);
                 //System.out.println("a :" + a);
                 
-                int b = c4.st.executeUpdate("update basic b set b.status='Active' where b.asn=" + asn);
-                b += c4.st.executeUpdate("update subscribers_primary_details set membership_status='Active' where asn=" + asn);
+                //int b = c4.st.executeUpdate("update basic b set b.status='Active' where b.asn=" + asn);
+                int b = c4.st.executeUpdate("update subscribers_primary_details set membership_status='Active' where asn=" + asn);
                 //System.out.println("b :" + b + asn);
-                if ((a + b) >2) {
+                if ((a + b) == 2) {
                     JOptionPane.showMessageDialog(null, "Account Activation Successful", "Success", JOptionPane.INFORMATION_MESSAGE);
                     this.dispose();
                     new sams();

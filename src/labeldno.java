@@ -1,21 +1,6 @@
 import java.awt.print.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.print.Doc;
-import javax.print.DocFlavor;
-import javax.print.DocPrintJob;
-import javax.print.PrintService;
-import javax.print.PrintServiceLookup;
-import javax.print.SimpleDoc;
-import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.PrintRequestAttributeSet;
-import javax.print.attribute.standard.Copies;
-import javax.print.attribute.standard.OrientationRequested;
-import javax.print.attribute.standard.Sides;
 
 import javax.swing.*;
 
@@ -685,16 +670,14 @@ public class labeldno implements Printable, ActionListener
             
             PageFormat pf = job.defaultPage();
             pf.setOrientation(PageFormat.LANDSCAPE);
+            pf = job.pageDialog(pf);
             
             //PrintRequestAttributeSet patts = new HashPrintRequestAttributeSet();
             //patts.add(Sides.DUPLEX);
             //patts.add(OrientationRequested.LANDSCAPE);
             boolean ok=job.printDialog();
             pf.setOrientation(PageFormat.LANDSCAPE);
-            
-            
-            
-            
+                
             if(ok)
             {
                 try
