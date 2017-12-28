@@ -297,11 +297,11 @@ public class SatSandeshAccountBookPosting  implements ActionListener, Printable 
                         }
                         
                         {
-                            String sqlQuery = "update basic set page_number = "+pageNumber+", updated_by = '"+SamsUtilities.getUserName()+"' where rcpt = "+rcptNum+" and series_name = '"+seriesName+"'";
+                            //String sqlQuery = "update basic set page_number = "+pageNumber+", updated_by = '"+SamsUtilities.getUserName()+"' where rcpt = "+rcptNum+" and series_name = '"+seriesName+"'";
                             String rcptBookDetailsQuery = "update receipt_book_details set page_number = "+pageNumber+", updated_by = '"+SamsUtilities.getUserName()+"' where receipt_number = "+rcptNum+" and series_name = '"+seriesName+"'";
                             String mainTableQuery = "update subscribers_primary_details set account_book_page_number = "+pageNumber+", updated_by = '"+SamsUtilities.getUserName()+"' where receipt_number = "+rcptNum+" and series_name = '"+seriesName+"'";
                             //System.out.println(sqlQuery);
-                            queryVec.addElement(sqlQuery);
+                            //queryVec.addElement(sqlQuery);
                             queryVec.addElement(rcptBookDetailsQuery);
                             queryVec.addElement(mainTableQuery);
                         }

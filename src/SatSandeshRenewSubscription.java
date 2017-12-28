@@ -1288,6 +1288,11 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
                 //String alreadyIssuedRcptCheckQuery = "select count(asn) from basic where rcpt = "+rcptNum +" and series_name = '"+seriesNameText+"'";
                 String alreadyIssuedRcptCheckQuery = "select count(asn) from receipt_book_details where receipt_number = "+rcptNum +" and series_name = '"+seriesNameText+"'";
                 
+                int despatchCode = 0;
+                String despatchCodeStr = (String)distributionCodeDropDown.getSelectedItem();
+                if(despatchCodeStr.isEmpty() == false) despatchCode = Integer.parseInt(despatchCodeStr);
+                if(despatchCode != 0) alreadyIssuedRcptCheckQuery = "select count(asn) from receipt_book_details where receipt_number = "+rcptNum +" and series_name = '"+seriesNameText+"' and bulk_despatch_code not in ( "+ despatchCode +" )";
+                
                 connect fillSeriesConnection = new connect();
                 try
                 {
@@ -1316,6 +1321,7 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
                     String bookNum = fillSeriesConnection.rs.getString(2);
                     //String subCounter = fillSeriesConnection.rs.getString(1);
                     
+                    
                     String subCounterQuery = "select issued_to from sub_issue_details where series_name='"+seriesNameText+"' and book_num="+bookNum+" and rcpt_num="+rcptNum;
                     //System.out.println(centre);
                     counterDropDown.setSelectedItem(centre);
@@ -1333,12 +1339,11 @@ public class SatSandeshRenewSubscription extends JFrame implements ActionListene
                     //System.out.println(alreadyIssuedRcptCheckQuery);
                     
                     int existingAsnCount = fillSeriesConnection.rs.getInt(1);
-                    String despatchCodeStr = (String)distributionCodeDropDown.getSelectedItem();
-                    //System.out.println(existingAsnCount + " " + despatchCodeStr);
-                    int despatchCode = 0;
-                    if(despatchCodeStr.isEmpty() == false) despatchCode = Integer.parseInt(despatchCodeStr);
                     
-                    if(existingAsnCount > 0 && despatchCode == 0)
+                    //System.out.println(existingAsnCount + " " + despatchCodeStr);
+                    
+                    
+                    if(existingAsnCount > 0 /* && despatchCode == 0*/)
                     {
                         JOptionPane.showMessageDialog(this,"Already used receipt number", "Invalid receipt number", JOptionPane.ERROR_MESSAGE);
                         receiptNumberText.setText("");

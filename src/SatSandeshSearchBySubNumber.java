@@ -457,7 +457,7 @@ public class SatSandeshSearchBySubNumber implements ActionListener
             
             
             if(state.length()>0)
-                searchQuery += "and state like '"+state+"%' ";
+                searchQuery += "and state like '"+SamsUtilities.getStateCodeForStateName(state)+"%' ";
             //searchQuery += "and s.state like '"+state+"%' ";
             
             //searchQuery += "order by s.asn";

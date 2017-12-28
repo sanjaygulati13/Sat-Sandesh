@@ -10,7 +10,6 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-//import java.awt.print.PageFormat;
 import java.sql.Savepoint;
 import java.util.Date;
 import java.util.Calendar;
@@ -1538,7 +1537,8 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
             if(subNumberCode.isEmpty() == false && subNumber.isEmpty() == false)
             {
                 subNum  = Integer.parseInt(subNumber);
-                String countQuery = "select count(asn) from basic where subnos = '"+subNumberCode+"' and subno = "+subNum;
+                //String countQuery = "select count(asn) from basic where subnos = '"+subNumberCode+"' and subno = "+subNum;
+                String countQuery = "select count(asn) from subscribers_primary_details where subscription_code = '"+subNumberCode+"' and subscription_number = "+subNum;
                 //String sqlQuery = "select count(asn) from basic where subnos = '"+subNumberCode+"' and subno = "+subNum;
                 //System.out.println(countQuery);
                 connect fillSeriesConnection = new connect();
@@ -1554,12 +1554,25 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
                         subNumberText.setText("");
                         statust1.setText("Active");
                         subNumberText.requestFocus();
+                        return;
                     }
                     fillSeriesConnection.closeAll();
                 } catch (Exception exc) {
                     //exc.printStackTrace();
                     //Except.except(exc, "ADD JOB CARD--Raw Material Thread Error");
                     fillSeriesConnection.closeAll();
+                }
+                
+                int lastSubNumber = SamsUtilities.getLastSubscriptionNumberForCode(subNumberCode);
+                int diff = subNum - lastSubNumber;
+                diff *= ((diff < 0)?-1:1);
+                if(diff > 100)
+                {
+                    JOptionPane.showMessageDialog(this,"Subscription number "+subNumberCode+" "+subNumber+" too ahead from previous entry ("+subNumberCode+" "+lastSubNumber+")", "Subscription number too far", JOptionPane.ERROR_MESSAGE);
+                    subNumberText.setText("");
+                    statust1.setText("Active");
+                    subNumberText.requestFocus();
+                    return;
                 }
             }
             //System.out.println("Lost");

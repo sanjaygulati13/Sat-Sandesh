@@ -9,9 +9,9 @@ import java.util.HashMap;
 import javax.swing.JFrame;
 
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+* To change this template, choose Tools | Templates
+* and open the template in the editor.
+*/
 
 /**
  *
@@ -213,6 +213,28 @@ public class SamsUtilities {
         
     }
     
+    public static int getLastSubscriptionNumberForCode(String subCode)
+    {
+        int subNumber = -1;
+        
+        connect sqlConnection = new connect();
+        try
+        {
+            String query = "select subscription_number,entry_date from subscribers_primary_details where subscription_code='"+subCode+"' order by entry_date DESC, subscription_number DESC limit 1;";
+            sqlConnection.rs = sqlConnection.st.executeQuery(query);
+            if(sqlConnection.rs.next())
+                subNumber = sqlConnection.rs.getInt(1);
+            //System.out.println(subNumber);
+        } catch (Exception exc) {
+            exc.printStackTrace();
+            subNumber = -1;
+            //Except.except(exc, "ADD JOB CARD--Raw Material Thread Error");
+            sqlConnection.closeAll();
+        }
+        
+        return subNumber;
+    }
+    
     public static Object[] getMonthNames()
     {
         return month;
@@ -243,7 +265,7 @@ public class SamsUtilities {
             
             fillStateDetailsConnection.rs = fillStateDetailsConnection.st.executeQuery(query);
             int i = 1;
-            //System.out.println(fillStateDetailsConnection.rs.);
+            //System.out.println(sqlConnection.rs.);
             while (fillStateDetailsConnection.rs.next()) {
                 String sub_code = fillStateDetailsConnection.rs.getString(1);
                 String state_code = fillStateDetailsConnection.rs.getString(2);
@@ -311,7 +333,7 @@ public class SamsUtilities {
         return stateCodeToStateNameHash.get(subCode);
     }
     
-      public static String getCurrentDateString()
+    public static String getCurrentDateString()
     {
         GregorianCalendar Calendar;
         String date, month, year, CurrentDate;
@@ -319,30 +341,30 @@ public class SamsUtilities {
         date = "" + Calendar.get(GregorianCalendar.DATE);
         month = "" + (Calendar.get(GregorianCalendar.MONTH) + 1);
         year = "" + Calendar.get(GregorianCalendar.YEAR);
-
+        
         if(date.length()==1)
             date="0"+date;
         if(month.length()==1)
             month="0"+month;
-
+        
         CurrentDate=date+"/"+month+"/"+year;
         
         return CurrentDate;
     }
-      
-      public static PrintStream getExceptionLogStream()
-      {
-          File file = new File("test.log");
-          
-          try {
-               ps = new PrintStream(file);
-               return ps;
-          }
-          catch (Exception ex) {
-              ex.printStackTrace();
-          }
-          return ps;
-      }
+    
+    public static PrintStream getExceptionLogStream()
+    {
+        File file = new File("test.log");
+        
+        try {
+            ps = new PrintStream(file);
+            return ps;
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return ps;
+    }
     
     public static String getCurrentSqlDate()
     {
@@ -352,12 +374,12 @@ public class SamsUtilities {
         date = "" + Calendar.get(GregorianCalendar.DATE);
         month = "" + (Calendar.get(GregorianCalendar.MONTH) + 1);
         year = "" + Calendar.get(GregorianCalendar.YEAR);
-
+        
         if(date.length()==1)
             date="0"+date;
         if(month.length()==1)
             month="0"+month;
-
+        
         CurrentDate=year+"-"+month+"-"+date;
         
         return CurrentDate;
@@ -371,12 +393,12 @@ public class SamsUtilities {
         date = "" + date_i;
         month = "" +month_i;
         year = "" + year_i;
-
+        
         if(date.length()==1)
             date="0"+date;
         if(month.length()==1)
             month="0"+month;
-
+        
         CurrentDate=year+"-"+month+"-"+date;
         
         return CurrentDate;
@@ -394,7 +416,7 @@ public class SamsUtilities {
             fillLanguageDetailsConnection.rs = fillLanguageDetailsConnection.st.executeQuery(countQuery);
             if(fillLanguageDetailsConnection.rs.next())
                 arraySize = fillLanguageDetailsConnection.rs.getInt(1);
-                
+            
             if(arraySize > 0){
                 languageArray = new Object[arraySize];
                 int i = 0;
@@ -422,7 +444,7 @@ public class SamsUtilities {
         return languageArray;
     }
     
-    public static Object[] fillSeriesInformation() 
+    public static Object[] fillSeriesInformation()
     {
         connect fillSerieConnection = new connect();
         Object[] seriesNameArray = null;
@@ -452,7 +474,7 @@ public class SamsUtilities {
             fillSerieConnection.closeAll();
         }
         return seriesNameArray;
-    
+        
     }
     
     public static Object[] getDistributorCodes()
@@ -490,7 +512,7 @@ public class SamsUtilities {
         
     }
     
-    public static Object[] fillStateNameList() 
+    public static Object[] fillStateNameList()
     {
         connect fillStateNameConnection = new connect();
         
@@ -526,10 +548,10 @@ public class SamsUtilities {
             fillStateNameConnection.closeAll();
         }
         return stateNameArray;
-    
+        
     }
     
-    public static Object[] fillStateCodeList() 
+    public static Object[] fillStateCodeList()
     {
         connect fillStateCodeConnection = new connect();
         
@@ -566,7 +588,7 @@ public class SamsUtilities {
             fillStateCodeConnection.closeAll();
         }
         return stateCodeArray;
-    
+        
     }
 }
 
@@ -575,57 +597,57 @@ public class SamsUtilities {
 class Pair<A, B> {
     private A first;
     private B second;
-
+    
     public Pair(A first, B second) {
-    	super();
-    	this.first = first;
-    	this.second = second;
+        super();
+        this.first = first;
+        this.second = second;
     }
-
+    
     public int hashCode() {
-    	int hashFirst = first != null ? first.hashCode() : 0;
-    	int hashSecond = second != null ? second.hashCode() : 0;
-
-    	return (hashFirst + hashSecond) * hashSecond + hashFirst;
+        int hashFirst = first != null ? first.hashCode() : 0;
+        int hashSecond = second != null ? second.hashCode() : 0;
+        
+        return (hashFirst + hashSecond) * hashSecond + hashFirst;
     }
-
+    
     public boolean equals(Object other) {
-    	if (other instanceof Pair) {
-    		Pair otherPair = (Pair) other;
-    		return 
-    		((  this.first == otherPair.first ||
-    			( this.first != null && otherPair.first != null &&
-    			  this.first.equals(otherPair.first))) &&
-    		 (	this.second == otherPair.second ||
-    			( this.second != null && otherPair.second != null &&
-    			  this.second.equals(otherPair.second))) );
-    	}
-
-    	return false;
+        if (other instanceof Pair) {
+            Pair otherPair = (Pair) other;
+            return
+                    ((  this.first == otherPair.first ||
+                    ( this.first != null && otherPair.first != null &&
+                    this.first.equals(otherPair.first))) &&
+                    (	this.second == otherPair.second ||
+                    ( this.second != null && otherPair.second != null &&
+                    this.second.equals(otherPair.second))) );
+        }
+        
+        return false;
     }
-
+    
     public String toString()
-    { 
-           return "(" + first + ", " + second + ")"; 
+    {
+        return "(" + first + ", " + second + ")";
     }
-
+    
     public A getFirst() {
-    	return first;
+        return first;
     }
-
+    
     public void setFirst(A first) {
-    	this.first = first;
+        this.first = first;
     }
-
+    
     public B getSecond() {
-    	return second;
+        return second;
     }
-
+    
     public void setSecond(B second) {
-    	this.second = second;
+        this.second = second;
     }
-
-      
-  
+    
+    
+    
     
 }

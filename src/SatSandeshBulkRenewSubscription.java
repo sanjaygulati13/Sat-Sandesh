@@ -644,6 +644,21 @@ public class SatSandeshBulkRenewSubscription implements ActionListener, ItemList
                 //System.out.println(" "+lastNames[i]);
                 
             }
+            
+            if(numItems>1){
+                for(int i = 0 ; i < numItems-1; i++ )
+                {
+                    for(int j = i+1 ; i < numItems; j++ )
+                    {
+                        if(subNumbers[i] ==  subNumbers[j])
+                        {
+                            bulkEntryTable.changeSelection(j, 3, false, false);
+                            JOptionPane.showMessageDialog(satSandeshBulkRenewSubscriptionWindow, "Duplicate sub number used as in row "+(i+1), "ERROR", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+                    }
+                }
+            }
                         
             {
                 
