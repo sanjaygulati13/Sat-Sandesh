@@ -220,7 +220,8 @@ public class SamsUtilities {
         connect sqlConnection = new connect();
         try
         {
-            String query = "select subscription_number,entry_date from subscribers_primary_details where subscription_code='"+subCode+"' order by entry_date DESC, subscription_number DESC limit 1;";
+            //String query = "select subscription_number,entry_date from subscribers_primary_details where subscription_code='"+subCode+"' order by entry_date DESC subscription_number DESC limit 1;";
+            String query = "select subscription_number,entry_date from subscribers_primary_details where subscription_code='"+subCode+"' order by subscription_number DESC limit 1;";
             sqlConnection.rs = sqlConnection.st.executeQuery(query);
             if(sqlConnection.rs.next())
                 subNumber = sqlConnection.rs.getInt(1);
@@ -473,6 +474,40 @@ public class SamsUtilities {
             //Except.except(exc, "ADD JOB CARD--Raw Material Thread Error");
             fillSerieConnection.closeAll();
         }
+        return seriesNameArray;
+        
+    }
+    
+    public static Object[] fillSeriesInformation( boolean removeDontTouch)
+    {
+        connect fillSerieConnection = new connect();
+        Object[] seriesNameArray = null;
+        try
+        {
+            String query = "select distinct series_name from receipt_book_inventory where series_name not in ('Prerna') order by series_name DESC";
+            String countQuery = "select count(distinct series_name) from receipt_book_inventory where series_name not in ('Prerna')";
+            
+            fillSerieConnection.rs = fillSerieConnection.st.executeQuery(countQuery);
+            fillSerieConnection.rs.next();
+            int ArrayCount = fillSerieConnection.rs.getInt(1);
+            //System.out.println(ArrayCount+1);
+            seriesNameArray = new Object[ArrayCount + 1];
+            seriesNameArray[0] = "";
+            fillSerieConnection.rs = fillSerieConnection.st.executeQuery(query);
+            //CodeChooser.addItem("");
+            int i = 1;
+            while (fillSerieConnection.rs.next()) {
+                seriesNameArray[i] = fillSerieConnection.rs.getString(1);
+                i++;
+            }
+            
+            fillSerieConnection.closeAll();
+        } catch (Exception exc) {
+            //exc.printStackTrace();
+            //Except.except(exc, "ADD JOB CARD--Raw Material Thread Error");
+            fillSerieConnection.closeAll();
+        }
+        
         return seriesNameArray;
         
     }

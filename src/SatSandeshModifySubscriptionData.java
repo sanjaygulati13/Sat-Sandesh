@@ -1,7 +1,27 @@
-import java.awt.*;
-import java.awt.event.*;
+
+
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.TextArea;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.sql.Savepoint;
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.UIManager;
+
+
+
 
 
 public class SatSandeshModifySubscriptionData extends JFrame implements ActionListener, ItemListener,FocusListener
@@ -11,28 +31,28 @@ public class SatSandeshModifySubscriptionData extends JFrame implements ActionLi
         new SatSandeshModifySubscriptionData(27447);
     }
     
-    JLabel  subd1, asn1, sub1, status1, rec1, dist1, d1, subt1, lang1;				//subscription details
-    JLabel pay1, payt1, chdd1, dat1, am1, starm1,stary1, end1;						//payment details
+    JLabel  subd1, asn1, sub1, status1, rec1, dist1, despatchNumberLabel, subt1, lang1;				//subscription details
+    JLabel pay1, payt1, chdd1, dat1, am1, starm1,stary1, endingPeriodLabel;						//payment details
     JLabel mem1, tit1, nam1, lnam1, add1, dis1, stat1, pin1;						//member details
-    JLabel oth1, tel1, hist1, email1, ret1, rem1; 									//other details
+    JLabel oth1, tel1, counterLabel, email1, ret1, rem1; 									//other details
     
     Font f=new Font("ARIAL", Font.BOLD, 12);
+    
     JPanel p1, p2, p3, p4,p5;
     
     
-    JTextField asnt1, statust1 /*, distributionTypeDropDown, subtt1 , languageDropDown*/;						//subscription details
-    private final JComboBox distributionCodeDropDown, distributionTypeDropDown, subNumberCodeDropDown, subtt1, languageDropDown;
+    JTextField asnt1, statust1 /*, distributionTypeDropDown, subscriptionDurationDropDown , languageDropDown*/;						//subscription details
+    JComboBox distributionCodeDropDown, distributionTypeDropDown, subNumberCodeDropDown, subscriptionDurationDropDown, languageDropDown;
     TextFieldWithLimit subNumberText, receiptNumberText ;
     
     
     //JTextField /*paymentTypeDropDown,*/ ;											//payment details
-    TextFieldWithLimit datt1, datt2, datt3, amt1,starty1, startm1, endt1, chequeInstrumentNumberText;
+    TextFieldWithLimit datt1, datt2, datt3, amt1,starty1, startm1, endingPeriodText, chequeInstrumentNumberText;
     JComboBox paymentTypeDropDown;
     
     
     TextFieldWithLimit titt1, namt1, lnamt1, pint1,addt11,addt21,addt31,districtText;	//member details
-    JComboBox stateCodeDropDown, stateNameDropDown, seriesNameDropDown;
-    
+    JComboBox stateCodeDropDown, stateNameDropDown, seriesDropDown;
     
     JTextField   rett1;											//other details
     TextArea remt1;
@@ -60,37 +80,38 @@ public class SatSandeshModifySubscriptionData extends JFrame implements ActionLi
         }
         catch (Exception cnf)
         {
+            JOptionPane.showMessageDialog(this, "ERROR : "+cnf, "ERROR", JOptionPane.ERROR_MESSAGE);
             System.out.println(cnf);
             cnf.printStackTrace();
         }
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        //setVisible(true);
         setTitle("Modify Record");
-        setSize(1000,690);
+        setSize(1050,690);
         //this.setSize(this.getToolkit().getScreenSize());
-        setResizable(false);
+        //setResizable(false);
         setLocation(10,10);
         setLayout(new GridLayout(5,1));
+        SamsUtilities.center(this);
         
         items = SamsUtilities.getSubCodes();
-        p1=new JPanel();
-        p1.setLayout(null);
-        p2=new JPanel();
-        p2.setLayout(null);
-        p3=new JPanel();
-        p3.setLayout(null);
-        p4=new JPanel();
-        p4.setLayout(null);
-        p5=new JPanel();
-        p5.setLayout(null);
+        p1=new JPanel(null);
+        //p1.setLayout(null);
+        p2=new JPanel(null);
+        //p2.setLayout(null);
+        p3=new JPanel(null);
+        //p3.setLayout(null);
+        p4=new JPanel(null);
+        //p4.setLayout(null);
+        p5=new JPanel(null);
+        //p5.setLayout(null);
         
         
         asn1=new JLabel("ASN");
         sub1=new JLabel("SUB No");
         status1=new JLabel("Status");
         rec1=new JLabel("Reciept No");
-        dist1=new JLabel("Distribution type");
-        d1=new JLabel("D#");
+        dist1=new JLabel("<html>Distribution type</html>");
+        despatchNumberLabel = new JLabel("D#");
         subt1=new JLabel("Subscription Type");
         lang1=new JLabel("Language");
         subd1=new JLabel("SUBSCRIPTION DETAILS");
@@ -101,22 +122,21 @@ public class SatSandeshModifySubscriptionData extends JFrame implements ActionLi
         am1=new JLabel("Amount");
         starm1=new JLabel("Starting Period");
         stary1=new JLabel("/");
-        end1=new JLabel("Ending Period");
+        endingPeriodLabel = new JLabel("Ending Period");
         mem1=new JLabel("SUBSCRIBER DETAILS");
         tit1=new JLabel("Title");
         nam1=new JLabel("Name");
-        lnam1=new JLabel("LName");
+        lnam1=new JLabel("Last Name");
         add1=new JLabel("Address");
         dis1=new JLabel("District");
         stat1=new JLabel("State");
         pin1=new JLabel("Pin Code");
         oth1=new JLabel("OTHER DETAILS");
         tel1=new JLabel("Telephone");
-        hist1=new JLabel("Counter");
+        counterLabel=new JLabel("Counter");
         email1=new JLabel("e-mail");
         ret1=new JLabel("Return Back");
         rem1=new JLabel("Remarks");
-        
         
         asnt1=new JTextField(8);
         subNumberText=new TextFieldWithLimit(5,5);
@@ -124,17 +144,50 @@ public class SatSandeshModifySubscriptionData extends JFrame implements ActionLi
         receiptNumberText=new TextFieldWithLimit(5,5);
         distributionTypeDropDown=new JComboBox();
         subNumberCodeDropDown=new JComboBox(items);
-        
+        subNumberCodeDropDown.putClientProperty("JComboBox.isTableCellEditor", Boolean.TRUE);
         
         distributionCodeDropDown=new JComboBox();
-        subtt1=new JComboBox();
+        subscriptionDurationDropDown=new JComboBox();
         languageDropDown=new JComboBox();
+        paymentTypeDropDown=new JComboBox();
+        seriesDropDown = new JComboBox(SamsUtilities.fillSeriesInformation());
+        
+        chequeInstrumentNumberText = new TextFieldWithLimit(10,10);
+        datt1=new TextFieldWithLimit(2,2);
+        datt2=new TextFieldWithLimit(2,2);
+        datt3=new TextFieldWithLimit(4,4);
+        amt1=new TextFieldWithLimit(4,4);
+        startm1=new TextFieldWithLimit(2,2);
+        starty1=new TextFieldWithLimit("",4,4);
+        endingPeriodText=new TextFieldWithLimit(10,10);
+        
+        titt1=new TextFieldWithLimit(3,3);
+        namt1=new TextFieldWithLimit(16,16);
+        lnamt1=new TextFieldWithLimit(15,15);
+        addt11=new TextFieldWithLimit(32,32);
+        addt21=new TextFieldWithLimit(32,32);
+        addt31=new TextFieldWithLimit(32,32);
+        districtText=new TextFieldWithLimit(22,22);
+        stateCodeDropDown=new JComboBox(SamsUtilities.fillStateCodeList());
+        stateNameDropDown = new JComboBox(SamsUtilities.fillStateNameList());
+        pint1=new TextFieldWithLimit(6,6);
+        telt1=new TextFieldWithLimit(12,12);
+        counterDropDown=new JComboBox();
+        emailt1=new TextFieldWithLimit(100,100);
+        
+        rett1=new JTextField(5);
+        remt1=new TextArea(85,3);
+        
+        
+        counterDropDown.addItem("Kirpal Bagh");
+        counterDropDown.addItem("Kirpal Ashram");
+        counterDropDown.addItem("Sawan Ashram");
         
         try
         {
             distributionCodeDropDown.addItem("0");
             connect c13=new connect();
-            c13.rs=c13.st.executeQuery("select dno from despcode");
+            c13.rs=c13.st.executeQuery("select dno from despcode order by dno");
             while(c13.rs.next())
             {
                 distributionCodeDropDown.addItem(""+c13.rs.getInt(1));
@@ -150,49 +203,21 @@ public class SatSandeshModifySubscriptionData extends JFrame implements ActionLi
             e.printStackTrace();
         }
         
-        paymentTypeDropDown=new JComboBox();
         
-        chequeInstrumentNumberText = new TextFieldWithLimit(10,10);
-        datt1=new TextFieldWithLimit(2,2);
-        datt2=new TextFieldWithLimit(2,2);
-        datt3=new TextFieldWithLimit(4,4);
-        amt1=new TextFieldWithLimit(4,4);
-        startm1=new TextFieldWithLimit(2,2);
-        starty1=new TextFieldWithLimit("",4,4);
-        endt1=new TextFieldWithLimit(10,10);
-        titt1=new TextFieldWithLimit(3,3);
-        namt1=new TextFieldWithLimit(16,16);
-        lnamt1=new TextFieldWithLimit(15,15);
-        addt11=new TextFieldWithLimit(32,32);
-        addt21=new TextFieldWithLimit(32,32);
-        addt31=new TextFieldWithLimit(32,32);
-        districtText=new TextFieldWithLimit(22,22);
-        stateCodeDropDown=new JComboBox(SamsUtilities.fillStateCodeList());
-        stateNameDropDown = new JComboBox(SamsUtilities.fillStateNameList());
-        seriesNameDropDown = new JComboBox(SamsUtilities.fillSeriesInformation());
         
-        pint1=new TextFieldWithLimit(6,6);
-        telt1=new TextFieldWithLimit(12,12);
-        counterDropDown=new JComboBox();
-        emailt1=new TextFieldWithLimit(32,32);
-        rett1=new JTextField(5);
-        remt1=new TextArea(85,3);
         
         //renew=new JButton("Modify");
         modifyButton=new JButton("Modify");
         //clear=new JButton("Clear");
         back=new JButton("Back");
         
-        counterDropDown.addItem("Kirpal Bagh");
-        counterDropDown.addItem("Kirpal Ashram");
-        counterDropDown.addItem("Sawan Ashram");
         
         subNumberCodeDropDown.setDoubleBuffered(true);
         subNumberCodeDropDown.setOpaque(true);
         subNumberCodeDropDown.addItemListener(this);
         stateCodeDropDown.addItemListener(this);
         stateNameDropDown.addItemListener(this);
-        seriesNameDropDown.addItemListener(this);
+        seriesDropDown.addItemListener(this);
         
         /*
         subt22.addItem("BH");
@@ -222,15 +247,15 @@ public class SatSandeshModifySubscriptionData extends JFrame implements ActionLi
         
         
         
-        subtt1.addItem("1 year");
-        subtt1.addItem("2 year");
-        subtt1.addItem("2 year plus");
-        subtt1.addItem("3 year");
-        subtt1.addItem("3 year plus");
-        subtt1.addItem("5 year");
-        subtt1.addItem("5 year plus");
-        subtt1.addItem("Life");
-        subtt1.addItem("Comp");
+        subscriptionDurationDropDown.addItem("1 year");
+        subscriptionDurationDropDown.addItem("2 year");
+        subscriptionDurationDropDown.addItem("2 year plus");
+        subscriptionDurationDropDown.addItem("3 year");
+        subscriptionDurationDropDown.addItem("3 year plus");
+        subscriptionDurationDropDown.addItem("5 year");
+        subscriptionDurationDropDown.addItem("5 year plus");
+        subscriptionDurationDropDown.addItem("Life");
+        subscriptionDurationDropDown.addItem("Comp");
         
         
         languageDropDown.addItem("Hindi");
@@ -241,7 +266,6 @@ public class SatSandeshModifySubscriptionData extends JFrame implements ActionLi
         paymentTypeDropDown.addItem("Cash");
         paymentTypeDropDown.addItem("CH/DD/MO");
         
-        
         p1.add(subd1);
         subd1.setBounds(30,10,200,30);
         
@@ -249,12 +273,11 @@ public class SatSandeshModifySubscriptionData extends JFrame implements ActionLi
         asn1.setBounds(30,45,30,20);
         
         p1.add(asnt1);
-        asnt1.setBounds(140,45,80,20);
+        asnt1.setBounds(90,45,80,20);
         int d=0;
         try
         {
             connect c1=new connect();
-            //c1.rs=c1.st.executeQuery("select subnos,subno,status,rcpt,dist,dno,subt,lang,series_name from basic where asn="+num);
             c1.rs=c1.st.executeQuery("select subscription_code,subscription_number,membership_status,"
                     + "receipt_number,distribution_type,bulk_despatch_code,subscription_period,"
                     + "language,series_name from subscribers_primary_details where asn="+num);
@@ -266,6 +289,7 @@ public class SatSandeshModifySubscriptionData extends JFrame implements ActionLi
                 subNumberText.setText(originalSubNumber);
                 
                 statust1.setText(c1.rs.getString(3));
+                statust1.setEnabled(false);
                 originalRcptNumber = ""+c1.rs.getInt(4);
                 receiptNumberText.setText(originalRcptNumber);
                 
@@ -288,10 +312,17 @@ public class SatSandeshModifySubscriptionData extends JFrame implements ActionLi
                 
                 d=c1.rs.getInt(6);
                 distributionCodeDropDown.setSelectedItem(""+d);
-                subtt1.setSelectedItem(c1.rs.getString(7));
+                subscriptionDurationDropDown.setSelectedItem(c1.rs.getString(7));
                 languageDropDown.setSelectedItem(c1.rs.getString(8));
                 originalSeriesName = c1.rs.getString(9);
-                seriesNameDropDown.setSelectedItem(originalSeriesName);
+                seriesDropDown.setSelectedItem(originalSeriesName);
+                //Prerna series is only for migration of prerna members
+                // data modification for series and rcpt num is not allowed
+               
+                if(originalSeriesName.equalsIgnoreCase("Prerna")) {
+                    seriesDropDown.setEnabled(false);
+                    receiptNumberText.setEnabled(false);
+                }
                 
             }
             else{
@@ -299,8 +330,8 @@ public class SatSandeshModifySubscriptionData extends JFrame implements ActionLi
                 this.dispose();
                 new SatSandeshSearchBySubNumber();
             }
-            c1.st.close();
-            c1.con.close();
+            
+            c1.closeAll();
             
         }
         catch(Exception e1)
@@ -316,74 +347,69 @@ public class SatSandeshModifySubscriptionData extends JFrame implements ActionLi
         asnt1.setFont(f);
         
         p1.add(sub1);
-        sub1.setBounds(240,45,80,20);
+        sub1.setBounds(220,45,80,20);
         
+        
+        subNumberCodeDropDown.addItemListener(this);
+        subNumberCodeDropDown.setBounds(300,45,60,20);
         p1.add(subNumberCodeDropDown);
         subNumberCodeDropDown.addItemListener(this);
-        subNumberCodeDropDown.setBounds(300,45,80,20);
-        subNumberCodeDropDown.addItemListener(this);
-        //subt22.setEnabled(false);
         
         
+        subNumberText.setBounds(360,45,60,20);
         p1.add(subNumberText);
-        //subt21.setEnabled(false);
-        subNumberText.setBounds(380,45,60,20);
         subNumberText.addFocusListener(this);
         
         p1.add(status1);
-        status1.setBounds(480,45,40,20);
+        status1.setBounds(430,45,40,20);
         
         p1.add(statust1);
-        statust1.setEnabled(false);
-        statust1.setFont(f);
-        statust1.setBounds(600,45,80,20);
-        
-        p1.add(rec1);
-        rec1.setBounds(730,45,80,20);
-        
-        p1.add(seriesNameDropDown);
-        seriesNameDropDown.setBounds(810,45,90,20);
-        
-        p1.add(receiptNumberText);
-        receiptNumberText.setBounds(910,45,60,20);
-        //rect1.setEnabled(false);
-        receiptNumberText.setFont(f);
-        receiptNumberText.addFocusListener(this);
+        statust1.setBounds(500,45,80,20);
         
         p1.add(dist1);
-        dist1.setBounds(30,75,100,20);
+        dist1.setBounds(600,45,140,20);
         
         p1.add(distributionTypeDropDown);
         distributionTypeDropDown.addItemListener(this);
-        distributionTypeDropDown.setBounds(140,75,100,20);
+        distributionTypeDropDown.setBounds(730,45,140,20);
         
-        p1.add(d1);
-        d1.setBounds(280,75,40,20);
+        p1.add(despatchNumberLabel);
+        despatchNumberLabel.setBounds(890,45,40,20);
         
         p1.add(distributionCodeDropDown);
         if(d==0) distributionCodeDropDown.setEnabled(false);
         distributionCodeDropDown.setFont(f);
-        
-        distributionCodeDropDown.setBounds(330,75,60,20);
         distributionCodeDropDown.addItemListener(this);
+        distributionCodeDropDown.setBounds(930,45,90,20);
+        
+        p1.add(rec1);
+        rec1.setBounds(30,75,100,20);
+        
+        p1.add(seriesDropDown);
+        seriesDropDown.setBounds(130,75,100,20);
+        
+        p1.add(receiptNumberText);
+        receiptNumberText.setBounds(260,75,60,20);
+        receiptNumberText.setFont(f);
+        receiptNumberText.addFocusListener(this);
         
         p1.add(lang1);
-        lang1.setBounds(480,75,110,20);
+        lang1.setBounds(350,75,110,20);
         
         p1.add(languageDropDown);
-        languageDropDown.setBounds(600,75,80,20);
+        languageDropDown.setBounds(480,75,120,20);
         languageDropDown.addItemListener(this);
         languageDropDown.setEnabled(false);
         languageDropDown.setFont(f);
         
         p1.add(subt1);
-        subt1.setBounds(730,75,120,20);
+        subt1.setBounds(650,75,150,20);
         
-        p1.add(subtt1);
-        subtt1.setBounds(860,75,100,20);
-        subtt1.addItemListener(this);
-        subtt1.setEnabled(false);
-        subtt1.setFont(f);
+        p1.add(subscriptionDurationDropDown);
+        subscriptionDurationDropDown.setBounds(800,75,100,20);
+        subscriptionDurationDropDown.addItemListener(this);
+        subscriptionDurationDropDown.setEnabled(false);
+        subscriptionDurationDropDown.setFont(f);
         
         
         try
@@ -409,7 +435,7 @@ public class SatSandeshModifySubscriptionData extends JFrame implements ActionLi
             startm1.setText(""+(startDate.getMonth()+1));
             starty1.setText(""+(startDate.getYear()+1900));
             java.util.Date endDate = c10.rs.getDate(6);
-            endt1.setText(""+(endDate.getMonth()+1)+"/"+(endDate.getYear()+1900));
+            endingPeriodText.setText(""+(endDate.getMonth()+1)+"/"+(endDate.getYear()+1900));
             //startm1.setText(""+(c10.rs.getInt(10)+1));
             //starty1.setText(""+c10.rs.getInt(11));
             
@@ -433,68 +459,67 @@ public class SatSandeshModifySubscriptionData extends JFrame implements ActionLi
         p2.add(paymentTypeDropDown);
         paymentTypeDropDown.setBounds(130,45,100,20);
         paymentTypeDropDown.addItemListener(this);
-        //paymentTypeDropDown.setEnabled(false);
         paymentTypeDropDown.setFont(f);
         
         p2.add(chdd1);
-        chdd1.setBounds(250,45,100,20);
+        chdd1.setBounds(250,45,150,20);
         
         p2.add(chequeInstrumentNumberText);
-        chequeInstrumentNumberText.setBounds(350,45,60,20);
+        chequeInstrumentNumberText.setBounds(380,45,60,20);
         //chequeInstrumentNumberText.setEnabled(true);
         chequeInstrumentNumberText.setFont(f);
         chequeInstrumentNumberText.setText("0");
         
         p2.add(dat1);
-        dat1.setBounds(430,45, 30,20);
+        dat1.setBounds(460,45, 50,20);
         
         p2.add(datt1);
-        datt1.setBounds(470,45,25,20);
+        datt1.setBounds(520,45,25,20);
         datt1.setEnabled(false);
         datt1.setFont(f);
         
         p2.add(datt2);
-        datt2.setBounds(500,45,25,20);
+        datt2.setBounds(550,45,25,20);
         datt2.setEnabled(false);
         datt2.setFont(f);
         
         p2.add(datt3);
-        datt3.setBounds(530,45,40,20);
+        datt3.setBounds(580,45,40,20);
         datt3.setEnabled(false);
         datt3.setFont(f);
         
         p2.add(am1);
-        am1.setBounds(580,45,50,20);
+        am1.setBounds(690,45,50,20);
         
         p2.add(amt1);
-        amt1.setBounds(640,45,40,20);
+        amt1.setBounds(750,45,40,20);
         amt1.setEnabled(false);
         amt1.setFont(f);
         
         p2.add(starm1);
-        starm1.setBounds(700,45,100,20);
-        
-        p2.add(stary1);
-        stary1.setBounds(830,45,10,20);
+        starm1.setBounds(30,75,100,20);
         
         p2.add(startm1);
-        startm1.setBounds(800,45,25,20);
+        startm1.setBounds(140,75,75,20);
         startm1.setEnabled(false);
         startm1.setFont(f);
         
+        p2.add(stary1);
+        stary1.setBounds(215,75,10,20);
+        
         p2.add(starty1);
-        starty1.setBounds(845,45,50,20);
+        starty1.setBounds(225,75,90,20);
         starty1.setEnabled(false);
         starty1.setFont(f);
         
         
-        p2.add(end1);
-        end1.setBounds(30,75,100,20);
+        p2.add(endingPeriodLabel);
+        endingPeriodLabel.setBounds(330,75,100,20);
         
-        p2.add(endt1);
-        endt1.setBounds(130,75,80,20);
-        endt1.setEnabled(false);
-        endt1.setFont(f);
+        p2.add(endingPeriodText);
+        endingPeriodText.setBounds(440,75,80,20);
+        endingPeriodText.setEnabled(false);
+        endingPeriodText.setFont(f);
         
         
         
@@ -535,36 +560,36 @@ public class SatSandeshModifySubscriptionData extends JFrame implements ActionLi
         mem1.setBounds(30,0,200,30);
         
         p3.add(tit1);
-        tit1.setBounds(30,45,50,20);
+        tit1.setBounds(30,30,50,20);
         
         p3.add(titt1);
-        titt1.setBounds(80,45,30,20);
+        titt1.setBounds(80,30,30,20);
         
         p3.add(nam1);
-        nam1.setBounds(120,45,40,20);
+        nam1.setBounds(120,30,40,20);
         
         p3.add(namt1);
-        namt1.setBounds(160,45,145,20);
+        namt1.setBounds(160,30,145,20);
         
         p3.add(lnam1);
-        lnam1.setBounds(310,45,40,20);
+        lnam1.setBounds(310,30,80,20);
         
         p3.add(lnamt1);
-        lnamt1.setBounds(350,45,145,20);
+        lnamt1.setBounds(400,30,145,20);
         
         
-        add1.setBounds(520,45,60,20);
+        add1.setBounds(560,30,60,20);
         p3.add(add1);
         
         
-        addt11.setBounds(600,30,240,20);
+        addt11.setBounds(640,30,240,20);
         p3.add(addt11);
         
         p3.add(addt21);
-        addt21.setBounds(600,55,240,20);
+        addt21.setBounds(640,55,240,20);
         
         p3.add(addt31);
-        addt31.setBounds(600,80,240,20);
+        addt31.setBounds(640,80,240,20);
         
         
         
@@ -592,7 +617,7 @@ public class SatSandeshModifySubscriptionData extends JFrame implements ActionLi
         
         p3.add(pint1);
         
-        pint1.setBounds(800,115,50,20);
+        pint1.setBounds(800,115,80,20);
         
         
         try
@@ -634,8 +659,8 @@ public class SatSandeshModifySubscriptionData extends JFrame implements ActionLi
         
         telt1.setBounds(110,45,110,20);
         
-        p4.add(hist1);
-        hist1.setBounds(240,45,60,20);
+        p4.add(counterLabel);
+        counterLabel.setBounds(240,45,60,20);
         
         p4.add(counterDropDown);
         counterDropDown.setEnabled(false);
@@ -720,7 +745,7 @@ setVisible(true);
                 
                 /*
                 
-                subt=subtt1.getSelectedItem();
+                subt=subscriptionDurationDropDown.getSelectedItem();
                 lang=languageDropDown.getSelectedItem();
                 status=statust1.getText();
                 
@@ -747,7 +772,7 @@ setVisible(true);
                 {
                 
                 connect c9=new connect();
-                c9.rs=c9.st.executeQuery("select * from amountdet where duration='"+subtt1.getSelectedItem()+"'");
+                c9.rs=c9.st.executeQuery("select * from amountdet where duration='"+subscriptionDurationDropDown.getSelectedItem()+"'");
                 while(c9.rs.next())
                 {
                 period=c9.rs.getInt(4);
@@ -855,7 +880,7 @@ setVisible(true);
                 
                 
                 //database query for basic fragment
-                String seriesName = (String)seriesNameDropDown.getSelectedItem();
+                String seriesName = (String)seriesDropDown.getSelectedItem();
                 //System.out.println(seriesName);
                 
                 
@@ -955,7 +980,7 @@ setVisible(true);
     public void focusGained(FocusEvent fe) {
         if(fe.getSource() == receiptNumberText)
         {
-            seriesNameText = (String)(seriesNameDropDown.getSelectedItem());
+            seriesNameText = (String)(seriesDropDown.getSelectedItem());
             //System.out.println("Gained " + seriesName);
         }
     }
@@ -970,7 +995,7 @@ setVisible(true);
             {
                 JOptionPane.showMessageDialog(this,"Please select series", "Please select series", JOptionPane.ERROR_MESSAGE);
                 //receiptNumberText.setText("");
-                seriesNameDropDown.requestFocus();
+                seriesDropDown.requestFocus();
                 return;
             }
             
@@ -1241,12 +1266,12 @@ setVisible(true);
             
         }
         
-        if(ie.getSource()==subtt1)
+        if(ie.getSource()==subscriptionDurationDropDown)
         {
             try
             {
                 connect c7=new connect();
-                c7.rs=c7.st.executeQuery("select * from amountdet where language='"+languageDropDown.getSelectedItem()+"' and duration='"+subtt1.getSelectedItem()+"'");
+                c7.rs=c7.st.executeQuery("select * from amountdet where language='"+languageDropDown.getSelectedItem()+"' and duration='"+subscriptionDurationDropDown.getSelectedItem()+"'");
                 
                 while(c7.rs.next())
                 {
@@ -1258,7 +1283,7 @@ setVisible(true);
                 c7.st.close();
                 c7.con.close();
                 
-                if(subtt1.getSelectedItem()=="Urdu"||subtt1.getSelectedItem()=="Punjabi")
+                if(subscriptionDurationDropDown.getSelectedItem()=="Urdu"||subscriptionDurationDropDown.getSelectedItem()=="Punjabi")
                 {
                     amt1.setEnabled(true);
                     amt1.setText("");
@@ -1280,10 +1305,10 @@ setVisible(true);
                 
                 c8.rs=c8.st.executeQuery("select * from amountdet where language='"+languageDropDown.getSelectedItem()+"'");
                 
-                subtt1.removeAll();
+                subscriptionDurationDropDown.removeAll();
                 while(c8.rs.next())
                 {
-                    subtt1.addItem(c8.rs.getString(2));
+                    subscriptionDurationDropDown.addItem(c8.rs.getString(2));
                 }
                 
                 c8.st.close();

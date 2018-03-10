@@ -138,7 +138,7 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
         //status1=new JLabel("Status");
         
         
-        seriesDropDown = new JComboBox(SamsUtilities.fillSeriesInformation());
+        seriesDropDown = new JComboBox(SamsUtilities.fillSeriesInformation(true));
         receiptNumberText = new TextFieldWithLimit(5,5);
         //dateText = new TextFieldWithLimit(2,2);
         {
@@ -663,7 +663,7 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
                 if(subNumber.isEmpty() == false){
                     subNumbers[i] = Integer.parseInt(subNumber);
                     int diff = subNumbers[i] - lastSubNumber;
-                    diff *= ((diff < 0)?-1:1);
+                    //diff *= ((diff < 0)?-1:1);
                     if(diff > 100)
                     {
                         JOptionPane.showMessageDialog(satSandeshBulkSubscriptionWindow,"Subscription number BD "+subNumbers[i]+" too ahead from previous database entry (BD "+lastSubNumber+")", "Subscription number too far", JOptionPane.ERROR_MESSAGE);
@@ -1195,7 +1195,7 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
             int subNum = Integer.parseInt(selectedSubNumber);
             int lastSubNumber = SamsUtilities.getLastSubscriptionNumberForCode("BD");
             int diff = subNum - lastSubNumber;
-            diff *= ((diff < 0)?-1:1);
+            //diff *= ((diff < 0)?-1:1);
             if(diff > 100)
             {
                 JOptionPane.showMessageDialog(satSandeshBulkSubscriptionWindow,"Subscription number BD "+subNum+" too ahead from previous database entry (BD "+lastSubNumber+")", "Subscription number too far", JOptionPane.ERROR_MESSAGE);

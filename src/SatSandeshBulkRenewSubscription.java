@@ -134,7 +134,7 @@ public class SatSandeshBulkRenewSubscription implements ActionListener, ItemList
         //status1=new JLabel("Status");
         
         
-        seriesDropDown = new JComboBox(SamsUtilities.fillSeriesInformation());
+        seriesDropDown = new JComboBox(SamsUtilities.fillSeriesInformation(true));
         receiptNumberText = new TextFieldWithLimit(5,5);
         /*dateText = new TextFieldWithLimit(2,2);
         monthText=new TextFieldWithLimit(2,2);
