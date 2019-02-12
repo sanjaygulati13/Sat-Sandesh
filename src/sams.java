@@ -79,6 +79,8 @@ public class sams extends JFrame implements ActionListener {
 
         setTitle("Sat Sandesh");
         center();
+        
+        //new CSVReader();
 
         refresh refresher = new refresh();
         Thread refreshThread = new Thread(refresher);

@@ -4,32 +4,32 @@ import java.awt.event.*;
 import javax.swing.*;
 
 
-public class allsubno implements Printable, ActionListener
+public class allsubno  extends SamsLandscapePrintingUtil implements  ActionListener
 {
     public static void main(String args[])
     {
-        new allsubno("EN");
+        new allsubno("DL");
     }
     int present = 0;
-    int[] pageBreak;
-    int numLines=0;
-    String[][] textLines;
+    //int[] pageBreak;
+    //int numLines=0;
+    //String[][] textLines;
     int[] asn;
     int x=0;
     int x1=0;
     int i=0;
-    int chk=0;
+    //int chk=0;
     String m1;
     JButton b, back;
     JFrame f;
     String subno;
-    int linesPerPage;
-    int NumberOfRecords=0;
+    //int linesPerPage;
+    //int NumberOfRecords=0;
     
     public allsubno(String subno1)
     {
         subno=subno1;
-        f= new JFrame("Print List");
+        f= new JFrame("Sub code "+subno+" List");
         try
         {
             f.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("skrm.jpg")));
@@ -58,9 +58,10 @@ public class allsubno implements Printable, ActionListener
         f.add(back);
         back.setMnemonic('B');
         back.setBounds(150,10,100,25);
+        SamsUtilities.center(f);
         
     }
-    
+    /*
     public void initLines()
     {
         try
@@ -403,8 +404,9 @@ public class allsubno implements Printable, ActionListener
             e.printStackTrace();
         }
         
-    }
+    }*/
     
+    /*
     public int print(Graphics g, PageFormat pf, int pageIndex)
     {
         Font f1=new Font("SERIF", Font.PLAIN, 7);
@@ -595,8 +597,51 @@ public class allsubno implements Printable, ActionListener
         
         return PAGE_EXISTS;
     }
+    */
     
-    
+    void initAsnSet()
+    {
+        connect dbConnection=new connect();
+        try{
+            String query = "select count(asn) from subscribers_primary_details where subscription_code='"+subno+"'";
+            dbConnection.rs=dbConnection.st.executeQuery(query);
+            if(dbConnection.rs.next()) x = dbConnection.rs.getInt(1);
+            
+            asn=new int[x];            
+            query = "select asn from subscribers_primary_details where subscription_code ='"+subno+"' order by state, first_name, last_name";
+
+            dbConnection.rs=dbConnection.st.executeQuery(query);
+            int idx = 0;
+            while(dbConnection.rs.next())
+            {
+                asn[idx++] = dbConnection.rs.getInt(1);
+                //System.out.println(asn[idx-1]);
+            }
+            setAsnSet(asn);
+            String header_;
+            if(subno.equals("BH"))
+                header_ = "List of By Hand Sat Sandesh Members of All States";
+            else if(subno.equals("BD"))
+                header_ = "List of Bulk Sat Sandesh Members of All States";
+            else if(subno.equals("LF"))
+                header_ = "List of Life By Post Sat Sandesh Members of All States";
+            else if(subno.equals("LH"))
+                header_ = "List of Life By Hand Sat Sandesh Members of All States";
+            else if(subno.equals("CM"))
+                header_ = "List of Complimentary Sat Sandesh Members of All States";
+            else
+                header_ = "List of By Post Sat Sandesh Members of '"+SamsUtilities.getStateNameForSubCode(subno)+"'";
+            
+            setHeader(header_);
+            dbConnection.closeAll();
+            
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            dbConnection.closeAll();
+        }
+    }
     
     public void actionPerformed(ActionEvent ae)
     {
@@ -617,6 +662,7 @@ public class allsubno implements Printable, ActionListener
             {
                 try
                 {
+                    initAsnSet();
                     job.print();
                 }
                 catch(PrinterException pe)

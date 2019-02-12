@@ -7,7 +7,7 @@ import net.miginfocom.swing.MigLayout;
 
 public class SatSandeshSearchBySubNumber implements ActionListener
 {
-    JLabel subNumberLabel,asnEntryLabel;
+    JLabel subNumberLabel,asnEntryLabel, phoneNumberLabel;
     JTextField subNumberText,asnText, rcptNumberTextField,addressText;
     JTable searchResultsTable;
     JScrollPane sp;
@@ -18,11 +18,11 @@ public class SatSandeshSearchBySubNumber implements ActionListener
     JFrame satSandeshSearchWindow;
     MigLayout mLayout= new MigLayout( "insets 30");
     JComboBox seriesNameDropDown;
-    TextFieldWithLimit firstNameText,lastNameText,districtText;
+    TextFieldWithLimit firstNameText,lastNameText,districtText,phoneNumberText;
     JComboBox stateNameDropDown;
     JLabel l1,l2,l3,l4;
     
-    JRadioButton subNumberRadioButton, nameRadioButton,addressRadioButton, rcptNumberRadioButton;
+    JRadioButton subNumberRadioButton, nameRadioButton,addressRadioButton, rcptNumberRadioButton, phoneNumberRadioButton;
     ButtonGroup typeGroup;
     
     //String[] subCodes = {"BH","BD","CM","DL","EN","HR","LF","LH","MH","MP","MS","NA","PB","PJ","RJ","UK","UP","UR"};
@@ -91,11 +91,15 @@ public class SatSandeshSearchBySubNumber implements ActionListener
         rcptNumberRadioButton = new JRadioButton("Receipt Number");
         rcptNumberRadioButton.addActionListener(this);
         
+        phoneNumberRadioButton = new JRadioButton("Phone Number");
+        phoneNumberRadioButton.addActionListener(this);
+        
         typeGroup  = new ButtonGroup();
         typeGroup.add(subNumberRadioButton);
         typeGroup.add(nameRadioButton);
         typeGroup.add(addressRadioButton);
         typeGroup.add(rcptNumberRadioButton);
+        typeGroup.add(phoneNumberRadioButton);
         
         
         satSandeshSearchWindow.add(subNumberRadioButton);
@@ -155,6 +159,12 @@ public class SatSandeshSearchBySubNumber implements ActionListener
         
         rcptNumberTextField = new JTextField("");
         satSandeshSearchWindow.add(rcptNumberTextField, "wrap, w 100!");
+        
+        
+        satSandeshSearchWindow.add(phoneNumberRadioButton);
+        
+        phoneNumberText = new TextFieldWithLimit(10,10);
+        satSandeshSearchWindow.add(phoneNumberText, "wrap, w 100!");
         
         
         findButton= new JButton("Find");
@@ -229,6 +239,16 @@ public class SatSandeshSearchBySubNumber implements ActionListener
                 }
                 searchByReceiptNumberAndFillTable(seriesName, rcptNumberTextField.getText(), searchResultsTable);
             }
+            if(mode == 5)
+            {
+                String phoneNumber = phoneNumberText.getText();
+                if(phoneNumber.isEmpty())
+                {
+                    JOptionPane.showMessageDialog(satSandeshSearchWindow,"Please put phone number", "Please give phone number", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                searchByPhoneNumberAndFillTable(phoneNumber,searchResultsTable);
+            }
             
             Dimension frameSize = satSandeshSearchWindow.getSize();
             int width = frameSize.width;
@@ -236,40 +256,43 @@ public class SatSandeshSearchBySubNumber implements ActionListener
             
             sp.setBounds(20,270,width - 40,height -300);  
         }
-        if(ae.getSource()==viewButton)
+        else if(ae.getSource()==viewButton)
         {
             new SatSandeshModifySubscriptionData(Integer.parseInt(asnText.getText()));
             satSandeshSearchWindow.dispose();
         }
         
-        
-        if(ae.getSource()==resetButton)
+        else if(ae.getSource()==resetButton)
         {
             new SatSandeshSearchBySubNumber();
             satSandeshSearchWindow.dispose();
         }
         
-        if(ae.getSource()==closeButton)
+        else if(ae.getSource()==closeButton)
         {
             satSandeshSearchWindow.dispose();
             new sams();
         }
         
-        if(ae.getSource() == subNumberRadioButton)
+        else if(ae.getSource() == subNumberRadioButton)
         {
             mode = 1;
         }
-        if(ae.getSource() == nameRadioButton)
+        else if(ae.getSource() == nameRadioButton)
         {
             mode = 2;
         }
-        if(ae.getSource() == addressRadioButton)
+        else if(ae.getSource() == addressRadioButton)
         {
             mode = 3;
         }
-        if(ae.getSource() == rcptNumberRadioButton)
+        else if(ae.getSource() == rcptNumberRadioButton)
         {
             mode = 4;
+        }
+        else if(ae.getSource() == phoneNumberRadioButton)
+        {
+            mode = 5;
         }
         
     }
@@ -457,7 +480,7 @@ public class SatSandeshSearchBySubNumber implements ActionListener
             
             
             if(state.length()>0)
-                searchQuery += "and state like '"+state+"%' ";
+                searchQuery += "and state like '"+SamsUtilities.getStateCodeForStateName(state)+"%' ";
             //searchQuery += "and s.state like '"+state+"%' ";
             
             //searchQuery += "order by s.asn";
@@ -544,6 +567,60 @@ public class SatSandeshSearchBySubNumber implements ActionListener
                 
                 //c2.rs=c2.st.executeQuery("select b.asn, s.fname, s.lname, s.dist, s.state from basic b, subdetails s where b.asn=s.asn and  b.series_name = '"+seriesName+"' and b.rcpt="+rcptNumber);
                 c2.rs=c2.st.executeQuery("select asn, first_name, last_name, district, state from subscribers_primary_details where series_name = '"+seriesName+"' and receipt_number="+rcptNumber);
+                Object data[][]= new Object[i][5];
+                int z=0;
+                int j=0;
+                while(c2.rs.next())
+                {
+                    z=j+1;
+                    data[j][0]=c2.rs.getInt(1);
+                    data[j][1]=c2.rs.getString(2);
+                    data[j][2]=c2.rs.getString(3);
+                    data[j][3]=c2.rs.getString(4);
+                    data[j][4]=c2.rs.getString(5);
+                    j++;
+                }
+                
+                tb1=new JTable(data,col);
+                sp=new JScrollPane(tb1);
+                //sp.setBounds(20,70,545,410);
+                satSandeshSearchWindow.add(sp);
+                
+            }
+        }
+        catch(Exception e)
+        {
+            System.out.println("exception"+e);
+        }
+    }
+    
+    public void searchByPhoneNumberAndFillTable(String phoneNumber, JTable tb1)
+    {
+        int i=0;
+        try
+        {
+            
+            connect c1=new connect();
+            //c1.rs=c1.st.executeQuery("select b.asn, s.fname, s.lname, s.dist, s.state from basic b, subdetails s where b.asn=s.asn and b.series_name = '"+seriesName+"' and b.rcpt="+rcptNumber);
+            c1.rs=c1.st.executeQuery("select asn, first_name, last_name, district, state from subscribers_primary_details where phone_number = "+phoneNumber);
+            while(c1.rs.next())
+            {
+                i++;
+            }
+            c1.rs.close();
+            
+            //System.out.println(i);
+            
+            if(i==0)
+                JOptionPane.showMessageDialog(null,"No Records Found","No Records",JOptionPane.ERROR_MESSAGE);
+            
+            else
+            {
+                
+                connect c2=new connect();
+                
+                //c2.rs=c2.st.executeQuery("select b.asn, s.fname, s.lname, s.dist, s.state from basic b, subdetails s where b.asn=s.asn and  b.series_name = '"+seriesName+"' and b.rcpt="+rcptNumber);
+                c2.rs=c2.st.executeQuery("select asn, first_name, last_name, district, state from subscribers_primary_details where phone_number="+phoneNumber);
                 Object data[][]= new Object[i][5];
                 int z=0;
                 int j=0;

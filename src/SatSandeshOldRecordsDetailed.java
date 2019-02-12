@@ -1,36 +1,34 @@
 import java.awt.print.*;
 import java.awt.*;
 import java.awt.event.*;
-import static java.awt.print.Printable.NO_SUCH_PAGE;
-import static java.awt.print.Printable.PAGE_EXISTS;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import javax.swing.*;
 
 
-public class SatSandeshOldRecordsDetailed implements Printable, ActionListener
+public class SatSandeshOldRecordsDetailed extends SamsLandscapePrintingUtil implements ActionListener
 {
     public static void main(String args[])
     {
         new SatSandeshOldRecordsDetailed(1);
     }
     int present=0;
-    int[] pageBreak;
-    int numLines=0;
-    String[][] textLines;
+    //int[] pageBreak;
+    //int numLines=0;
+    //String[][] textLines;
     int[] asn;
     int x=0;
     int x1=0;
     int i=0;
-    int chk=0;
+    //int chk=0;
     //int m1, y1;
     String m1;
     JButton b, back;
     JFrame f;
     String typeStr = "Freeze";
     
-    int linesPerPage;
-    int NumberOfRecords=0;
+    //int linesPerPage;
+    //int NumberOfRecords=0;
     
     public SatSandeshOldRecordsDetailed(int type)
     {
@@ -83,6 +81,7 @@ public class SatSandeshOldRecordsDetailed implements Printable, ActionListener
         
     }
     
+    /*
     public void initLines()
     {
         try
@@ -626,8 +625,82 @@ public class SatSandeshOldRecordsDetailed implements Printable, ActionListener
         
         return PAGE_EXISTS;
     }
+    */
     
     
+    void initAsnSet()
+    {
+        connect dbConnection=new connect();
+        try{
+            String query = "select count(asn) from subscribers_primary_details where membership_status='"+typeStr
+                    +"' and subscription_code not in ('NA')";
+            dbConnection.rs=dbConnection.st.executeQuery(query);
+            if(dbConnection.rs.next()) x = dbConnection.rs.getInt(1);
+            
+            asn=new int[x];            
+            query = "select asn from subscribers_primary_details where membership_status='"+typeStr
+                            +"' and subscription_code not in ('NA') order by state, first_name, last_name";
+
+            dbConnection.rs=dbConnection.st.executeQuery(query);
+            int idx = 0;
+            while(dbConnection.rs.next())
+            {
+                asn[idx++] = dbConnection.rs.getInt(1);
+                //System.out.println(asn[idx-1]);
+            }
+            setAsnSet(asn);
+            String header_ = "";
+            GregorianCalendar cal=new GregorianCalendar();
+            int month=(cal.get(Calendar.MONTH)+1);
+            int year=cal.get(Calendar.YEAR);
+            
+            if(typeStr.equals("Freeze")){
+                int mf=(month-1)%12;
+                //int mf=month;
+                int yf=year-1;
+                if(mf==0)
+                    mf=12;
+                if(mf==12)
+                    yf--;
+                header_ = "Detailed List of "+typeStr+" Sat Sandesh Members Whose Period Has Ended Before "+mf+"-"+yf;
+                
+            }
+            else if(typeStr.equals("Deactive")){
+                int md=(month+6)%12;
+                
+                int yd=year;
+                if(md==0)
+                    md=12;
+                if(md>6)
+                    yd--;
+                
+                header_ = "Detailed List Of Deactive Sat Sandesh Members Whose Period Has Ended B/W "+(month-1)+"-"+(year-1)+" & "+(md-1)+"-"+yd;
+                
+            }
+            else if(typeStr.equals("Inactive")){
+                int mi=(month+6)%12;
+                
+                int yi=year;
+                if(mi==0)
+                    mi=12;
+                if(mi>6)
+                    yi--;
+                
+                header_ = "Detailed List Of Inactive Sat Sandesh Members Whose Period Has Ended B/W "+mi+"-"+yi+" & "+(month-1)+"-"+year;
+                
+                
+            }
+            
+            setHeader(header_);
+            dbConnection.closeAll();
+            
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            dbConnection.closeAll();
+        }
+    }
     
     public void actionPerformed(ActionEvent ae)
     {
@@ -648,6 +721,7 @@ public class SatSandeshOldRecordsDetailed implements Printable, ActionListener
             {
                 try
                 {
+                    initAsnSet();
                     job.print();
                 }
                 catch(PrinterException pe)

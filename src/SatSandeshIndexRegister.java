@@ -4,28 +4,28 @@ import java.awt.event.*;
 import javax.swing.*;
 
 
-public class SatSandeshIndexRegister implements Printable, ActionListener
+public class SatSandeshIndexRegister extends SamsLandscapePrintingUtil implements ActionListener
 {
     public static void main(String args[])
     {
         SatSandeshIndexRegister index = new SatSandeshIndexRegister(1,12,2011, true);
     }
     int present=0;
-    int[] pageBreak;
-    int numLines=0;
-    String[][] textLines;
+    //int[] pageBreak;
+    //int numLines=0;
+    //String[][] textLines;
     int[] asn;
     int x=0;
     int x1=0;
     int i=0;
-    int chk=0;
+    //int chk=0;
     //int m1, y1;
     String m1;
     JButton b, back;
     JFrame f;
     int d, m, y1;
-    int linesPerPage;
-    int NumberOfRecords=0;
+    //int linesPerPage;
+    //int NumberOfRecords=0;
     boolean dataFromNewTable = true;
     
     public SatSandeshIndexRegister(int d2,int m2, int y2, boolean mode)
@@ -69,6 +69,7 @@ public class SatSandeshIndexRegister implements Printable, ActionListener
         
     }
     
+    /*
     public void initLines()
     {
         try
@@ -243,10 +244,6 @@ public class SatSandeshIndexRegister implements Printable, ActionListener
                         textLines[i][5]="";
                         textLines[i][6]="";
                         textLines[i][7]="";
-                        /*textLines[i][5]="  SAT-SANDESH  ";
-                        textLines[i][6]="  (HINDI)  ";
-                        textLines[i][7]="  INDEX REGISTER AS ON  "+d+"-"+m+"-"+y1;
-                        */
                         textLines[i][8]="";
                         textLines[i][9]="";
                         textLines[i][10]="";
@@ -625,8 +622,41 @@ public class SatSandeshIndexRegister implements Printable, ActionListener
         
         return PAGE_EXISTS;
     }
+    */
     
-    
+     void initAsnSet()
+    {
+        connect dbConnection=new connect();
+        try{
+            String query = "select count(asn) from subscribers_primary_details where language not in "
+                    + "('Other') and subscription_code not in ('NA')";
+            dbConnection.rs=dbConnection.st.executeQuery(query);
+            if(dbConnection.rs.next()) x = dbConnection.rs.getInt(1);
+            
+            asn=new int[x];            
+            query = "select asn from subscribers_primary_details where "
+                            + "language not in ('Other') and subscription_code not in ('NA') "
+                            + "order by state, first_name, last_name";
+
+            dbConnection.rs=dbConnection.st.executeQuery(query);
+            int idx = 0;
+            while(dbConnection.rs.next())
+            {
+                asn[idx++] = dbConnection.rs.getInt(1);
+                //System.out.println(asn[idx-1]);
+            }
+            setAsnSet(asn);
+            String header_ = "Sat Sandesh Index Register as on "+d+"-"+m+"-"+y1;
+            setHeader(header_);
+            dbConnection.closeAll();
+            
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            dbConnection.closeAll();
+        }
+    }
     
     public void actionPerformed(ActionEvent ae)
     {
@@ -660,6 +690,7 @@ public class SatSandeshIndexRegister implements Printable, ActionListener
                     attr.add(new MediaPrintableArea(0f, 0f, (float)pf.getImageableWidth()-36f, (float)pf.getImageableHeight()-36f, MediaPrintableArea.INCH));
                     System.out.println(pf.getImageableHeight() + " " + pf.getImageableWidth() + " " + ((float)pf.getImageableWidth()-0.50f));
                     job.print(attr);*/
+                    initAsnSet();
                     job.print();
                 }
                 catch(PrinterException pe)

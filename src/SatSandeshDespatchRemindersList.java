@@ -1,17 +1,10 @@
 
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.print.PageFormat;
-import java.awt.print.Printable;
-import static java.awt.print.Printable.NO_SUCH_PAGE;
-import static java.awt.print.Printable.PAGE_EXISTS;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.util.Calendar;
@@ -26,7 +19,7 @@ import javax.swing.UIManager;
 * To change this template file, choose Tools | Templates
 * and open the template in the editor.
 */
-public class SatSandeshDespatchRemindersList implements Printable, ActionListener
+public class SatSandeshDespatchRemindersList extends SamsLandscapePrintingUtil implements ActionListener
 {
     public static void main(String args[])
     {
@@ -35,21 +28,21 @@ public class SatSandeshDespatchRemindersList implements Printable, ActionListene
     
     int present;
     
-    int[] pageBreak;
-    int numLines=0;
-    String[][] textLines;
+    //int[] pageBreak;
+    //int numLines=0;
+    //String[][] textLines;
     int[] asn;
-    int totalNumberOfLabels=0;
+    int x=0;
     int x1=0;
     int currentLabel=0;
-    int chk=0;
+    //int chk=0;
     int m1, y1, m2, y2;
     JButton printButton, back;
     JFrame f;
     int dno;
-    int linesPerPage;
+    //int linesPerPage;
     //String dist,state;
-    int NumberOfRecords=0;
+    //int NumberOfRecords=0;
     
     
     public SatSandeshDespatchRemindersList(int m, int y, int m3, int y3)
@@ -90,12 +83,12 @@ public class SatSandeshDespatchRemindersList implements Printable, ActionListene
         back.setMnemonic('B');
         back.setBounds(150,10,120,25);
         //f.pack();
-        
+        SamsUtilities.center(f);
         
     }
     
     
-    
+    /*
     public void initLines()
     {
         try
@@ -128,10 +121,10 @@ public class SatSandeshDespatchRemindersList implements Printable, ActionListene
             
             //System.out.println(sqlQuery);
             //System.out.println(newSqlQuery);
-            /*c1.rs=c1.st.executeQuery(sqlQuery);
-            if(c1.rs.next())
-                totalNumberOfLabels = c1.rs.getInt(1);
-            */
+            //c1.rs=c1.st.executeQuery(sqlQuery);
+            //if(c1.rs.next())
+            //    totalNumberOfLabels = c1.rs.getInt(1);
+            
             
             c1.rs=c1.st.executeQuery(newSqlQuery);
             if(c1.rs.next()){
@@ -265,10 +258,10 @@ public class SatSandeshDespatchRemindersList implements Printable, ActionListene
                     }
                     else if(currentLabel%(linesPerPage/2)==1)
                     {
-                        /*c3.rs=c3.st.executeQuery("select district, state from despcode where dno="+dno);
-                        c3.rs.next();
-                        dist=c3.rs.getString(1);
-                        state=c3.rs.getString(2);*/
+                        //c3.rs=c3.st.executeQuery("select district, state from despcode where dno="+dno);
+                        //c3.rs.next();
+                        //dist=c3.rs.getString(1);
+                        //state=c3.rs.getString(2);
                         
                         textLines[currentLabel][0]="";
                         textLines[currentLabel][1]="";
@@ -613,7 +606,59 @@ public class SatSandeshDespatchRemindersList implements Printable, ActionListene
         
         return PAGE_EXISTS;
     }
+    */
     
+     void initAsnSet()
+    {
+        connect dbConnection=new connect();
+        try{
+            String query;
+            String dateStart, dateEnd;
+            Date referenceStartDate = new Date((y1-1900),m1-1,28);
+            Date referenceEndDate = new Date((y2-1900),m2-1,1);
+            {
+                Calendar c = Calendar.getInstance();
+                c.setTime(referenceStartDate);
+                c.add(Calendar.MONTH, -1);
+                //System.out.println(c.get(Calendar.DATE) +" - " + (c.get(Calendar.MONTH)+1) + " - " + c.get(Calendar.YEAR));
+                dateStart = c.get(Calendar.YEAR) +"-" + (c.get(Calendar.MONTH)+1) + "-" + c.get(Calendar.DATE);
+                c.setTime(referenceEndDate);
+                c.add(Calendar.MONTH, 1);
+                //System.out.println(c.get(Calendar.DATE) +" - " + (c.get(Calendar.MONTH)+1) + " - " + c.get(Calendar.YEAR));
+                dateEnd = c.get(Calendar.YEAR) +"-" + (c.get(Calendar.MONTH)+1) + "-" + c.get(Calendar.DATE);
+            }
+            
+             query = "select count(asn) from subscribers_primary_details where "
+                    + "(distribution_type = 'By Post' or distribution_type ='By Hand') and "
+                    + "ending_period > '"+dateStart+"' and ending_period < '"+dateEnd+"' and subscription_code not in ('NA')";
+            dbConnection.rs=dbConnection.st.executeQuery(query);
+            if(dbConnection.rs.next()) x = dbConnection.rs.getInt(1);
+            
+            asn=new int[x];            
+            query = "select asn from subscribers_primary_details where "
+                            + "(distribution_type = 'By Post' or distribution_type ='By Hand') and "
+                            + "ending_period > '"+dateStart+"' and ending_period < '"+dateEnd+"'  and subscription_code not in ('NA')"
+                            + "order by ending_period asc, subscription_code, subscription_number";
+
+            dbConnection.rs=dbConnection.st.executeQuery(query);
+            int idx = 0;
+            while(dbConnection.rs.next())
+            {
+                asn[idx++] = dbConnection.rs.getInt(1);
+                //System.out.println(asn[idx-1]);
+            }
+            setAsnSet(asn);
+            String header_ = "LIST OF REMINDERS OF SAT-SANDESH MEMBERS ";
+            setHeader(header_);
+            dbConnection.closeAll();
+            
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            dbConnection.closeAll();
+        }
+    }
     
     
     public void actionPerformed(ActionEvent ae)
@@ -635,6 +680,11 @@ public class SatSandeshDespatchRemindersList implements Printable, ActionListene
             {
                 try
                 {
+                    initAsnSet();
+                    if(asnSet.length == 0) {
+                        JOptionPane.showMessageDialog(null, "No records found","ERROR", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
                     job.print();
                 }
                 catch(PrinterException pe)

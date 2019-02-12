@@ -28,6 +28,8 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableModel;
 import net.miginfocom.swing.MigLayout;
 import org.jdatepicker.impl.JDatePanelImpl;
@@ -35,7 +37,7 @@ import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
 
-public class SatSandeshBulkSubscription implements ActionListener, ItemListener, FocusListener
+public class SatSandeshBulkSubscription implements ActionListener, ItemListener, FocusListener, ListSelectionListener
 {
     public static void main(String args[])
     {
@@ -136,7 +138,7 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
         //status1=new JLabel("Status");
         
         
-        seriesDropDown = new JComboBox(SamsUtilities.fillSeriesInformation());
+        seriesDropDown = new JComboBox(SamsUtilities.fillSeriesInformation(true));
         receiptNumberText = new TextFieldWithLimit(5,5);
         //dateText = new TextFieldWithLimit(2,2);
         {
@@ -508,6 +510,8 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
             bulkEntryTable.setRowSelectionAllowed(true);
             bulkEntryTable.setFocusCycleRoot(true);
             bulkEntryTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+            bulkEntryTable.getSelectionModel().addListSelectionListener(this);
+            bulkEntryTable.getColumnModel().getSelectionModel().addListSelectionListener(this);
             
             
             scrollPane =new JScrollPane(bulkEntryTable);
@@ -523,6 +527,9 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
             addDataButton.setEnabled(false);
             
         }
+        
+        
+        
         
         if(ae.getSource() == saveButton)
         {
@@ -631,6 +638,8 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
             //boolean allFine = true;
             
             
+            int lastSubNumber = SamsUtilities.getLastSubscriptionNumberForCode("BD");;
+            
             
             for(int i = 0 ; i < numItems; i++ )
             {
@@ -651,8 +660,17 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
                 
                 //System.out.print(subNumber);
                 
-                if(subNumber.isEmpty() == false)
+                if(subNumber.isEmpty() == false){
                     subNumbers[i] = Integer.parseInt(subNumber);
+                    int diff = subNumbers[i] - lastSubNumber;
+                    //diff *= ((diff < 0)?-1:1);
+                    if(diff > 100)
+                    {
+                        JOptionPane.showMessageDialog(satSandeshBulkSubscriptionWindow,"Subscription number BD "+subNumbers[i]+" too ahead from previous database entry (BD "+lastSubNumber+")", "Subscription number too far", JOptionPane.ERROR_MESSAGE);
+                        bulkEntryTable.changeSelection(i, 3, false, false);
+                        return;
+                    }
+                }
                 else{
                     bulkEntryTable.changeSelection(i, 3, false, false);
                     JOptionPane.showMessageDialog(satSandeshBulkSubscriptionWindow, "Please enter sub number in row "+(i+1), "ERROR", JOptionPane.ERROR_MESSAGE);
@@ -704,7 +722,7 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
                     return;
                 }
                 
-                System.out.print(" "+firstNames[i]);
+                //System.out.print(" "+firstNames[i]);
                 try{
                     lastNames[i] = model.getValueAt(i, 5).toString();
                 }
@@ -717,12 +735,26 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
                     return;
                 }
                 
-                System.out.println(" "+lastNames[i]);
+                //System.out.println(" "+lastNames[i]);
                 
             }
             
-            
-            
+            int size = subNumbers.length;
+            if(size > 1){
+                for(int i = 0 ; i < size - 1; i++ )
+                {
+                    for(int j = i+1 ; j < size; j++ )
+                    {
+                        //System.out.println(i+" "+j);
+                        if(subNumbers[i] ==  subNumbers[j])
+                        {
+                            bulkEntryTable.changeSelection(j, 3, false, false);
+                            JOptionPane.showMessageDialog(satSandeshBulkSubscriptionWindow, "Duplicate sub number used as in row "+(i+1), "ERROR", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+                    }
+                }
+            }
             
             {
                 
@@ -1147,6 +1179,38 @@ public class SatSandeshBulkSubscription implements ActionListener, ItemListener,
             }
             //System.out.println("Lost");
         }
+    }
+    
+    
+    @Override
+    public void valueChanged(ListSelectionEvent e) {
+        //System.out.println("valueChanged: " + e.toString());
+        int row = bulkEntryTable.getSelectedRow();
+        int col = bulkEntryTable.getSelectedColumn();
+        
+        
+        if(row > -1 && col > -1)
+        {
+            String selectedSubNumber = bulkEntryTable.getValueAt(row, 3).toString();
+            int subNum = Integer.parseInt(selectedSubNumber);
+            int lastSubNumber = SamsUtilities.getLastSubscriptionNumberForCode("BD");
+            int diff = subNum - lastSubNumber;
+            //diff *= ((diff < 0)?-1:1);
+            if(diff > 100)
+            {
+                JOptionPane.showMessageDialog(satSandeshBulkSubscriptionWindow,"Subscription number BD "+subNum+" too ahead from previous database entry (BD "+lastSubNumber+")", "Subscription number too far", JOptionPane.ERROR_MESSAGE);
+                bulkEntryTable.changeSelection(row, 3, false, false);
+                return;
+            }
+        }
+        
+        /*if(row > -1 && col > -1){
+            String selectedItem = bulkEntryTable.getValueAt(row, col).toString();
+            JOptionPane.showMessageDialog(satSandeshBulkSubscriptionWindow,row + " : " + col + " = " + selectedItem,"",JOptionPane.INFORMATION_MESSAGE);
+            System.out.println(row + " : " + col + " = " + selectedItem);
+        }*/
+        
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }
