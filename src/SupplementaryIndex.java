@@ -4,32 +4,33 @@ import java.awt.event.*;
 import javax.swing.*;
 
 
-public class SupplementaryIndex implements Printable, ActionListener
+//public class SupplementaryIndex implements Printable, ActionListener
+public class SupplementaryIndex extends SamsLandscapePrintingUtil implements ActionListener 
 {
     public static void main(String args[])
     {
         new SupplementaryIndex(
                 SamsUtilities.getCurrentDate()
                 ,SamsUtilities.getCurrentMonth()
-                ,SamsUtilities.getCurrentYear()
+                ,SamsUtilities.getCurrentYear()-1
                 , true);
     }
     int present=0;
-    int[] pageBreak;
-    int numLines=0;
-    String[][] textLines;
+    //int[] pageBreak;
+    //int numLines=0;
+    //String[][] textLines;
     int[] asn;
     int x=0;
     int x1=0;
     int i=0;
-    int chk=0;
+    //int chk=0;
     //int m1, y1;
     String m1;
     JButton b, back;
     JFrame f;
     int d, m, y1;
-    int linesPerPage;
-    int NumberOfRecords=0;
+    //int linesPerPage;
+    //int NumberOfRecords=0;
     String StartDate, CurrentDate;
     boolean useNewTable;
     
@@ -77,21 +78,21 @@ public class SupplementaryIndex implements Printable, ActionListener
         back.setBounds(300,10,150,25);
         
     }
-    
+ /*   
     public void initLines()
     {
         try
         {
             
-            connect c1=new connect();
+            connect dbConnection=new connect();
             String query = "select count(asn) from subscribers_primary_details where entry_date >= '"+StartDate+"'";
             
             if(!useNewTable)
                 query = "select count(asn) from payment where InsertionDate>='"+StartDate+"'";
-            c1.rs=c1.st.executeQuery(query);
-            while(c1.rs.next())
+            dbConnection.rs=dbConnection.st.executeQuery(query);
+            while(dbConnection.rs.next())
             {
-                x=c1.rs.getInt(1);
+                x=dbConnection.rs.getInt(1);
             }
             NumberOfRecords=x;
             
@@ -99,12 +100,12 @@ public class SupplementaryIndex implements Printable, ActionListener
             numLines=x*2;
             //System.out.println("x : "+x);
             
-            int y=(numLines%linesPerPage);
+            int y=0;//(numLines%linesPerPage);
             
             //System.out.println("y : "+y);
             
-            c1.st.close();
-            c1.con.close();
+            dbConnection.st.close();
+            dbConnection.con.close();
             
             numLines=x*2;
             
@@ -249,10 +250,10 @@ public class SupplementaryIndex implements Printable, ActionListener
                         textLines[i][5]="";
                         textLines[i][6]="";
                         textLines[i][7]="";
-                        /*textLines[i][5]="  SAT-SANDESH  ";
-                        textLines[i][6]="  (HINDI)  ";
-                        textLines[i][7]="  INDEX REGISTER AS ON  "+d+"-"+m+"-"+y1;
-                        */
+                        //textLines[i][5]="  SAT-SANDESH  ";
+                        //textLines[i][6]="  (HINDI)  ";
+                        //textLines[i][7]="  INDEX REGISTER AS ON  "+d+"-"+m+"-"+y1;
+                        
                         textLines[i][8]="";
                         textLines[i][9]="";
                         textLines[i][10]="";
@@ -449,7 +450,9 @@ public class SupplementaryIndex implements Printable, ActionListener
         }
         
     }
+   */ 
     
+    /*
     public int print(Graphics g, PageFormat pf, int pageIndex)
     {
         Font f1=new Font("SERIF", Font.PLAIN, 7);
@@ -611,7 +614,38 @@ public class SupplementaryIndex implements Printable, ActionListener
         return PAGE_EXISTS;
     }
     
+    */
     
+    void initAsnSet()
+    {
+        connect dbConnection=new connect();
+        try{
+            String query = "select count(asn) from subscribers_primary_details where entry_date >= '"+StartDate+"'";
+            dbConnection.rs=dbConnection.st.executeQuery(query);
+            if(dbConnection.rs.next()) x = dbConnection.rs.getInt(1);
+            
+            asn=new int[x];            
+            query = "select asn from subscribers_primary_details where entry_date >= '"+StartDate+"' order by state, first_name, last_name";
+
+            dbConnection.rs=dbConnection.st.executeQuery(query);
+            int idx = 0;
+            while(dbConnection.rs.next())
+            {
+                asn[idx++] = dbConnection.rs.getInt(1);
+                //System.out.println(asn[idx-1]);
+            }
+            setAsnSet(asn);
+            String header_ = "Sat Sandesh Supplementary Index Register w.e.f. "+d+"-"+m+"-"+y1;
+            setHeader(header_);
+            dbConnection.closeAll();
+            
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            dbConnection.closeAll();
+        }
+    }
     
     public void actionPerformed(ActionEvent ae)
     {
@@ -632,6 +666,7 @@ public class SupplementaryIndex implements Printable, ActionListener
             {
                 try
                 {
+                    initAsnSet();
                     job.print();
                 }
                 catch(PrinterException pe)
