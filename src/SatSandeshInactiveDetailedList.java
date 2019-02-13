@@ -6,30 +6,30 @@ import java.util.GregorianCalendar;
 import javax.swing.*;
 
 
-public class deactived implements Printable, ActionListener
+public class SatSandeshInactiveDetailedList extends SamsLandscapePrintingUtil implements ActionListener
 {
     public static void main(String args[])
     {
-        new deactived();
+        new SatSandeshInactiveDetailedList();
     }
     int present=0;
-    int[] pageBreak;
-    int numLines=0;
-    String[][] textLines;
+    //int[] pageBreak;
+    //int numLines=0;
+    //String[][] textLines;
     int[] asn;
     int x=0;
     int x1=0;
     int i=0;
-    int chk=0;
+    //int chk=0;
     //int m1, y1;
     String m1;
     JButton b, back;
     JFrame f;
     
-    int linesPerPage;
-    int NumberOfRecords=0;
+    //int linesPerPage;
+    //int NumberOfRecords=0;
     
-    public deactived()
+    public SatSandeshInactiveDetailedList()
     {
         
         try
@@ -44,12 +44,13 @@ public class deactived implements Printable, ActionListener
             System.out.println(cnf);
         }
         
-        f= new JFrame("Print Deactive Records");
+        f= new JFrame("Print Inactive Records");
         f.setVisible(true);
         f.setLayout(null);
         f.setSize(300,85);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.addWindowListener(new WindowAdapter() {public void windowClosing(WindowEvent e){System.exit(0);}});
+        f.addWindowListener(new WindowAdapter() {@Override
+        public void windowClosing(WindowEvent e){System.exit(0);}});
         b=new JButton("Print List");
         b.addActionListener(this);
         back=new JButton("Back");
@@ -60,17 +61,18 @@ public class deactived implements Printable, ActionListener
         f.add(back);
         back.setMnemonic('B');
         back.setBounds(150,10,100,25);
+        SamsUtilities.center(f);
         
     }
     
-    
+    /*
     public void initLines()
     {
         try
         {
             
             connect c1=new connect();
-            c1.rs=c1.st.executeQuery("select count(asn) from basic where status='Deactive' and subnos not in ('NA')");
+            c1.rs=c1.st.executeQuery("select count(asn) from basic where status='Inactive' and subnos not in ('NA')");
             while(c1.rs.next())
             {
                 x=c1.rs.getInt(1);
@@ -145,7 +147,7 @@ public class deactived implements Printable, ActionListener
                 if(i==0)
                 {
                     
-                    c2.rs=c2.st.executeQuery("select b.asn from basic b, subdetails s where b.asn=s.asn and b.status='Deactive'  and b.subnos not in ('NA') order by s.state, s.fname, s.lname");
+                    c2.rs=c2.st.executeQuery("select b.asn from basic b, subdetails s where b.asn=s.asn and b.status='Inactive' and b.subnos not in ('NA') order by s.state, s.fname, s.lname");
                     while(c2.rs.next())
                     {
                         if(i%(linesPerPage/2)==0 && i<x)
@@ -487,23 +489,23 @@ public class deactived implements Printable, ActionListener
             GregorianCalendar cal=new GregorianCalendar();
             int month=(cal.get(Calendar.MONTH)+1);
             int year=cal.get(Calendar.YEAR);
-            int md=(month+6)%12;
+            int mi=(month+6)%12;
 
-            int yd=year;
-            if(md==0)
-                md=12;
-            if(md>6)
-                yd--;
+            int yi=year;
+            if(mi==0)
+                mi=12;
+            if(mi>6)
+                yi--;
             
             
             for(int line=start; line<end; line+=2)
             {
                 if(i%(linesPerPage/2)==1)
                 {
-                    g.setFont(new Font("SERIF", Font.BOLD, 9));
-                    g.drawString("Detailed List Of Deactive Sat Sandesh Members Whose Period Has Ended B/W "+(month-1)+"-"+(year-1)+" & "+(md-1)+"-"+yd, (int)pf.getWidth()/2-350,y);
-                    g.drawString("( - "+(pageIndex+1)+" - )", (int)pf.getWidth()/2+250,y);
-                    g.drawString("("+SamsUtilities.getCurrentDateString()+")  (TR: "+NumberOfRecords+")",(int)pf.getWidth()/2+290 , y);
+                    g.setFont(new Font("SERIF", Font.BOLD, 10));
+                    g.drawString("Detailed List Of Inactive Sat Sandesh Members Whose Period Has Ended B/W "+mi+"-"+yi+" & "+(month-1)+"-"+year, (int)pf.getWidth()/2-350,y);
+                    g.drawString("( - "+(pageIndex+1)+" - )", (int)pf.getWidth()/2+270,y);
+                    g.drawString("("+SamsUtilities.getCurrentDateString()+")  (TR: "+NumberOfRecords+")",(int)pf.getWidth()/2+310 , y);
                 }
                 
                 
@@ -568,9 +570,52 @@ public class deactived implements Printable, ActionListener
         
         return PAGE_EXISTS;
     }
+    */
     
+    void initAsnSet()
+    {
+        connect dbConnection=new connect();
+        try{
+            String query = "select count(asn) from subscribers_primary_details where membership_status='Inactive' and subscription_code not in ('NA')";
+            dbConnection.rs=dbConnection.st.executeQuery(query);
+            if(dbConnection.rs.next()) x = dbConnection.rs.getInt(1);
+            
+            asn=new int[x];            
+            query = "select asn from subscribers_primary_details where membership_status='Inactive' and subscription_code not in ('NA')  order by state, first_name, last_name";
+
+            dbConnection.rs=dbConnection.st.executeQuery(query);
+            int idx = 0;
+            while(dbConnection.rs.next())
+            {
+                asn[idx++] = dbConnection.rs.getInt(1);
+                //System.out.println(asn[idx-1]);
+            }
+            setAsnSet(asn);
+            
+            GregorianCalendar cal=new GregorianCalendar();
+            int month=(cal.get(Calendar.MONTH)+1);
+            int year=cal.get(Calendar.YEAR);
+            int mi=(month+6)%12;
+
+            int yi=year;
+            if(mi==0)
+                mi=12;
+            if(mi>6)
+                yi--;
+            
+            String header_ = "Detailed List Of Inactive Sat Sandesh Members Whose Period Has Ended B/W "+mi+"-"+yi+" & "+(month-1)+"-"+year;
+            setHeader(header_);
+            dbConnection.closeAll();
+            
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            dbConnection.closeAll();
+        }
+    }
     
-    
+    @Override
     public void actionPerformed(ActionEvent ae)
     {
         
@@ -590,6 +635,7 @@ public class deactived implements Printable, ActionListener
             {
                 try
                 {
+                    initAsnSet();
                     job.print();
                 }
                 catch(PrinterException pe)

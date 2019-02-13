@@ -4,32 +4,32 @@ import java.awt.event.*;
 import javax.swing.*;
 
 
-public class allstate implements Printable, ActionListener
+public class allstate extends SamsLandscapePrintingUtil implements ActionListener
 {
     public static void main(String args[])
     {
         new allstate("UP");
     }
     int present = 0;
-    int[] pageBreak;
-    int numLines=0;
-    String[][] textLines;
+    //int[] pageBreak;
+    //int numLines=0;
+    //String[][] textLines;
     int[] asn;
     int x=0;
     int x1=0;
     int i=0;
-    int chk=0;
+    //int chk=0;
     String m1;
     JButton b, back;
     JFrame f;
     String dist, state;
-    int linesPerPage;
-    int NumberOfRecords=0;
+    //int linesPerPage;
+    //int NumberOfRecords=0;
     
     public allstate(String stat)
     {
         state=stat;
-        f= new JFrame("Print State Records");
+        f= new JFrame("Print Records for "+state.toUpperCase());
         try
         {
             f.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("skrm.jpg")));
@@ -58,8 +58,10 @@ public class allstate implements Printable, ActionListener
         f.add(back);
         back.setMnemonic('B');
         back.setBounds(150,10,100,25);
+        SamsUtilities.center(f);
         
     }
+    /*
     
     public void initLines()
     {
@@ -556,7 +558,37 @@ public class allstate implements Printable, ActionListener
         
         return PAGE_EXISTS;
     }
-    
+*/
+     void initAsnSet()
+    {
+        connect dbConnection=new connect();
+        try{
+            String query = "select count(asn) from subscribers_primary_details where (state like '"+state+"%' and subscription_code not in ('NA'))";
+            dbConnection.rs=dbConnection.st.executeQuery(query);
+            if(dbConnection.rs.next()) x = dbConnection.rs.getInt(1);
+            
+            asn=new int[x];            
+            query = "select asn from subscribers_primary_details where state like '"+state+"%' and subscription_code not in ('NA') order by state, first_name, last_name";
+
+            dbConnection.rs=dbConnection.st.executeQuery(query);
+            int idx = 0;
+            while(dbConnection.rs.next())
+            {
+                asn[idx++] = dbConnection.rs.getInt(1);
+                //System.out.println(asn[idx-1]);
+            }
+            setAsnSet(asn);
+            String header_ = "List of Sat Sandesh Members of State: "+(SamsUtilities.getStateNameForStateCode(state)).toUpperCase();
+            setHeader(header_);
+            dbConnection.closeAll();
+            
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            dbConnection.closeAll();
+        }
+    }
     
     
     public void actionPerformed(ActionEvent ae)
@@ -578,6 +610,7 @@ public class allstate implements Printable, ActionListener
             {
                 try
                 {
+                    initAsnSet();
                     job.print();
                 }
                 catch(PrinterException pe)

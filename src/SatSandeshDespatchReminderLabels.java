@@ -3,7 +3,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-public class SatSandeshDespatchReminderLabels implements Printable, ActionListener
+public class SatSandeshDespatchReminderLabels extends SamsLandscapePrintingUtil implements ActionListener
 {
     public static void main(String args[])
     {
@@ -12,21 +12,21 @@ public class SatSandeshDespatchReminderLabels implements Printable, ActionListen
     
     int present;
     
-    int[] pageBreak;
-    int numLines=0;
-    String[][] textLines;
+    //int[] pageBreak;
+    //int numLines=0;
+    //String[][] textLines;
     int[] asn;
     int x=0;
     int x1=0;
     int i=0;
-    int chk=0;
+    //int chk=0;
     int m1, y1, m2, y2;
     JButton b, back;
     JFrame f;
     int dno;
-    int linesPerPage;
-    String dist,state;
-    int NumberOfRecords=0;
+    //int linesPerPage;
+    //String dist,state;
+    //int NumberOfRecords=0;
     
     
     public SatSandeshDespatchReminderLabels(int d,int m, int y, int m3, int y3)
@@ -66,6 +66,7 @@ public class SatSandeshDespatchReminderLabels implements Printable, ActionListen
         f.add(back);
         back.setMnemonic('B');
         back.setBounds(150,10,120,25);
+        SamsUtilities.center(f);
         //f.pack();
         
         
@@ -73,7 +74,7 @@ public class SatSandeshDespatchReminderLabels implements Printable, ActionListen
         
     }
     
-    
+    /*
     
     public void initLines()
     {
@@ -81,9 +82,9 @@ public class SatSandeshDespatchReminderLabels implements Printable, ActionListen
         {
             
             connect c1=new connect();
-            /*String oldQuery = "select count(b.asn) from basic b, payment p where b.asn=p.asn  and "
-            + "b.dist='Distributor' and b.dno="+dno+" and ( p.endm>"+(m1-1)+" and p.endy="+y1+")  "
-            + "and (p.endm <"+(m2+1)+" and p.endy="+y2+")";*/
+            //String oldQuery = "select count(b.asn) from basic b, payment p where b.asn=p.asn  and "
+            //+ "b.dist='Distributor' and b.dno="+dno+" and ( p.endm>"+(m1-1)+" and p.endy="+y1+")  "
+            //+ "and (p.endm <"+(m2+1)+" and p.endy="+y2+")";
             
             String ending_period1 = y1+"-"+m1+"-28";
             String ending_period2 = y2+"-"+m2+"-28";
@@ -164,9 +165,9 @@ public class SatSandeshDespatchReminderLabels implements Printable, ActionListen
                 if(i==0)
                 {
                     
-                    /*c2.rs=c2.st.executeQuery("select b.asn from basic b, payment p where b.asn=p.asn  "
-                    + "and b.dist='Distributor' and b.dno="+dno+" and ( p.endm>"+(m1-1)+" and p.endy="+y1+")  "
-                    + "and (p.endm <"+(m2+1)+" and p.endy="+y2+") order by b.subnos, b.subno");*/
+                    //c2.rs=c2.st.executeQuery("select b.asn from basic b, payment p where b.asn=p.asn  "
+                    //+ "and b.dist='Distributor' and b.dno="+dno+" and ( p.endm>"+(m1-1)+" and p.endy="+y1+")  "
+                    //+ "and (p.endm <"+(m2+1)+" and p.endy="+y2+") order by b.subnos, b.subno");
                     
                     c2.rs=c2.st.executeQuery("select asn from subscribers_primary_details where "
                             + " distribution_type='Distributor' and bulk_despatch_code="+dno+" and   "
@@ -584,8 +585,63 @@ public class SatSandeshDespatchReminderLabels implements Printable, ActionListen
         
         return PAGE_EXISTS;
     }
+    */
     
     
+    void initAsnSet()
+    {
+        connect dbConnection=new connect();
+        try{
+            
+            String ending_period1 = y1+"-"+m1+"-28";
+            String ending_period2 = y2+"-"+m2+"-28";
+            String query = "select count(asn) from subscribers_primary_details where distribution_type = 'Distributor' "
+                    + " and bulk_despatch_code="+dno+" and ending_period >= '"+ending_period1+"' and ending_period <= '"+ending_period2+"'";
+            dbConnection.rs=dbConnection.st.executeQuery(query);
+            if(dbConnection.rs.next()) x = dbConnection.rs.getInt(1);
+            
+            asn=new int[x];
+            query = "select asn from subscribers_primary_details where "
+                            + " distribution_type='Distributor' and bulk_despatch_code="+dno+" and   "
+                            + "ending_period >= '"+ending_period1+"' and ending_period <= '"+ending_period2+"' "
+                            + " order by subscription_code, subscription_number";
+            
+            dbConnection.rs=dbConnection.st.executeQuery(query);
+            int idx = 0;
+            while(dbConnection.rs.next())
+            {
+                asn[idx++] = dbConnection.rs.getInt(1);
+                //System.out.println(asn[idx-1]);
+            }
+            setAsnSet(asn);
+            
+            String dist="", stat="";
+            try
+            {
+                
+                connect getstate=new connect();
+                getstate.rs=getstate.st.executeQuery("select district, state, distributionType from despcode where dno="+dno);
+                getstate.rs.next();
+                dist=getstate.rs.getString(1);
+                stat=getstate.rs.getString(2);
+                
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+            }
+            
+            String header_ = "List of Sat Sandesh Members serviced by Dist Code # "+dno+" ("+dist+" , "+stat+" )";
+            setHeader(header_);
+            dbConnection.closeAll();
+            
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            dbConnection.closeAll();
+        }
+    }
     
     public void actionPerformed(ActionEvent ae)
     {
@@ -606,6 +662,7 @@ public class SatSandeshDespatchReminderLabels implements Printable, ActionListen
             {
                 try
                 {
+                    initAsnSet();
                     job.print();
                 }
                 catch(PrinterException pe)

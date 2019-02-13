@@ -145,12 +145,12 @@ public class labeldist extends JFrame implements ActionListener
     {
         if(ae.getSource()==ok)
         {
-            new labeldno(Integer.parseInt((String)dnot.getSelectedItem()),Integer.parseInt(monthDropDown.getSelectedItem().toString()),Integer.parseInt(yearDropDown.getSelectedItem().toString()), true);
+            new SatSandeshDistributorLabelsList(Integer.parseInt((String)dnot.getSelectedItem()),Integer.parseInt(monthDropDown.getSelectedItem().toString()),Integer.parseInt(yearDropDown.getSelectedItem().toString()), true);
             this.dispose();
         }
         else if(ae.getSource()==oldOkButton)
         {
-            new labeldno(Integer.parseInt((String)dnot.getSelectedItem()),Integer.parseInt(monthDropDown.getSelectedItem().toString()),Integer.parseInt(yearDropDown.getSelectedItem().toString()), false);
+            new SatSandeshDistributorLabelsList(Integer.parseInt((String)dnot.getSelectedItem()),Integer.parseInt(monthDropDown.getSelectedItem().toString()),Integer.parseInt(yearDropDown.getSelectedItem().toString()), false);
             this.dispose();
         }
         else if(ae.getSource()==back)

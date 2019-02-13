@@ -4,33 +4,33 @@ import java.awt.event.*;
 import javax.swing.*;
 
 
-public class alldistrict implements Printable, ActionListener
+public class alldistrict extends SamsLandscapePrintingUtil implements ActionListener
 {
     public static void main(String args[])
     {
         new alldistrict("GONDA","UP");
     }
     int present = 0;
-    int[] pageBreak;
-    int numLines=0;
-    String[][] textLines;
+    //int[] pageBreak;
+    //int numLines=0;
+    //String[][] textLines;
     int[] asn;
     int x=0;
     int x1=0;
     int i=0;
-    int chk=0;
+    //int chk=0;
     String m1;
     JButton b, back;
     JFrame f;
     String dist, state;
-    int linesPerPage;
-    int NumberOfRecords=0;
+    //int linesPerPage;
+    //int NumberOfRecords=0;
     
     public alldistrict(String dis, String stat)
     {
         dist=dis;
         state=stat;
-        f= new JFrame("Print All Records");
+        f= new JFrame("Print Records for "+dist+" ("+state+")");
         try
         {
             f.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("skrm.jpg")));
@@ -48,7 +48,8 @@ public class alldistrict implements Printable, ActionListener
         f.setLayout(null);
         f.setSize(300,90);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.addWindowListener(new WindowAdapter() {public void windowClosing(WindowEvent e){System.exit(0);}});
+        f.addWindowListener(new WindowAdapter() {@Override
+        public void windowClosing(WindowEvent e){System.exit(0);}});
         b=new JButton("Print");
         b.addActionListener(this);
         back=new JButton("Back");
@@ -59,9 +60,11 @@ public class alldistrict implements Printable, ActionListener
         f.add(back);
         back.setMnemonic('B');
         back.setBounds(150,10,100,25);
+        SamsUtilities.center(f);
         
     }
     
+    /*
     public void initLines()
     {
         try
@@ -559,9 +562,40 @@ public class alldistrict implements Printable, ActionListener
         
         return PAGE_EXISTS;
     }
+    */
     
+    void initAsnSet()
+    {
+        connect dbConnection=new connect();
+        try{
+            String query = "select count(asn) from subscribers_primary_details where district like '"+dist+"%' and state like '"+state+"%' and subscription_code not in ('NA')";
+            dbConnection.rs=dbConnection.st.executeQuery(query);
+            if(dbConnection.rs.next()) x = dbConnection.rs.getInt(1);
+            
+            asn=new int[x];            
+            query = "select asn from subscribers_primary_details where district like '"+dist+"%' and state like '"+state+"%' and subscription_code not in ('NA')  order by state, first_name, last_name";
+
+            dbConnection.rs=dbConnection.st.executeQuery(query);
+            int idx = 0;
+            while(dbConnection.rs.next())
+            {
+                asn[idx++] = dbConnection.rs.getInt(1);
+                //System.out.println(asn[idx-1]);
+            }
+            setAsnSet(asn);
+            String header_ = "List of Sat Sandesh Members for District - " + dist.toUpperCase() + " ("+SamsUtilities.getStateNameForStateCode(state).toUpperCase()+")";
+            setHeader(header_);
+            dbConnection.closeAll();
+            
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            dbConnection.closeAll();
+        }
+    }
     
-    
+    @Override
     public void actionPerformed(ActionEvent ae)
     {
         
@@ -581,6 +615,7 @@ public class alldistrict implements Printable, ActionListener
             {
                 try
                 {
+                    initAsnSet();
                     job.print();
                 }
                 catch(PrinterException pe)

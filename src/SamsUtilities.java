@@ -268,9 +268,9 @@ public class SamsUtilities {
             int i = 1;
             //System.out.println(sqlConnection.rs.);
             while (fillStateDetailsConnection.rs.next()) {
-                String sub_code = fillStateDetailsConnection.rs.getString(1);
-                String state_code = fillStateDetailsConnection.rs.getString(2);
-                String state_name = fillStateDetailsConnection.rs.getString(3);
+                String sub_code = fillStateDetailsConnection.rs.getString(1).trim();
+                String state_code = fillStateDetailsConnection.rs.getString(2).trim();
+                String state_name = fillStateDetailsConnection.rs.getString(3).trim();
                 
                 if(state_code.isEmpty() == false){
                     stateNameToStateCodeHash.put(state_name, state_code);
@@ -322,7 +322,7 @@ public class SamsUtilities {
         Pair<String, String> retPair = stateDetailsHash.get(subCode);
         if(retPair == null) return "";
         else
-            return retPair.getFirst();
+            return retPair.getSecond();
     }
     
     public static String getStateNameForStateCode(String subCode)
