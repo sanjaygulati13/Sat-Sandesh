@@ -648,7 +648,7 @@ public class SatSandeshBulkRenewSubscription implements ActionListener, ItemList
             if(numItems>1){
                 for(int i = 0 ; i < numItems-1; i++ )
                 {
-                    for(int j = i+1 ; j < numItems-1; j++ )
+                    for(int j = i+1 ; i < numItems; j++ )
                     {
                         if(subNumbers[i] ==  subNumbers[j])
                         {

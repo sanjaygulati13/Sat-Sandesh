@@ -217,13 +217,13 @@ public class SatSandeshCancelReceiptWindow implements ActionListener, ItemListen
                     {
                         String bookNum = bookNumberDropDown.getSelectedItem().toString();
                         
-                        String query = "select issued_to from receipt_book_inventory where series_name = '"+seriesDropDown.getSelectedItem().toString()+"' and book_num = "+bookNum +"and issued_to not in ('')";
+                        String query = "select issued_to from receipt_book_inventory where series_name = '"+seriesDropDown.getSelectedItem().toString()+"' and book_num = "+bookNum +" and issued_to not in ('')";
                         con.rs = con.st.executeQuery(query);
                         if(con.rs.next()){
                             counterText.setText(con.rs.getString(1));
                         }
                         
-                        query = "select start_rcpt_num, end_rcpt_num from receipt_book_inventory where  series_name = '"+seriesDropDown.getSelectedItem().toString()+"' and book_num = "+bookNum +"and issued_to not in ('')"; 
+                        query = "select start_rcpt_num, end_rcpt_num from receipt_book_inventory where  series_name = '"+seriesDropDown.getSelectedItem().toString()+"' and book_num = "+bookNum +" and issued_to not in ('')"; 
                         
                         int start = 0;
                         int end = 0;
