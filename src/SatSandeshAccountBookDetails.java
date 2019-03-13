@@ -33,7 +33,7 @@ public class SatSandeshAccountBookDetails extends JFrame implements ActionListen
             System.out.println(cnf);
         }
         con=getContentPane();
-        setSize(950,600);
+        setSize(950,650);
         setLocation(200,80);
         //setVisible(true);
         con.setLayout(null);
@@ -110,7 +110,7 @@ public class SatSandeshAccountBookDetails extends JFrame implements ActionListen
         con.add(printButton);
         printButton.addActionListener(this);
         
-        
+        SamsUtilities.center(this);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
         
@@ -217,8 +217,8 @@ public class SatSandeshAccountBookDetails extends JFrame implements ActionListen
         }*/
         if(ae.getSource()==backButton)
         {
-            new sams();
             this.dispose();
+            new sams();
         }
         
         

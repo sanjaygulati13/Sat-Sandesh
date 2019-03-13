@@ -33,7 +33,7 @@ public class accntsum extends JFrame implements ActionListener
         	System.out.println(cnf);
         }
 		con=getContentPane();
-		setSize(900,600);
+		setSize(900,650);
 		setLocation(200,80);
 		//setVisible(true);
 		con.setLayout(null);
@@ -86,7 +86,7 @@ public class accntsum extends JFrame implements ActionListener
 		b4.setBounds(200,530,90,25);
 		con.add(b4);
 		b4.addActionListener(this);	
-		
+		SamsUtilities.center(this);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 	
@@ -108,10 +108,24 @@ public class accntsum extends JFrame implements ActionListener
 				m2=m1;
 				y2=y1;
 				connect c1=new connect();
-				c1.rs=c1.st.executeQuery("select p.datd, p.datm, p.daty, o.history, sum(p.amt) from payment p, otherdet o where p.asn=o.asn and p.datd>"+(d1-1)+" and p.datd<"+(d2+1)+" and p.datm="+m1+" and p.daty="+y1+" group by p.datd, o.history ");
+                                String startDate = y1+"-"+m1+"-"+d1;
+                                String endDate = y1+"-"+m1+"-"+d2;
+                                String query = "select p.datd, p.datm, p.daty, o.history, sum(p.amt) "
+                                        + "from payment p, otherdet o where p.asn=o.asn "
+                                        + "and p.datd>"+(d1-1)+" and p.datd<"+(d2+1)+" and p.datm="+m1+" and p.daty="+y1+" group by p.datd, o.history ";
+                                
+                                String newQuery = "select receipt_date,counter_name, sum(amount) "
+                                        + "from subscribers_primary_details where receipt_date between '"+startDate+"' and '"+endDate+"' group by receipt_date, counter_name"
+                                        + " order by receipt_date" 
+                                        ;
+                                //System.out.println(query);
+                                //System.out.println(newQuery);
+                                //System.out.println(startDate);
+                                //System.out.println(endDate);
+				c1.rs=c1.st.executeQuery(newQuery);
 				while(c1.rs.next())
 				{
-					i++;			
+                                    i++;			
 				}
 				c1.rs.close();
 				
@@ -125,8 +139,8 @@ public class accntsum extends JFrame implements ActionListener
 					
 			
 					connect c2=new connect();
-			
-					c2.rs=c2.st.executeQuery("select p.datd, p.datm, p.daty, o.history, sum(p.amt) from payment p, otherdet o where p.asn=o.asn and p.datd>"+(d1-1)+" and p.datd<"+(d2+1)+" and p.datm="+m1+" and p.daty="+y1+" group by p.datd, o.history order by p.datd");
+		
+					c2.rs=c2.st.executeQuery(newQuery);
 					Object data[][]= new Object[i+1][3];
 					int z=0;
 					int j=0;
@@ -135,9 +149,10 @@ public class accntsum extends JFrame implements ActionListener
 					while(c2.rs.next())
 					{
 						z=j+1;
-						data[j][0]=c2.rs.getInt(1)+"/"+c2.rs.getInt(2)+"/"+c2.rs.getInt(3);
-						data[j][1]=c2.rs.getString(4);
-						c=c2.rs.getInt(5);
+						//data[j][0]=c2.rs.getInt(1)+"/"+c2.rs.getInt(2)+"/"+c2.rs.getInt(3);
+                                                data[j][0]=c2.rs.getDate(1);
+						data[j][1]=c2.rs.getString(2);
+						c=c2.rs.getInt(3);
 						data[j][2]=c;
 						total+=c;
 						j++;
@@ -163,8 +178,8 @@ public class accntsum extends JFrame implements ActionListener
 		}*/
 		if(ae.getSource()==b3)
 		{
-			new sams();
-			this.dispose();
+                    this.dispose();
+                    new sams();
 		}
 		
 		

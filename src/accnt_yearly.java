@@ -4,6 +4,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import java.text.*;
 import java.awt.print.*;
+import java.sql.Date;
 
 public class accnt_yearly extends JFrame implements ActionListener {
 
@@ -29,7 +30,7 @@ public class accnt_yearly extends JFrame implements ActionListener {
             System.out.println(cnf);
         }
         con = getContentPane();
-        setSize(950, 600);
+        setSize(950, 650);
         setLocation(200, 80);
         //setVisible(true);
         con.setLayout(null);
@@ -63,7 +64,7 @@ public class accnt_yearly extends JFrame implements ActionListener {
         con.add(b4);
         b4.addActionListener(this);
 
-
+        SamsUtilities.center(this);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
 
@@ -79,7 +80,11 @@ public class accnt_yearly extends JFrame implements ActionListener {
 
                 y1 = Integer.parseInt(t3.getText());
                 connect c1 = new connect();
-                c1.rs = c1.st.executeQuery("select count(distinct datm) from payment where daty=" + y1);
+                String query = "select count(distinct datm) from payment where daty=" + y1;
+                String newQuery = "select count(distinct month(receipt_date)) from subscribers_primary_details where year(receipt_date)=" +y1 ;
+                System.out.println(query);
+                System.out.println(newQuery);
+                c1.rs = c1.st.executeQuery(newQuery);
                 c1.rs.next();
                 i = c1.rs.getInt(1);
                 c1.rs.close();
@@ -94,7 +99,9 @@ public class accnt_yearly extends JFrame implements ActionListener {
                     dates = new int[i];
                     connect c2 = new connect();
 
-                    c2.rs = c2.st.executeQuery("select distinct datm from payment where daty=" + y1+" order by datm");
+                    query = "select distinct datm from payment where daty=" + y1+" order by datm";
+                    newQuery = "select distinct month(receipt_date) from subscribers_primary_details where year(receipt_date)=" + y1+" order by month(receipt_date)";
+                    c2.rs = c2.st.executeQuery(newQuery);
                     while (c2.rs.next()) {
                         dates[j] = c2.rs.getInt(1);
                         j++;
@@ -119,7 +126,13 @@ public class accnt_yearly extends JFrame implements ActionListener {
                         int amt=0;
                         int total_temp=0;
                         data[z][0] = dates[z]+"/"+y1;
-                        c3.rs=c3.st.executeQuery("select sum(p.amt) from payment p, otherdet o where p.asn=o.asn and o.history='Kirpal Bagh' and p.datm="+dates[z]+" and p.daty="+y1);
+                        
+                        query = "select sum(p.amt) from payment p, otherdet o where p.asn=o.asn and "
+                                + "o.history='Kirpal Bagh' and p.datm="+dates[z]+" and p.daty="+y1;
+                        newQuery = "select sum(amount) from subscribers_primary_details where "
+                                + "counter_name='Kirpal Bagh' and month(receipt_date)='"+dates[z]+"' and year(receipt_date)="+y1;
+                        //System.out.println(newQuery);
+                        c3.rs=c3.st.executeQuery(newQuery);
                         while(c3.rs.next())
                         {
                             amt+=c3.rs.getInt(1);
@@ -129,7 +142,11 @@ public class accnt_yearly extends JFrame implements ActionListener {
                         total_temp+=amt;
                         amt=0;
 
-                        c3.rs=c3.st.executeQuery("select sum(p.amt) from payment p, otherdet o where p.asn=o.asn and o.history='Kirpal Ashram' and p.datm="+dates[z]+" and p.daty="+y1);
+                        query = "select sum(p.amt) from payment p, otherdet o where p.asn=o.asn and "
+                                + "o.history='Kirpal Ashram' and p.datm="+dates[z]+" and p.daty="+y1;
+                        newQuery = "select sum(amount) from subscribers_primary_details where "
+                                + "counter_name='Kirpal Ashram' and month(receipt_date)='"+dates[z]+"' and year(receipt_date)="+y1;
+                        c3.rs=c3.st.executeQuery(newQuery);
                         while(c3.rs.next())
                         {
                             amt+=c3.rs.getInt(1);
@@ -140,7 +157,12 @@ public class accnt_yearly extends JFrame implements ActionListener {
                         amt=0;
 
 
-                        c3.rs=c3.st.executeQuery("select sum(p.amt) from payment p, otherdet o where p.asn=o.asn and o.history='Sawan Ashram' and p.datm="+dates[z]+" and p.daty="+y1);
+                        query = "select sum(p.amt) from payment p, otherdet o where p.asn=o.asn and "
+                                + "o.history='Sawan Ashram' and p.datm="+dates[z]+" and p.daty="+y1;
+                        newQuery = "select sum(amount) from subscribers_primary_details where "
+                                + "counter_name='Sawan Ashram' and month(receipt_date)='"+dates[z]+"' and year(receipt_date)="+y1;
+                        c3.rs=c3.st.executeQuery(newQuery);
+                        
                         while(c3.rs.next())
                         {
                             amt+=c3.rs.getInt(1);
@@ -173,8 +195,8 @@ public class accnt_yearly extends JFrame implements ActionListener {
 
 
         if (ae.getSource() == b3) {
-            new sams();
             this.dispose();
+            new sams();
         }
 
 

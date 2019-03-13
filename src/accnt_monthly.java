@@ -4,6 +4,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import java.text.*;
 import java.awt.print.*;
+import java.sql.Date;
 
 public class accnt_monthly extends JFrame implements ActionListener {
 
@@ -28,7 +29,7 @@ public class accnt_monthly extends JFrame implements ActionListener {
             System.out.println(cnf);
         }
         con = getContentPane();
-        setSize(950, 600);
+        setSize(950, 650);
         setLocation(200, 80);
         //setVisible(true);
         con.setLayout(null);
@@ -68,6 +69,7 @@ public class accnt_monthly extends JFrame implements ActionListener {
         con.add(b4);
         b4.addActionListener(this);
 
+        SamsUtilities.center(this);
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
@@ -79,13 +81,19 @@ public class accnt_monthly extends JFrame implements ActionListener {
         if (ae.getSource() == b1) {
             b1.setEnabled(false);
             int i = 0;
-            int[] dates;
+            Date[] dates;
             try {
 
                 m1 = Integer.parseInt(t2.getText());
                 y1 = Integer.parseInt(t3.getText());
                 connect c1 = new connect();
-                c1.rs = c1.st.executeQuery("select count(distinct datd) from payment where datm=" + m1 + " and daty=" + y1);
+                String query = "select count(distinct datd) from payment where datm=" + m1 + " and daty=" + y1;
+                String startDate = y1+"-"+m1+"-1";
+                String endDate = y1+"-"+m1+"-31";
+                String newQuery = "select count(distinct receipt_date) from subscribers_primary_details where receipt_date between '"+startDate+"' and '"+endDate+"'";
+                //System.out.println(query);
+                //System.out.println(newQuery);
+                c1.rs = c1.st.executeQuery(newQuery);
                 c1.rs.next();
                 i = c1.rs.getInt(1);
                 c1.rs.close();
@@ -97,12 +105,15 @@ public class accnt_monthly extends JFrame implements ActionListener {
                 } else {
 
                     int j = 0;
-                    dates = new int[i];
+                    dates = new Date[i];
                     connect c2 = new connect();
 
-                    c2.rs = c2.st.executeQuery("select distinct datd from payment where datm=" + m1 + " and daty=" + y1+" order by datd, datm, daty");
+                    query = "select distinct datd from payment where datm=" + m1 + " and daty=" + y1+" order by datd, datm, daty";
+                    newQuery = "select distinct receipt_date from subscribers_primary_details where receipt_date between '"+startDate+"' and '"+endDate+"' order by receipt_date";
+                    //System.out.println(newQuery);
+                    c2.rs = c2.st.executeQuery(newQuery);
                     while (c2.rs.next()) {
-                        dates[j] = c2.rs.getInt(1);
+                        dates[j] = c2.rs.getDate(1);
                         j++;
                     }
                     c2.st.close();
@@ -124,8 +135,16 @@ public class accnt_monthly extends JFrame implements ActionListener {
 
                         int amt=0;
                         int total_temp=0;
-                        data[z][0] = dates[z]+"/"+m1+"/"+y1;
-                        c3.rs=c3.st.executeQuery("select sum(p.amt) from payment p, otherdet o where p.asn=o.asn and o.history='Kirpal Bagh' and p.datd="+dates[z]+" and p.datm="+m1+" and p.daty="+y1);
+                        data[z][0] = dates[z];
+                        //String entryDate = y1+"-"+m1+"-"+dates[z];
+                        
+                        String counter = "Kirpal Bagh";
+                        query = "select sum(p.amt) from payment p, otherdet o where p.asn=o.asn and o.history='"+counter+"' "
+                                + "and p.datd="+dates[z]+" and p.datm="+m1+" and p.daty="+y1;
+                        newQuery = query = "select sum(amount) from subscribers_primary_details where counter_name='"+counter+"' "
+                                + "and receipt_date = '"+dates[z]+"' ";
+                        //System.out.println(newQuery);            
+                        c3.rs=c3.st.executeQuery(newQuery);
                         while(c3.rs.next())
                         {
                             amt+=c3.rs.getInt(1);
@@ -135,7 +154,11 @@ public class accnt_monthly extends JFrame implements ActionListener {
                         total_temp+=amt;
                         amt=0;
 
-                        c3.rs=c3.st.executeQuery("select sum(p.amt) from payment p, otherdet o where p.asn=o.asn and o.history='Kirpal Ashram' and p.datd="+dates[z]+" and p.datm="+m1+" and p.daty="+y1);
+                        counter = "Kirpal Ashram";
+                        newQuery = query = "select sum(amount) from subscribers_primary_details where counter_name='"+counter+"' "
+                                + "and receipt_date = '"+dates[z]+"' ";
+                        //System.out.println(newQuery);
+                        c3.rs=c3.st.executeQuery(newQuery);
                         while(c3.rs.next())
                         {
                             amt+=c3.rs.getInt(1);
@@ -146,7 +169,11 @@ public class accnt_monthly extends JFrame implements ActionListener {
                         amt=0;
 
 
-                        c3.rs=c3.st.executeQuery("select sum(p.amt) from payment p, otherdet o where p.asn=o.asn and o.history='Sawan Ashram' and p.datd="+dates[z]+" and p.datm="+m1+" and p.daty="+y1);
+                        counter = "Sawan Ashram";
+                        newQuery = query = "select sum(amount) from subscribers_primary_details where counter_name='"+counter+"' "
+                                + "and receipt_date = '"+dates[z]+"' ";
+                        //System.out.println(newQuery);
+                        c3.rs=c3.st.executeQuery(newQuery);
                         while(c3.rs.next())
                         {
                             amt+=c3.rs.getInt(1);
@@ -182,8 +209,8 @@ public class accnt_monthly extends JFrame implements ActionListener {
         this.dispose();
         }*/
         if (ae.getSource() == b3) {
-            new sams();
             this.dispose();
+            new sams();
         }
 
 
