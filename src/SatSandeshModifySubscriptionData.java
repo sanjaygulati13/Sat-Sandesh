@@ -28,7 +28,8 @@ public class SatSandeshModifySubscriptionData extends JFrame implements ActionLi
 {
     public static void main(String args[])
     {
-        new SatSandeshModifySubscriptionData(27447);
+        //new SatSandeshModifySubscriptionData(27447);
+        new SatSandeshModifySubscriptionData(30673);
     }
     
     JLabel  subd1, asn1, sub1, status1, rec1, dist1, despatchNumberLabel, subt1, lang1;				//subscription details
@@ -151,6 +152,7 @@ public class SatSandeshModifySubscriptionData extends JFrame implements ActionLi
         languageDropDown=new JComboBox();
         paymentTypeDropDown=new JComboBox();
         seriesDropDown = new JComboBox(SamsUtilities.fillSeriesInformation());
+        seriesDropDown.addItem("PRERNA");
         
         chequeInstrumentNumberText = new TextFieldWithLimit(10,10);
         datt1=new TextFieldWithLimit(2,2);
@@ -934,7 +936,7 @@ setVisible(true);
                 
                 //System.out.println(mainTableQuery);
                 c14.a=c14.st.executeUpdate(mainTableQuery);
-                //System.out.println(c5.a);
+                //System.out.println(c14.a);
                 
                 if(c14.a == 1) flag=flag+1;
                 
@@ -1103,7 +1105,7 @@ setVisible(true);
             if(subNumberCode.isEmpty() == false && subNumber.isEmpty() == false)
             {
                 subNum  = Integer.parseInt(subNumber);
-                if(subNumber.equals(originalSubNumber) == false && subNumberCode.equals(originalSubNumberCode) == false)
+                if(subNumber.equals(originalSubNumber) == false || subNumberCode.equals(originalSubNumberCode) == false)
                 {
                     //String countQuery = "select count(asn) from basic where subnos = '"+subNumberCode+"' and subno = "+subNum;
                     String countQuery = "select count(asn) from "

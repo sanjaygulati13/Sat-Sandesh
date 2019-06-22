@@ -13,7 +13,7 @@ public class TextFieldWithLimit extends JTextField implements KeyListener
      super(initialStr,col);
      this.maxLength = maxLength;
      this.setDocument(new LimitDocument(maxLength));
-     addKeyListener(this);
+     this.addKeyListener(this);
 
    }
    
@@ -69,7 +69,9 @@ public class TextFieldWithLimit extends JTextField implements KeyListener
 //        else
 //            return;
    }
+   @Override
    public void keyReleased(KeyEvent e) { }
+   @Override
    public void keyTyped(KeyEvent e) { }
    }
 
@@ -83,9 +85,13 @@ class LimitDocument extends PlainDocument
   this.limit = limit;
  }
 
+ @Override
  public void insertString(int offset, String s, AttributeSet a) throws BadLocationException
  {
-  if (offset + s.length() <= limit)
+     if(s == null) return;
+     //System.out.println(offset + " " + s.length() + " " + s + " " + limit );
+  //if (offset + s.length() <= limit)
+  if (getLength() + s.length() <= limit)
    super.insertString(offset,s,a);
   else
    Toolkit.getDefaultToolkit().beep();

@@ -8,7 +8,7 @@ public class SatSandeshDistributorLabelsList extends SamsLandscapePrintingUtil i
 {
     public static void main(String args[])
     {
-        new SatSandeshDistributorLabelsList(91, 11, 2017, true);
+        new SatSandeshDistributorLabelsList(81, 11, 2017, true);
     }
     int present;
     

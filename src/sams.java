@@ -37,7 +37,7 @@ public class sams extends JFrame implements ActionListener {
     //JMenuItem recordDeletionMenu;
     
     
-    JMenuItem searchsubno /*, searchrcptno, searchname, searchaddr*/;
+    JMenuItem searchsubno, addDistrictMenuItem, modifyDistrictMenuItem /*, searchrcptno, searchname, searchaddr*/;
     JButton newb, renewb, memstatusb, reminderb, labelsubb, labeldistb, indexb, backupButton;
     Font f = new Font("ARIAL", Font.BOLD, 14);
     JLabel titleLabel,userLabel, satSandeshIconLabel;
@@ -398,6 +398,14 @@ public class sams extends JFrame implements ActionListener {
         searchsubno.setMnemonic('S');
         searchsubno.addActionListener(this);
 
+        addDistrictMenuItem = new JMenuItem("Add District");
+        addDistrictMenuItem.setMnemonic('i');
+        addDistrictMenuItem.addActionListener(this);
+        
+        modifyDistrictMenuItem = new JMenuItem("Modify District");
+        modifyDistrictMenuItem.setMnemonic('i');
+        modifyDistrictMenuItem.addActionListener(this);
+        
         /*searchrcptno = new JMenuItem("Search By rcpt No");
         searchrcptno.setMnemonic('R');
         searchrcptno.addActionListener(this);
@@ -533,6 +541,8 @@ public class sams extends JFrame implements ActionListener {
         track_data_menu.add(markReturnBackMenuItem);
         track_data_menu.add(restoreBackupMenuItem);
         track_data_menu.add(searchsubno);
+        track_data_menu.add(addDistrictMenuItem);
+        track_data_menu.add(modifyDistrictMenuItem);
         
         inventory_management_menu.addSeparator();
         inventory_management_menu.add(inventory_management_receipt_book_menu_item);
@@ -1000,6 +1010,17 @@ public class sams extends JFrame implements ActionListener {
             this.dispose();
         }
 
+        if (ae.getSource() == addDistrictMenuItem) {
+            new SatSandeshAddDistrictWindow();
+            this.dispose();
+        }
+        
+         if (ae.getSource() == modifyDistrictMenuItem) {
+            new SatSandeshModifyDistrict();
+            this.dispose();
+        }
+        
+        
         /*if (ae.getSource() == searchrcptno) {
             new SatSandeshSubscriptionSearchByReceiptNumber();
             this.dispose();
