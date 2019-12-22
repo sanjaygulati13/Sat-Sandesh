@@ -13,7 +13,8 @@ public class SatSandeshAddDistributorCode extends JFrame implements ActionListen
     
     JLabel nam, phno, despcd, email, add1, rem, hist, dist, stat, pin, distributionTypeLabel;
     JTextField remt, histt;
-    TextFieldWithLimit distt;
+    //TextFieldWithLimit distt;
+    JComboBox districtDropDown;
     TextFieldWithLimit namt, lnamt, phnot, despcdt, addt11, addt12, addt13, pint, emailt;
     JComboBox stateCodeDropDown, stateNameDropDown;
     JComboBox distributionTypeDropDown;
@@ -76,7 +77,8 @@ public class SatSandeshAddDistributorCode extends JFrame implements ActionListen
         
         histt=new JTextField(20);
         emailt=new TextFieldWithLimit(32,32);
-        distt = new TextFieldWithLimit(22,22);
+        //distt = new TextFieldWithLimit(22,22);
+        districtDropDown = new JComboBox(SamsUtilities.fillDistrictNameList());
         remt=new JTextField(20);
         
         saveButton=new JButton("Save");
@@ -161,8 +163,11 @@ public class SatSandeshAddDistributorCode extends JFrame implements ActionListen
         histt.setBounds(480,230,240,20);
         add(histt);
         
-        distt.setBounds(100,270,200,20);
-        add(distt);
+        //distt.setBounds(100,270,200,20);
+        //add(distt);
+        
+        districtDropDown.setBounds(100,270,200,20);
+        add(districtDropDown);
         
         stateNameDropDown.setBounds(480,270,140,20);
         add(stateNameDropDown);
@@ -218,7 +223,8 @@ public class SatSandeshAddDistributorCode extends JFrame implements ActionListen
             add3=addt13.getText();
             remarks=remt.getText();
             history=histt.getText();
-            district=distt.getText();
+            //district=distt.getText();
+            district=(String)districtDropDown.getSelectedItem();
             state=(String)stateCodeDropDown.getSelectedItem();
             pinno=Integer.parseInt(pint.getText());
             distributionTypeText = (String)(distributionTypeDropDown.getSelectedItem());
@@ -298,7 +304,8 @@ public class SatSandeshAddDistributorCode extends JFrame implements ActionListen
             addt13.setText("");
             histt.setText("");
             remt.setText("");
-            distt.setText("");
+            //distt.setText("");
+            districtDropDown.setSelectedIndex(0);
             stateCodeDropDown.setSelectedIndex(0);
             pint.setText("");
             distributionTypeDropDown.setSelectedIndex(0);

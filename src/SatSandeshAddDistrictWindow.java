@@ -151,24 +151,24 @@ public class SatSandeshAddDistrictWindow implements ActionListener{
             {
                 //ending number for current receipt book
                 connect seriesConnection = new connect();
-                String fetchSubCodeQuery = "select sub_code from state_details where state_code='"+stateCode+"'";
+                String fetchSubCodeQuery = "select sub_code from state_details_orig where state_code='"+stateCode+"'";
                 try
                 {
                     String subCode = "Manual";
-                    System.out.println(fetchSubCodeQuery);
+                    //System.out.println(fetchSubCodeQuery);
                     seriesConnection.rs = seriesConnection.st.executeQuery(fetchSubCodeQuery);
                     while (seriesConnection.rs.next()) {
                         subCode = seriesConnection.rs.getString(1);
-                        System.out.println(subCode);
+                        //System.out.println(subCode);
                     }
                     
-                    String existingZoneQuery = "select count(district) from state_details_2 where district = '"+districtName+"'";
-                    System.out.println(existingZoneQuery);
+                    String existingZoneQuery = "select count(district) from state_details where district = '"+districtName+"'";
+                    //System.out.println(existingZoneQuery);
                     seriesConnection.rs = seriesConnection.st.executeQuery(existingZoneQuery);
                     int zoneCount  = 0;
                     while (seriesConnection.rs.next()) {
                         zoneCount = seriesConnection.rs.getInt(1);
-                        System.out.println(zoneCount);
+                        //System.out.println(zoneCount);
                     }
                     if(zoneCount > 0)
                     {
@@ -179,25 +179,25 @@ public class SatSandeshAddDistrictWindow implements ActionListener{
                         return;
                     }
                     
-                    existingZoneQuery = "select count(zone) from state_details_2 where zone = '"+zoneName+"'";
-                    System.out.println(existingZoneQuery);
+                    existingZoneQuery = "select count(zone) from state_details where zone = '"+zoneName+"'";
+                    //System.out.println(existingZoneQuery);
                     seriesConnection.rs = seriesConnection.st.executeQuery(existingZoneQuery);
                     zoneCount  = 0;
                     while (seriesConnection.rs.next()) {
                         zoneCount = seriesConnection.rs.getInt(1);
-                        System.out.println(zoneCount);
+                        //System.out.println(zoneCount);
                     }
                     
                     if(zoneCount == 0){
                         int confirm = JOptionPane.showConfirmDialog(addDistrictWindow, "Zone does not exist - create zone "+zoneName+" ?");
                         if(confirm == 0) zoneCount++;
-                        System.out.println(zoneCount);
+                        //System.out.println(zoneCount);
                     }
                     
                     if(zoneCount > 0)
                     {
-                        String sqlQuery = "insert into state_details_2 values ( '"+subCode+"', '"+stateCode+"', '"+stateName+"' , '"+zoneName+"', '"+districtName+"')";
-                        System.out.println(sqlQuery);
+                        String sqlQuery = "insert into state_details values ( '"+subCode+"', '"+stateCode+"', '"+stateName+"' , '"+zoneName+"', '"+districtName+"')";
+                        //System.out.println(sqlQuery);
                         seriesConnection.a = seriesConnection.st.executeUpdate(sqlQuery);
                     }
                     

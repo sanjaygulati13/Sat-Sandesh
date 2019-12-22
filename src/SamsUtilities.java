@@ -25,6 +25,8 @@ public class SamsUtilities {
     static final String printButtonName = "Print";
     static final String clearButtonName = "Clear";
     static Object[] stateNameArray = null;
+    static Object[] zoneNameArray = null;
+    static Object[] districtNameArray = null;
     static Object[] stateCodeArray = null;
     static Object[] subCodeArray = null;
     static Object[] languageArray = null;
@@ -245,9 +247,9 @@ public class SamsUtilities {
         connect fillStateDetailsConnection = new connect();
         try
         {
-            String query = "select sub_code, state_code, state_name from state_details order by sub_code ASC";
-            String countQuery = "select count(sub_code) from state_details";
-            String manualCountQuery = "select count(sub_code) from state_details where sub_code='Manual'";
+            String query = "select distinct(sub_code), state_code, state_name from state_details order by sub_code ASC";
+            String countQuery = "select count(distinct(sub_code)) from state_details";
+            String manualCountQuery = "select count(distinct(sub_code)) from state_details where sub_code='Manual'";
             
             fillStateDetailsConnection.rs = fillStateDetailsConnection.st.executeQuery(countQuery);
             fillStateDetailsConnection.rs.next();
@@ -310,6 +312,7 @@ public class SamsUtilities {
             fillStateDetailsInMap();
         
         Pair<String, String> retPair = stateDetailsHash.get(subCode);
+        //System.out.println("returning "+ retPair.getFirst()+ " " + retPair.getSecond());
         return retPair.getFirst();
     }
     
@@ -547,6 +550,134 @@ public class SamsUtilities {
         
     }
     
+    public static Object[] fillDistrictNameList()
+    {
+        connect fillStateNameConnection = new connect();
+        
+        if(districtNameArray != null ){
+            return districtNameArray;
+        }
+        try
+        {
+            //String query = "select distinct(state_name) from state_details  where sub_code='Manual' order by state_name ASC";
+            //String countQuery = "select count(distinct(state_name)) from state_details  where sub_code='Manual' ";
+            
+            String query = "select distinct(district) from state_details  order by district ASC";
+            String countQuery = "select count(distinct(district)) from state_details  ";
+            
+            fillStateNameConnection.rs = fillStateNameConnection.st.executeQuery(countQuery);
+            fillStateNameConnection.rs.next();
+            int ArrayCount = fillStateNameConnection.rs.getInt(1);
+            //System.out.println(ArrayCount+1);
+            districtNameArray = new Object[ArrayCount + 1];
+            districtNameArray[0] = "";
+            fillStateNameConnection.rs = fillStateNameConnection.st.executeQuery(query);
+            //CodeChooser.addItem("");
+            int i = 1;
+            while (fillStateNameConnection.rs.next()) {
+                String districtName = fillStateNameConnection.rs.getString(1);
+                //System.out.println(stateName);
+                districtNameArray[i] = districtName.toUpperCase();
+                i++;
+            }
+            
+            
+            fillStateNameConnection.closeAll();
+        } catch (Exception exc) {
+            //exc.printStackTrace();
+            //Except.except(exc, "ADD JOB CARD--Raw Material Thread Error");
+            fillStateNameConnection.closeAll();
+        }
+        return districtNameArray;
+        
+    }
+    
+    public static Object[] fillZoneNameList()
+    {
+        connect fillStateNameConnection = new connect();
+        
+        if(zoneNameArray != null ){
+            return zoneNameArray;
+        }
+        try
+        {
+            //String query = "select distinct(state_name) from state_details  where sub_code='Manual' order by state_name ASC";
+            //String countQuery = "select count(distinct(state_name)) from state_details  where sub_code='Manual' ";
+            
+            String query = "select distinct(zone) from state_details  order by zone ASC";
+            String countQuery = "select count(distinct(zone)) from state_details  ";
+            
+            fillStateNameConnection.rs = fillStateNameConnection.st.executeQuery(countQuery);
+            fillStateNameConnection.rs.next();
+            int ArrayCount = fillStateNameConnection.rs.getInt(1);
+            //System.out.println(ArrayCount+1);
+            zoneNameArray = new Object[ArrayCount + 1];
+            zoneNameArray[0] = "";
+            fillStateNameConnection.rs = fillStateNameConnection.st.executeQuery(query);
+            //CodeChooser.addItem("");
+            int i = 1;
+            while (fillStateNameConnection.rs.next()) {
+                String zoneName = fillStateNameConnection.rs.getString(1);
+                //System.out.println(stateName);
+                zoneName.trim();
+                if(zoneName.isEmpty()) continue;
+                zoneNameArray[i] = zoneName;
+                i++;
+            }
+            
+            
+            fillStateNameConnection.closeAll();
+        } catch (Exception exc) {
+            //exc.printStackTrace();
+            //Except.except(exc, "ADD JOB CARD--Raw Material Thread Error");
+            fillStateNameConnection.closeAll();
+        }
+        return zoneNameArray;
+        
+    }
+    
+    
+    public static Object[] fillDistrictNameListForZone(String zone)
+    {
+        connect fillStateNameConnection = new connect();
+        Object[] districtForZoneArray;
+        try
+        {
+            //String query = "select distinct(state_name) from state_details  where sub_code='Manual' order by state_name ASC";
+            //String countQuery = "select count(distinct(state_name)) from state_details  where sub_code='Manual' ";
+            String query = "select distinct(district) from state_details where zone='"+zone+"' order by zone ASC";
+            String countQuery = "select count(distinct(district)) from state_details where zone = '"+zone+"' ";
+            
+            fillStateNameConnection.rs = fillStateNameConnection.st.executeQuery(countQuery);
+            fillStateNameConnection.rs.next();
+            int ArrayCount = fillStateNameConnection.rs.getInt(1);
+            //System.out.println(ArrayCount+1);
+            districtForZoneArray = new Object[ArrayCount + 1];
+            districtForZoneArray[0] = "";
+            fillStateNameConnection.rs = fillStateNameConnection.st.executeQuery(query);
+            //CodeChooser.addItem("");
+            int i = 1;
+            while (fillStateNameConnection.rs.next()) {
+                String zoneName = fillStateNameConnection.rs.getString(1);
+                //System.out.println(stateName);
+                districtForZoneArray[i] = zoneName;
+                i++;
+            }
+            
+            
+            fillStateNameConnection.closeAll();
+            return districtForZoneArray;
+        } catch (Exception exc) {
+            //exc.printStackTrace();
+            //Except.except(exc, "ADD JOB CARD--Raw Material Thread Error");
+            fillStateNameConnection.closeAll();
+        }
+        return null;
+        
+    }
+    
+    
+    
     public static Object[] fillStateNameList()
     {
         connect fillStateNameConnection = new connect();
@@ -556,8 +687,11 @@ public class SamsUtilities {
         }
         try
         {
-            String query = "select state_name from state_details  where sub_code='Manual'  order by state_name ASC";
-            String countQuery = "select count(state_name) from state_details  where sub_code='Manual' ";
+            //String query = "select distinct(state_name) from state_details  where sub_code='Manual' order by state_name ASC";
+            //String countQuery = "select count(distinct(state_name)) from state_details  where sub_code='Manual' ";
+            
+            String query = "select distinct(state_name) from state_details  order by state_name ASC";
+            String countQuery = "select count(distinct(state_name)) from state_details  ";
             
             fillStateNameConnection.rs = fillStateNameConnection.st.executeQuery(countQuery);
             fillStateNameConnection.rs.next();
@@ -595,8 +729,8 @@ public class SamsUtilities {
         }
         try
         {
-            String query = "select state_code from state_details where sub_code='Manual' order by state_code ASC";
-            String countQuery = "select count(state_code) from state_details where sub_code='Manual'";
+            String query = "select distinct(state_code) from state_details order by state_code ASC";
+            String countQuery = "select count(distinct(state_code)) from state_details ";
             //String emptyCountQuery = "select count(state_code) from state_details where state_code=''";
             
             fillStateCodeConnection.rs = fillStateCodeConnection.st.executeQuery(countQuery);

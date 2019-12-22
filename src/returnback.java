@@ -12,10 +12,10 @@ public class returnback extends JFrame implements ActionListener {
     public static void main(String arg[]) {
         new returnback();
     }
-    String ret = "", posts, others, recs;
-    JLabel l1, l2, post, rec_date, other;
+    String ret = "", posts, others, recs, firstName, lastName;
+    JLabel l1, l2, post, rec_date, other, nameLabel;
     JComboBox subs;
-    JTextField t1, t2, post_t, rec_date_t, other_t;
+    JTextField t1, t2, post_t, rec_date_t, other_t, firstNameText, lastNameText;
     JButton retrieveButton, markButton, stopButton, activateButton, back;
     int asn = 0;
     
@@ -77,18 +77,18 @@ public class returnback extends JFrame implements ActionListener {
         
         
         markButton = new JButton("Mark");
-        markButton.setBounds(40, 180, 80, 25);
+        markButton.setBounds(40, 240, 80, 25);
         markButton.setMnemonic('M');
         markButton.addActionListener(this);
         
         
         stopButton = new JButton("STOP");
-        stopButton.setBounds(130, 180, 80, 25);
+        stopButton.setBounds(130, 240, 80, 25);
         stopButton.setMnemonic('S');
         stopButton.addActionListener(this);
         
         activateButton = new JButton("Activate");
-        activateButton.setBounds(220, 180, 80, 25);
+        activateButton.setBounds(220, 240, 80, 25);
         activateButton.setMnemonic('A');
         activateButton.addActionListener(this);
         
@@ -109,40 +109,52 @@ public class returnback extends JFrame implements ActionListener {
         }
         if (ae.getSource() == retrieveButton) {
             
-            retrieveButton.setEnabled(false);
+            nameLabel = new JLabel("Name");
+            nameLabel.setBounds(30,60,60,20);
+            add(nameLabel);
+            
+            firstNameText = new JTextField();
+            firstNameText.setBounds(130,60,180,20);
+            add(firstNameText);
+            
+            lastNameText = new JTextField();
+            lastNameText.setBounds(130,90,180,20);
+            add(lastNameText);
+            
+            //retrieveButton.setEnabled(false);
             l2 = new JLabel("Month");
-            l2.setBounds(30, 60, 60, 20);
+            l2.setBounds(30, 120, 60, 20);
             add(l2);
             
             t2 = new JTextField();
-            t2.setBounds(130, 60, 180, 20);
+            t2.setBounds(130, 120, 180, 20);
             add(t2);
             
             post = new JLabel("PO Remarks");
-            post.setBounds(30, 90, 80, 20);
+            post.setBounds(30, 150, 80, 20);
             add(post);
             
             
             post_t = new JTextField();
-            post_t.setBounds(130, 90, 180, 20);
+            post_t.setBounds(130, 150, 180, 20);
             add(post_t);
             
             rec_date = new JLabel("<html>Recieving Date</html>");
-            rec_date.setBounds(30, 120, 80, 28);
+            rec_date.setBounds(30, 180, 80, 28);
             add(rec_date);
             
             
             rec_date_t = new JTextField();
-            rec_date_t.setBounds(130, 120, 180, 20);
+            rec_date_t.setBounds(130, 180, 180, 20);
             add(rec_date_t);
             
             other = new JLabel("Other Remarks");
-            other.setBounds(30, 150, 90, 20);
+            other.setBounds(30, 210, 90, 20);
             add(other);
             
             
             other_t = new JTextField();
-            other_t.setBounds(130, 150, 180, 20);
+            other_t.setBounds(130, 210, 180, 20);
             add(other_t);
             
             add(markButton);
@@ -157,7 +169,7 @@ public class returnback extends JFrame implements ActionListener {
                         + "otherdet o where o.asn=b.asn and o.asn in (select asn from basic b where subnos='"
                         + subs.getSelectedItem().toString() + "' and subno=" + t1.getText() + ")";
                 
-                String mainTableQuery = "select asn ,return_issue_month, return_back_reason,return_back_stop_date, return_back_other_remarks from  "
+                String mainTableQuery = "select asn ,return_issue_month, return_back_reason,return_back_stop_date, return_back_other_remarks, first_name, last_name from  "
                         + "subscribers_primary_details where subscription_code='"
                         + subs.getSelectedItem().toString() + "' and subscription_number=" + t1.getText();
                 
@@ -174,14 +186,19 @@ public class returnback extends JFrame implements ActionListener {
                     posts = c1.rs.getString(3);
                     recs = c1.rs.getString(4);
                     others = c1.rs.getString(5);
+                    firstName = c1.rs.getString(6);
+                    lastName = c1.rs.getString(7);
                     
                     t2.setText(ret);
                     post_t.setText(posts);
                     rec_date_t.setText(recs);
                     other_t.setText(others);
+                    firstNameText.setText(firstName);
+                    lastNameText.setText(lastName);
                     
                     c1.closeAll();
-                    this.setSize(500, 300);
+                    this.setSize(500, 350);
+                    retrieveButton.setEnabled(false);
                 }
                 else
                     JOptionPane.showMessageDialog(null, "Record Not Found", "ERROR", JOptionPane.ERROR_MESSAGE);

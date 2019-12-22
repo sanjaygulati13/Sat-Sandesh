@@ -1,22 +1,47 @@
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-import java.awt.print.*;
+
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
+import static java.awt.print.Printable.NO_SUCH_PAGE;
+import static java.awt.print.Printable.PAGE_EXISTS;
+import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.Date;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 
-public class SatSandeshMemberStatusDetailed extends JFrame implements ActionListener, Printable
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/**
+ *
+ * @author sanjayg
+ */
+public class SatSandeshMemberStatusDetailedByZone extends JFrame implements ActionListener, Printable
 {
     
     public static void main(String args[])
     {
-        new SatSandeshMemberStatusDetailed(3,2019,"Hindi");
+        new SatSandeshMemberStatusDetailedByZone(SamsUtilities.getCurrentMonth(),SamsUtilities.getCurrentYear(),"Hindi");
     }
     
-    
-    
     JLabel total, state, dist, status, period, hand, post, dno, total1, active, inactive, freeze, deactive, total2, hand1, post1, dno1, total11, life, comp;
-    JLabel subt, hand2, post2, dno2, total3, life1, cmp, norm, total4;
+    JLabel subscription_period, hand2, post2, dno2, total3, life1, cmp, norm, total4;
     JLabel head;
     
     Font f=new Font("ARIAL", Font.BOLD, 14);
@@ -47,13 +72,13 @@ public class SatSandeshMemberStatusDetailed extends JFrame implements ActionList
     JLabel stopped_records;
     JButton back, print1;
     
-    String state1[]=new String[10];
+    Object[] zone= null;
     
     int a1, a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13, a14;
     int l1, l2, l3, stopped_records_count;
     int t1, t2, t3, t4;
     
-    public SatSandeshMemberStatusDetailed(int month, int year, String lang)
+    public SatSandeshMemberStatusDetailedByZone(int month, int year, String lang)
     {
         j=new JFrame();
         
@@ -79,17 +104,17 @@ public class SatSandeshMemberStatusDetailed extends JFrame implements ActionList
         Container con=j.getContentPane();
         con.setBackground(Color.white);
         
-        
-        state1[0]="DL";
-        state1[1]="HAR";
-        state1[2]="MAH";
-        state1[3]="MP";
-        state1[4]="PJB";
-        state1[5]="RAJ";
-        state1[6]="UK";
-        state1[7]="UP";
-        state1[8]="MS";
-        state1[9]="Total";
+        zone = SamsUtilities.fillZoneNameList();
+        /*zone[0]="DL";
+        zone[1]="HAR";
+        zone[2]="MAH";
+        zone[3]="MP";
+        zone[4]="PJB";
+        zone[5]="RAJ";
+        zone[6]="UK";
+        zone[7]="UP";
+        zone[8]="MS";
+        zone[9]="Total";*/
         
         head=new JLabel("MEMBER STATUS FOR "+month+"-"+year);
         
@@ -179,7 +204,7 @@ public class SatSandeshMemberStatusDetailed extends JFrame implements ActionList
         //------------------SUBSCRIPTION TYPE----------------------------//
         
         
-        subt =new JLabel("SUB TYPE");
+        subscription_period =new JLabel("SUB TYPE");
         hand2 =new JLabel("By Hand");
         post2=new JLabel("By Post");
         dno2=new JLabel("Dist.");
@@ -189,8 +214,8 @@ public class SatSandeshMemberStatusDetailed extends JFrame implements ActionList
         norm=new JLabel("Normal");
         total4=new JLabel("Total");
         
-        j.add(subt);
-        subt.setBounds(30,860,100,20);
+        j.add(subscription_period);
+        subscription_period.setBounds(30,860,100,20);
         
         
         hand2.setBounds(140,860,60,20);
@@ -219,7 +244,11 @@ public class SatSandeshMemberStatusDetailed extends JFrame implements ActionList
         
         //-----------------------------------------------------------------------------------------------------
         
-        for(int i=0;i<10;i++)
+        String activeDate, inactiveStartDate, deactiveStartDate;
+        activeDate = year+"-"+month+"-28";
+        inactiveStartDate = activeDate;
+        deactiveStartDate = activeDate;
+        for(int i = 0 ; i < 10 ; i++)
         {
             
             statet[i] =new JLabel();
@@ -239,7 +268,7 @@ public class SatSandeshMemberStatusDetailed extends JFrame implements ActionList
             
             j.add(statet[i]);
             statet[i].setBounds(20,155+(i*30),40,20);
-            statet[i].setText(state1[i]);
+            statet[i].setText((String)zone[i]);
             //statet[i].setEnabled(true);
             //statet[i].setFont(new Font("SERIF", Font.BOLD, 14));
             
@@ -315,89 +344,159 @@ public class SatSandeshMemberStatusDetailed extends JFrame implements ActionList
             dnot1[i].setFont(f);
             totalt11[i].setFont(f);
             
+            
             try
             {
                 String type1, status1, duration1;
                 a1=a2=a3=a4=a5=a6=a7=a8=a9=a10=a11=a12=a13=a14=0;
                 connect c13=new connect();
-                c13.rs=c13.st.executeQuery("select b.asn from basic b, subdetails s where b.asn=s.asn and b.lang='"+lang+"' and (s.state='"+state1[i]+"' and b.dist='By Hand')");
-                while(c13.rs.next())
+                
+                Object[] districtName = SamsUtilities.fillDistrictNameListForZone((String)zone[i]);
+                
+                for(int x = 0 ; x < districtName.length ; ++x)
                 {
-                    a1++;
+                String query = "select count(asn) from subscribers_primary_details where "
+                        + "language='"+lang+"' and district='"+(String)districtName[x]+"' and distribution_type='By Hand'";
+                c13.rs=c13.st.executeQuery(query);
+                if(c13.rs.next())
+                {
+                    a1 += c13.rs.getInt(1);
+                    //System.out.println("a1 "+a1);
                 }
-                c13.rs=c13.st.executeQuery("select b.asn from basic b, subdetails s where b.asn=s.asn and b.lang='"+lang+"' and (s.state='"+state1[i]+"' and b.dist='By Post')");
-                while(c13.rs.next())
+                //System.out.println(query);
+                
+                query = "select count(asn) from subscribers_primary_details where "
+                        + "language='"+lang+"' and district='"+(String)districtName[x]+"' and distribution_type='By Post'";
+                c13.rs=c13.st.executeQuery(query);
+                if(c13.rs.next())
                 {
-                    a2++;
+                    a2 += c13.rs.getInt(1);
                 }
-                c13.rs=c13.st.executeQuery("select b.asn from basic b, subdetails s where b.asn=s.asn and b.lang='"+lang+"' and (s.state='"+state1[i]+"' and b.dist='Distributor')");
-                while(c13.rs.next())
+                //System.out.println(query);
+                
+                query = "select count(asn) from subscribers_primary_details where "
+                        + "language='"+lang+"' and district='"+(String)districtName[x]+"' and distribution_type='Distributor'";
+                c13.rs=c13.st.executeQuery(query);
+                if(c13.rs.next())
                 {
-                    a3++;
+                    a3 += c13.rs.getInt(1);
                 }
                 
+                
+                l1=a1+a2+a3;
+                t1+=t1;
+                }
+                
+                //System.out.println(query);
                 c13.st.close();
                 c13.con.close();
                 
+                
+                Date referenceDate = new Date((year-1900),month-1,28);
+                
+                
+                
+                {
+                    Calendar c = Calendar.getInstance();
+                    c.setTime(referenceDate);
+                    c.add(Calendar.MONTH, -1);
+                    //System.out.println(c.get(Calendar.DATE) +" - " + (c.get(Calendar.MONTH)+1) + " - " + c.get(Calendar.YEAR));
+                    activeDate = c.get(Calendar.YEAR) +"-" + (c.get(Calendar.MONTH)+1) + "-" + c.get(Calendar.DATE);
+                    c.add(Calendar.MONTH, -6);
+                    //System.out.println(c.get(Calendar.DATE) +" - " + (c.get(Calendar.MONTH)+1) + " - " + c.get(Calendar.YEAR));
+                    inactiveStartDate = c.get(Calendar.YEAR) +"-" + (c.get(Calendar.MONTH)+1) + "-" + c.get(Calendar.DATE);
+                    c.add(Calendar.MONTH, -6);
+                    //System.out.println(c.get(Calendar.DATE) +" - " + (c.get(Calendar.MONTH)+1) + " - " + c.get(Calendar.YEAR));
+                    deactiveStartDate = c.get(Calendar.YEAR) +"-" + (c.get(Calendar.MONTH)+1) + "-" + c.get(Calendar.DATE);
+                }
+                
                 connect c1=new connect();
-                l1=a1+a2+a3;
-                t1+=t1;
+                //System.out.println(deactiveStartDate +" <--> " + inactiveStartDate + " <--> " + activeDate );
                 
-                c1.rs=c1.st.executeQuery("select b.asn from basic b, subdetails s where b.asn=s.asn and b.lang='"+lang+"' and (s.state='"+state1[i]+"' and b.status='Active')");
-                while(c1.rs.next())
+                //query = "select count(asn) from subscribers_primary_details where language ='"+lang+"' and state='"+state1[i]+"' and membership_status='Active'";
+                String query = "select count(asn) from subscribers_primary_details where "
+                        + "language ='"+lang+"' and state='"+zone[i]+"' and "
+                        + "ending_period > '" + activeDate + "' and "
+                        + "membership_status not in ('STOPPED')";
+                //System.out.println(query);
+                c1.rs=c1.st.executeQuery(query);
+                if(c1.rs.next())
                 {
-                    a4++;
+                    a4 = c1.rs.getInt(1);
                 }
                 
-                
-                c1.rs=c1.st.executeQuery("select b.asn from basic b, subdetails s where b.asn=s.asn and b.lang='"+lang+"' and (s.state='"+state1[i]+"' and b.status='Inactive')");
-                while(c1.rs.next())
+                //query = "select count(asn) from subscribers_primary_details where language ='"+lang+"' and state='"+state1[i]+"' and membership_status='Inactive' and membership_status not in ('STOPPED')";
+                query = "select count(asn) from subscribers_primary_details where "
+                        + "language ='"+lang+"' and state='"+zone[i]+"' and "
+                        + "ending_period > '" + inactiveStartDate + "' and "
+                        + "ending_period <= '" + activeDate + "'  and "
+                        + "membership_status not in ('STOPPED')";
+                //System.out.println(query);
+                c1.rs=c1.st.executeQuery(query);
+                if(c1.rs.next())
                 {
-                    a5++;
+                    a5 = c1.rs.getInt(1);
                 }
                 
+                //query = "select count(asn) from subscribers_primary_details where language ='"+lang+"' and state='"+state1[i]+"' and membership_status='Freeze' and membership_status not in ('STOPPED')";
                 
-                c1.rs=c1.st.executeQuery("select b.asn from basic b, subdetails s where b.asn=s.asn and b.lang='"+lang+"' and (s.state='"+state1[i]+"' and b.status='Freeze')");
-                while(c1.rs.next())
+                //System.out.println(query);
+                query = "select count(asn) from subscribers_primary_details where "
+                        + "language ='"+lang+"' and state='"+zone[i]+"' and "
+                        + "ending_period <= '" + deactiveStartDate + "'  and "
+                        + "membership_status not in ('STOPPED')";
+                c1.rs=c1.st.executeQuery(query);
+                if(c1.rs.next())
                 {
-                    a6++;
+                    a6 = c1.rs.getInt(1);
                 }
-                //System.out.println(a6);
                 
-                
-                c1.rs=c1.st.executeQuery("select b.asn from basic b, subdetails s where b.asn=s.asn and b.lang='"+lang+"' and (s.state='"+state1[i]+"' and b.status='Deactive')");
-                while(c1.rs.next())
+                //query = "select count(asn) from subscribers_primary_details where language ='"+lang+"' and state='"+state1[i]+"' and membership_status='Deactive' and membership_status not in ('STOPPED')";
+                query = "select count(asn) from subscribers_primary_details where "
+                        + "language ='"+lang+"' and state='"+zone[i]+"' and "
+                        + "ending_period > '" + deactiveStartDate + "' and "
+                        + "ending_period <= '" + inactiveStartDate + "' and "
+                        + "membership_status not in ('STOPPED')";
+                //System.out.println(query);
+                c1.rs=c1.st.executeQuery(query);
+                if(c1.rs.next())
                 {
-                    a7++;
+                    a7 = c1.rs.getInt(1);
                 }
                 
                 
                 
                 l2=a4+a5+a6+a7;
                 
-                c1.rs=c1.st.executeQuery("select count(b.asn) from basic b, subdetails s, payment p where b.asn=p.asn and s.asn=p.asn and b.lang='"+lang+"' and b.status='Active' and  s.state='"+state1[i]+"' and b.dist='By Hand'");
-                while(c1.rs.next())
+                query = "select count(asn) from subscribers_primary_details where language='"+lang+"' and ending_period > '" + activeDate + "' and membership_status not in ('STOPPED') and  state='"+zone[i]+"' and distribution_type='By Hand'";
+                c1.rs=c1.st.executeQuery(query);
+                if(c1.rs.next())
                 {
                     a8=c1.rs.getInt(1);
                 }
                 
-                c1.rs=c1.st.executeQuery("select count(b.asn) from basic b, subdetails s, payment p where b.asn=p.asn and s.asn=p.asn and b.lang='"+lang+"' and b.status='Active' and s.state='"+state1[i]+"' and b.dist='By Post'");
-                while(c1.rs.next())
+                query = "select count(asn) from subscribers_primary_details where language='"+lang+"' and ending_period > '" + activeDate + "' and membership_status not in ('STOPPED') and  state='"+zone[i]+"' and distribution_type='By Post'";
+                c1.rs=c1.st.executeQuery(query);
+                if(c1.rs.next())
                 {
                     a9=c1.rs.getInt(1);
                 }
                 
-                c1.rs=c1.st.executeQuery("select count(b.asn) from basic b, subdetails s, payment p where b.asn=p.asn and s.asn=p.asn and b.lang='"+lang+"' and b.status='Active' and s.state='"+state1[i]+"' and b.dist='Distributor'");
-                while(c1.rs.next())
+                //c1.rs=c1.st.executeQuery("select count(asn) from subscribers_primary_details b, payment p where language='"+lang+"' and membership_status='Active' and state='"+state1[i]+"' and distribution_type='Distributor'");
+                query = "select count(asn) from subscribers_primary_details where language='"+lang+"' and ending_period > '" + activeDate + "' and membership_status not in ('STOPPED') and  state='"+zone[i]+"' and distribution_type='Distributor'";
+                c1.rs=c1.st.executeQuery(query);
+                if(c1.rs.next())
                 {
                     a10=c1.rs.getInt(1);
                 }
                 
-                c1.rs=c1.st.executeQuery("select count(b.asn) from basic b, subdetails s, payment p where b.asn=p.asn and s.asn=p.asn and b.lang='"+lang+"' and b.status='Active'");
-                while(c1.rs.next())
+                query = "select count(asn) from subscribers_primary_details where language='"+lang+"' and ending_period > '" + activeDate + "' and membership_status not in ('STOPPED')";
+                c1.rs=c1.st.executeQuery(query);
+                if(c1.rs.next())
                 {
                     a11=c1.rs.getInt(1);
                 }
+                
                 c1.st.close();
                 c1.con.close();
             }
@@ -433,51 +532,51 @@ public class SatSandeshMemberStatusDetailed extends JFrame implements ActionList
             
             
             connect c2=new connect();
-            c2.rs=c2.st.executeQuery("select count(b.asn) from basic b, subdetails s, payment p where b.asn=p.asn and s.asn=p.asn and b.lang='"+lang+"' and b.status='Active'and s.state not in ('DL','HAR','MAH','MP','PJB','RAJ','UK','UP') and b.dist='By Hand'");
-            while(c2.rs.next())
+            c2.rs=c2.st.executeQuery("select count(asn) from subscribers_primary_details where  language='"+lang+"' and ending_period > '" + activeDate + "' and membership_status not in ('STOPPED')  and state not in ('DL','HAR','MAH','MP','PJB','RAJ','UK','UP') and distribution_type='By Hand'");
+            if(c2.rs.next())
             {
                 a1=c2.rs.getInt(1);
             }
             
             
-            c2.rs=c2.st.executeQuery("select count(b.asn) from basic b, subdetails s, payment p where b.asn=p.asn and s.asn=p.asn and b.lang='"+lang+"' and b.status='Active'and s.state not in ('DL','HAR','MAH','MP','PJB','RAJ','UK','UP') and b.dist='By Post'");
-            while(c2.rs.next())
+            c2.rs=c2.st.executeQuery("select count(asn) from subscribers_primary_details where language='"+lang+"' and ending_period > '" + activeDate + "' and membership_status not in ('STOPPED') and state not in ('DL','HAR','MAH','MP','PJB','RAJ','UK','UP') and distribution_type='By Post'");
+            if(c2.rs.next())
             {
                 a2=c2.rs.getInt(1);
             }
             
-            c2.rs=c2.st.executeQuery("select count(b.asn) from basic b, subdetails s, payment p where b.asn=p.asn and s.asn=p.asn and b.lang='"+lang+"' and b.status='Active'and s.state not in ('DL','HAR','MAH','MP','PJB','RAJ','UK','UP') and b.dist='Distributor'");
-            while(c2.rs.next())
+            c2.rs=c2.st.executeQuery("select count(asn) from subscribers_primary_details where language='"+lang+"' and ending_period > '" + activeDate + "' and membership_status not in ('STOPPED') and state not in ('DL','HAR','MAH','MP','PJB','RAJ','UK','UP') and distribution_type='Distributor'");
+            if(c2.rs.next())
             {
                 a3=c2.rs.getInt(1);
             }
             
             //----------------------------active inactive MS----------------------------------//
             
-            c2.rs=c2.st.executeQuery("select b.asn from basic b, subdetails s where b.asn=s.asn and b.lang='"+lang+"' and s.state not in ('DL','HAR','MAH','MP','PJB','RAJ','UK','UP') and b.status='Active'");
-            while(c2.rs.next())
+            c2.rs=c2.st.executeQuery("select count(asn) from subscribers_primary_details where  language='"+lang+"' and state not in ('DL','HAR','MAH','MP','PJB','RAJ','UK','UP') and ending_period > '" + activeDate + "' and membership_status not in ('STOPPED')");
+            if(c2.rs.next())
             {
-                a4++;
+                a4=c2.rs.getInt(1);
             }
             
-            c2.rs=c2.st.executeQuery("select b.asn from basic b, subdetails s where b.asn=s.asn and b.lang='"+lang+"' and s.state not in ('DL','HAR','MAH','MP','PJB','RAJ','UK','UP') and b.status='Inactive'");
-            while(c2.rs.next())
+            c2.rs=c2.st.executeQuery("select count(asn) from subscribers_primary_details where  language='"+lang+"' and state not in ('DL','HAR','MAH','MP','PJB','RAJ','UK','UP') and ending_period > '" + inactiveStartDate + "' and ending_period <= '" + activeDate + "' and membership_status not in ('STOPPED') ");
+            if(c2.rs.next())
             {
-                a5++;
-            }
-            
-            
-            c2.rs=c2.st.executeQuery("select b.asn from basic b, subdetails s where b.asn=s.asn and b.lang='"+lang+"' and s.state not in ('DL','HAR','MAH','MP','PJB','RAJ','UK','UP') and b.status='Freeze'");
-            while(c2.rs.next())
-            {
-                a6++;
+                a5=c2.rs.getInt(1);
             }
             
             
-            c2.rs=c2.st.executeQuery("select b.asn from basic b, subdetails s where b.asn=s.asn and b.lang='"+lang+"' and s.state not in ('DL','HAR','MAH','MP','PJB','RAJ','UK','UP') and b.status='Deactive'");
-            while(c2.rs.next())
+            c2.rs=c2.st.executeQuery("select count(asn) from subscribers_primary_details where  language='"+lang+"' and state not in ('DL','HAR','MAH','MP','PJB','RAJ','UK','UP') and ending_period <= '" + deactiveStartDate + "' and membership_status not in ('STOPPED') ");
+            if(c2.rs.next())
             {
-                a7++;
+                a6=c2.rs.getInt(1);
+            }
+            
+            
+            c2.rs=c2.st.executeQuery("select count(asn) from subscribers_primary_details where  language='"+lang+"' and state not in ('DL','HAR','MAH','MP','PJB','RAJ','UK','UP') and ending_period > '" + deactiveStartDate + "' and ending_period <= '" + inactiveStartDate + "' and membership_status not in ('STOPPED') ");
+            if(c2.rs.next())
+            {
+                a7=c2.rs.getInt(1);
             }
             
             
@@ -486,23 +585,23 @@ public class SatSandeshMemberStatusDetailed extends JFrame implements ActionList
             
             
             
-            c2.rs=c2.st.executeQuery("select b.asn from basic b, subdetails s where b.asn=s.asn and b.lang='"+lang+"' and (s.state not in ('DL','HAR','MAH','MP','PJB','RAJ','UK','UP') and b.dist='By Hand')");
-            while(c2.rs.next())
+            c2.rs=c2.st.executeQuery("select count(asn) from subscribers_primary_details where  language='"+lang+"' and (state not in ('DL','HAR','MAH','MP','PJB','RAJ','UK','UP') and distribution_type='By Hand')");
+            if(c2.rs.next())
             {
-                a8++;
+                a8=c2.rs.getInt(1);
             }
             
             
-            c2.rs=c2.st.executeQuery("select b.asn from basic b, subdetails s where b.asn=s.asn and b.lang='"+lang+"' and (s.state not in ('DL','HAR','MAH','MP','PJB','RAJ','UK','UP') and b.dist='By Post')");
-            while(c2.rs.next())
+            c2.rs=c2.st.executeQuery("select count(asn) from subscribers_primary_details where  language='"+lang+"' and (state not in ('DL','HAR','MAH','MP','PJB','RAJ','UK','UP') and distribution_type='By Post')");
+            if(c2.rs.next())
             {
-                a9++;
+                a9=c2.rs.getInt(1);
             }
             
-            c2.rs=c2.st.executeQuery("select b.asn from basic b, subdetails s where b.asn=s.asn and b.lang='"+lang+"' and (s.state not in ('DL','HAR','MAH','MP','PJB','RAJ','UK','UP') and b.dist='Distributor')");
-            while(c2.rs.next())
+            c2.rs=c2.st.executeQuery("select count(asn) from subscribers_primary_details where  language='"+lang+"' and (state not in ('DL','HAR','MAH','MP','PJB','RAJ','UK','UP') and distribution_type='Distributor')");
+            if(c2.rs.next())
             {
-                a10++;
+                a10=c2.rs.getInt(1);
             }
             l3=a8+a9+a10;
         }
@@ -593,60 +692,60 @@ public class SatSandeshMemberStatusDetailed extends JFrame implements ActionList
         try
         {
             connect c4=new connect();
-            c4.rs=c4.st.executeQuery("select asn from basic b where b.subt='Life' and b.lang='"+lang+"' and b.dist='By Hand'");
-            while(c4.rs.next())
+            c4.rs=c4.st.executeQuery("select count(asn) from subscribers_primary_details where subscription_period='Life' and language='"+lang+"' and distribution_type='By Hand'");
+            if(c4.rs.next())
             {
-                z1++;
+                z1=c4.rs.getInt(1);
             }
             
-            c4.rs=c4.st.executeQuery("select asn from basic where subt='Life' and lang='"+lang+"' and dist='By Post'");
-            while(c4.rs.next())
+            c4.rs=c4.st.executeQuery("select count(asn) from subscribers_primary_details where subscription_period='Life' and language ='"+lang+"' and distribution_type ='By Post'");
+            if(c4.rs.next())
             {
-                z2++;
+                z2=c4.rs.getInt(1);
             }
             
-            c4.rs=c4.st.executeQuery("select asn from basic where subt='Life' and lang='"+lang+"' and dist='Distributor'");
-            while(c4.rs.next())
+            c4.rs=c4.st.executeQuery("select count(asn) from subscribers_primary_details where subscription_period='Life' and language ='"+lang+"' and distribution_type ='Distributor'");
+            if(c4.rs.next())
             {
-                z3++;
-            }
-            
-            
-            c4.rs=c4.st.executeQuery("select asn from basic where subt='Comp' and lang='"+lang+"' and dist='By Hand'");
-            while(c4.rs.next())
-            {
-                z4++;
-            }
-            
-            c4.rs=c4.st.executeQuery("select asn from basic where subt='Comp' and lang='"+lang+"' and dist='By Post'");
-            while(c4.rs.next())
-            {
-                z5++;
-            }
-            
-            c4.rs=c4.st.executeQuery("select asn from basic where subt='Comp' and lang='"+lang+"' and dist='Distributor'");
-            while(c4.rs.next())
-            {
-                z6++;
+                z3=c4.rs.getInt(1);
             }
             
             
-            c4.rs=c4.st.executeQuery("select asn from basic where subt not in ('Life','Comp') and lang='"+lang+"' and dist='By Hand'");
-            while(c4.rs.next())
+            c4.rs=c4.st.executeQuery("select count(asn) from subscribers_primary_details where subscription_period='Comp' and language ='"+lang+"' and distribution_type ='By Hand'");
+            if(c4.rs.next())
             {
-                z7++;
+                z4=c4.rs.getInt(1);
             }
             
-            c4.rs=c4.st.executeQuery("select asn from basic where subt not in ('Life','Comp') and lang='"+lang+"' and dist='By Post'");
-            while(c4.rs.next())
+            c4.rs=c4.st.executeQuery("select count(asn) from subscribers_primary_details where subscription_period='Comp' and language ='"+lang+"' and distribution_type ='By Post'");
+            if(c4.rs.next())
             {
-                z8++;
+                z5=c4.rs.getInt(1);
             }
             
-            c4.rs=c4.st.executeQuery("select asn from basic where subt not in ('Life','Comp') and lang='"+lang+"' and dist='Distributor'");
-            while(c4.rs.next())
+            c4.rs=c4.st.executeQuery("select count(asn) from subscribers_primary_details where subscription_period='Comp' and language ='"+lang+"' and distribution_type ='Distributor'");
+            if(c4.rs.next())
             {
-                z9++;
+                z6=c4.rs.getInt(1);
+            }
+            
+            
+            c4.rs=c4.st.executeQuery("select count(asn) from subscribers_primary_details where subscription_period not in ('Life','Comp') and language ='"+lang+"' and distribution_type ='By Hand'");
+            if(c4.rs.next())
+            {
+                z7=c4.rs.getInt(1);
+            }
+            
+            c4.rs=c4.st.executeQuery("select count(asn) from subscribers_primary_details where subscription_period not in ('Life','Comp') and language ='"+lang+"' and distribution_type ='By Post'");
+            if(c4.rs.next())
+            {
+                z8=c4.rs.getInt(1);
+            }
+            
+            c4.rs=c4.st.executeQuery("select count(asn) from subscribers_primary_details where subscription_period not in ('Life','Comp') and language ='"+lang+"' and distribution_type ='Distributor'");
+            if(c4.rs.next())
+            {
+                z9=c4.rs.getInt(1);
                 
             }
             
@@ -662,7 +761,7 @@ public class SatSandeshMemberStatusDetailed extends JFrame implements ActionList
         try
         {
             connect stopped=new connect();
-            stopped.rs=stopped.st.executeQuery("select count(asn) from basic where status='STOPPED' and lang='"+lang+"' ");
+            stopped.rs=stopped.st.executeQuery("select count(asn) from subscribers_primary_details where membership_status='STOPPED' and language ='"+lang+"' ");
             stopped.rs.next();
             stopped_records_count=stopped.rs.getInt(1);
             stopped.rs.close();
@@ -797,8 +896,8 @@ public class SatSandeshMemberStatusDetailed extends JFrame implements ActionList
         }
         
         /* User (0,0) is typically outside the imageable area, so we must
-         * translate by the X and Y values in the PageFormat to avoid clipping
-         */
+        * translate by the X and Y values in the PageFormat to avoid clipping
+        */
         
         Graphics2D g2d = (Graphics2D)g;
         g2d.translate(pf.getImageableX(), pf.getImageableY());

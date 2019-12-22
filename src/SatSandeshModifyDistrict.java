@@ -160,15 +160,15 @@ public class SatSandeshModifyDistrict implements ActionListener{
                 try
                 {
                     String subCode = "Manual";
-                    System.out.println(fetchSubCodeQuery);
+                    //System.out.println(fetchSubCodeQuery);
                     seriesConnection.rs = seriesConnection.st.executeQuery(fetchSubCodeQuery);
                     while (seriesConnection.rs.next()) {
                         subCode = seriesConnection.rs.getString(1);
-                        System.out.println(subCode);
+                        //System.out.println(subCode);
                     }
                     
-                    String existingZoneQuery = "select count(zone) from state_details_2 where zone = '"+zoneName+"'";
-                    System.out.println(existingZoneQuery);
+                    String existingZoneQuery = "select count(zone) from state_details where zone = '"+zoneName+"'";
+                    //System.out.println(existingZoneQuery);
                     seriesConnection.rs = seriesConnection.st.executeQuery(existingZoneQuery);
                     int zoneCount  = 0;
                     while (seriesConnection.rs.next()) {
@@ -184,8 +184,8 @@ public class SatSandeshModifyDistrict implements ActionListener{
                     
                     if(zoneCount > 0)
                     {
-                        String sqlQuery = "update state_details_2 set sub_code='"+subCode+"', state_code='"+stateCode+"', state_name = '"+stateName+"' , zone = '"+zoneName+"' where district =  '"+districtName+"'";
-                        System.out.println(sqlQuery);
+                        String sqlQuery = "update state_details set sub_code='"+subCode+"', state_code='"+stateCode+"', state_name = '"+stateName+"' , zone = '"+zoneName+"' where district =  '"+districtName+"'";
+                        //System.out.println(sqlQuery);
                         seriesConnection.a = seriesConnection.st.executeUpdate(sqlQuery);
                     }
                     
@@ -224,11 +224,11 @@ public class SatSandeshModifyDistrict implements ActionListener{
             {
                 //ending number for current receipt book
                 connect seriesConnection = new connect();
-                String fetchSubCodeQuery = "select state_name ,zone from state_details_2 where district='"+districtName+"'";
+                String fetchSubCodeQuery = "select state_name ,zone from state_details where district='"+districtName+"'";
                 try
                 {
                     
-                    System.out.println(fetchSubCodeQuery);
+                    //System.out.println(fetchSubCodeQuery);
                     int numEntries = 0;
                     seriesConnection.rs = seriesConnection.st.executeQuery(fetchSubCodeQuery);
                     while (seriesConnection.rs.next()) {
@@ -237,7 +237,7 @@ public class SatSandeshModifyDistrict implements ActionListener{
                         String zoneName = seriesConnection.rs.getString(2);
                         zoneText.setText(zoneName); 
                         stateNameDropBox.setSelectedItem((Object)stateName);
-                        System.out.println(stateName + " " + zoneName);
+                        //System.out.println(stateName + " " + zoneName);
                     }
                     if(numEntries > 0){
                         districtText.setEnabled(false);

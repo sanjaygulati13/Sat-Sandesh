@@ -8,11 +8,12 @@ public class SatSandeshModifyDistributorCode extends JFrame implements ActionLis
     
     public static void main(String args[])
     {
-        new SatSandeshModifyDistributorCode(993);
+        new SatSandeshModifyDistributorCode(3);
     }
     
     JLabel nam, phno, moddcd, email, add1, rem, hist, dist, stat, pin, distributionTypeLabel;
-    JTextField  remt, histt, distt;
+    JTextField  remt, histt/*, distt*/;
+    JComboBox districtDropDown;
     TextFieldWithLimit namt, lnamt, phnot, moddcdt, addt11, addt12, addt13, pint, emailt;
     JComboBox distributionTypeDropDown, stateCodeDropDown, stateNameDropDown;
     JButton mod, back;
@@ -45,6 +46,7 @@ public class SatSandeshModifyDistributorCode extends JFrame implements ActionLis
         setLocation(10,10);
         setLayout(null);
         //setUndecorated(true);
+        SamsUtilities.center(this);
         
         nam=new JLabel("Name");
         phno=new JLabel("Phone No");
@@ -78,7 +80,8 @@ public class SatSandeshModifyDistributorCode extends JFrame implements ActionLis
         
         histt=new JTextField(20);
         emailt=new TextFieldWithLimit(32,32);
-        distt=new JTextField(20);
+        //distt=new JTextField(20);
+        districtDropDown = new JComboBox(SamsUtilities.fillDistrictNameList());
         remt=new JTextField(20);
         
         mod=new JButton("Modify");
@@ -145,7 +148,9 @@ public class SatSandeshModifyDistributorCode extends JFrame implements ActionLis
             addt13.setText(c2.rs.getString(8));
             remt.setText(c2.rs.getString(9));
             histt.setText(c2.rs.getString(10));
-            distt.setText(c2.rs.getString(11));
+            //distt.setText(c2.rs.getString(11));
+            System.out.println(c2.rs.getString(11));
+            districtDropDown.setSelectedItem(""+(c2.rs.getString(11)).toUpperCase());
             String stateCode = c2.rs.getString(12);
             //System.out.println("state: " + stateCode);
             stateCodeDropDown.setSelectedItem(stateCode);
@@ -195,8 +200,11 @@ public class SatSandeshModifyDistributorCode extends JFrame implements ActionLis
         histt.setBounds(480,230,240,20);
         add(histt);
         
-        distt.setBounds(100,270,200,20);
-        add(distt);
+        //distt.setBounds(100,270,200,20);
+        //add(distt);
+        
+        districtDropDown.setBounds(100,270,200,20);
+        add(districtDropDown);
         
         stateNameDropDown.setBounds(480,270,140,20);
         add(stateNameDropDown);
@@ -241,7 +249,8 @@ public class SatSandeshModifyDistributorCode extends JFrame implements ActionLis
             add3=addt13.getText();
             remarks=remt.getText();
             history=histt.getText();
-            district=distt.getText();
+            //district=distt.getText();
+            district=(String)districtDropDown.getSelectedItem();
             state=(String)stateCodeDropDown.getSelectedItem();
             pinno=Integer.parseInt(pint.getText());
             distributionTypeText = (String)(distributionTypeDropDown.getSelectedItem());

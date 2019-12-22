@@ -34,7 +34,7 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
 {
     public static void main(String args[])
     {
-        SatSandeshNewSubscription e=new SatSandeshNewSubscription();
+        SatSandeshNewSubscription e = new SatSandeshNewSubscription();
     }
     
     JLabel  subd1, asn1, sub1, status1, seriesLabel, rec1, dist1, despatchNumberLabel, subt1, lang1;				//subscription details
@@ -61,8 +61,8 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
     JComboBox paymentTypeDropDown, starty1, startm1, stateCodeDropDown;
     
     
-    TextFieldWithLimit titt1, namt1, lnamt1, pint1,addt11,addt21,addt31,districtText;	//member details
-    JComboBox stateNameDropDown;
+    TextFieldWithLimit titt1, namt1, lnamt1, pint1,addt11,addt21,addt31/*,districtText*/;	//member details
+    JComboBox stateNameDropDown, districtNameDropDown;
     
     JTextField  rett1;											//other details
     TextArea remt1;
@@ -195,7 +195,8 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
         addt11=new TextFieldWithLimit(32,32);
         addt21=new TextFieldWithLimit(32,32);
         addt31=new TextFieldWithLimit(32,32);
-        districtText=new TextFieldWithLimit(22,22);
+        //districtText=new TextFieldWithLimit(22,22);
+        districtNameDropDown = new JComboBox(SamsUtilities.fillDistrictNameList());
         stateCodeDropDown = new JComboBox(SamsUtilities.fillStateCodeList());
         stateNameDropDown = new JComboBox(SamsUtilities.fillStateNameList());
         pint1=new TextFieldWithLimit(6,6);
@@ -236,7 +237,7 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
         }
         catch(Exception e)
         {
-            
+            e.printStackTrace();            
         }
         distributionCodeDropDown.addItemListener(this);
         
@@ -288,6 +289,7 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
             catch(Exception e)
             {
                 JOptionPane.showMessageDialog(this, "ERROR : "+e, "ERROR", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
             }
             
             endm2=((startm2-1)+period12)%12;
@@ -317,8 +319,32 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
         distributionTypeDropDown.addItem("Distributor");
         
         
+        {
+            try
+            {
+                
+                connect c22=new connect();
+                String query = "select duration from amountdet order by duration";
+                //System.out.println(query);
+                c22.rs=c22.st.executeQuery(query);
+                while(c22.rs.next())
+                {
+                    String duration = c22.rs.getString(1);
+                    subscriptionDurationDropDown.addItem(duration);
+                    //System.out.println(duration);
+                }
+                
+                c22.st.close();
+                c22.con.close();
+            }
+            catch(Exception e)
+            {
+                JOptionPane.showMessageDialog(this, "ERROR : "+e, "ERROR", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
+            }
+        }
         
-        subscriptionDurationDropDown.addItem("1 year");
+        /*subscriptionDurationDropDown.addItem("1 year");
         subscriptionDurationDropDown.addItem("2 year");
         subscriptionDurationDropDown.addItem("2 year plus");
         subscriptionDurationDropDown.addItem("3 year");
@@ -326,7 +352,7 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
         subscriptionDurationDropDown.addItem("5 year");
         subscriptionDurationDropDown.addItem("5 year plus");
         subscriptionDurationDropDown.addItem("Life");
-        subscriptionDurationDropDown.addItem("Comp");
+        subscriptionDurationDropDown.addItem("Comp");*/
         
         
         languageDropDown.addItem("Hindi");
@@ -560,8 +586,12 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
         p3.add(dis1);
         dis1.setBounds(30,110,60,20);
         
-        p3.add(districtText);
-        districtText.setBounds(90,110,240,20);
+        //p3.add(districtText);
+        //districtText.setBounds(90,110,240,20);
+        
+        p3.add(districtNameDropDown);
+        districtNameDropDown.setBounds(90,110,240,20);
+        
         
         p3.add(stat1);
         stat1.setBounds(340,110,40,20);
@@ -733,7 +763,8 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
                 address1=addt11.getText();
                 add2=addt21.getText();
                 add3=addt31.getText();
-                dist2=districtText.getText();
+                //dist2=districtText.getText();
+                dist2=(String)districtNameDropDown.getSelectedItem();
                 state= (String)stateCodeDropDown.getSelectedItem();
                 pin=Integer.parseInt(pint1.getText());
                 
@@ -777,6 +808,7 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
                         catch(Exception e)
                         {
                             JOptionPane.showMessageDialog(this, "ERROR : "+e, "ERROR", JOptionPane.ERROR_MESSAGE);
+                            e.printStackTrace();
                         }
                         
                         endm2=((startm2-1)+period12)%12;
@@ -954,7 +986,8 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
             titt1.setText("");
             namt1.setText("");
             lnamt1.setText("");
-            districtText.setText("");
+            //districtText.setText("");
+            districtNameDropDown.setSelectedIndex(0);
             stateCodeDropDown.setSelectedIndex(0);
             stateNameDropDown.setSelectedIndex(0);
             pint1.setText("0");
@@ -996,9 +1029,12 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
                 connect c14=new connect();
                 c14.rs=c14.st.executeQuery("select district, state from despcode where dno="+Integer.parseInt((String)distributionCodeDropDown.getSelectedItem()));
                 c14.rs.next();
-                districtText.setText(""+c14.rs.getString(1));
-                districtText.setEnabled(false);
-                districtText.setFont(f);
+                //districtText.setText(""+c14.rs.getString(1));
+                //districtText.setEnabled(false);
+                //districtText.setFont(f);
+                districtNameDropDown.setSelectedItem(""+c14.rs.getString(1));
+                districtNameDropDown.setEnabled(false);
+                districtNameDropDown.setFont(f);
                 stateCodeDropDown.setSelectedItem(""+c14.rs.getString(2));
                 stateCodeDropDown.setEnabled(false);
                 stateCodeDropDown.setFont(f);
@@ -1008,6 +1044,7 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
             catch(Exception e1)
             {
                 JOptionPane.showMessageDialog(this, "ERROR : "+e1, "ERROR", JOptionPane.ERROR_MESSAGE);
+                e1.printStackTrace();
             }
             
         }
@@ -1057,6 +1094,7 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
             catch(Exception e)
             {
                 JOptionPane.showMessageDialog(this, "ERROR : "+e, "ERROR", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
             }
             
         }
@@ -1067,12 +1105,14 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
             {
                 connect c8=new connect();
                 
-                c8.rs=c8.st.executeQuery("select * from amountdet where language='"+languageDropDown.getSelectedItem()+"'");
+                c8.rs=c8.st.executeQuery("select duration from amountdet where language='"+languageDropDown.getSelectedItem()+"' order by duration");
                 
-                subscriptionDurationDropDown.removeAll();
+                //subscriptionDurationDropDown.removeAll();
+                subscriptionDurationDropDown.removeAllItems();
                 while(c8.rs.next())
                 {
-                    subscriptionDurationDropDown.addItem(c8.rs.getString(2));
+                    subscriptionDurationDropDown.addItem(c8.rs.getString(1));
+                    //System.out.println(c8.rs.getString(1));
                 }
                 
                 c8.st.close();
@@ -1082,6 +1122,7 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
             catch(Exception e)
             {
                 JOptionPane.showMessageDialog(this, "ERROR : "+e, "ERROR", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
             }
         }
         
@@ -1126,6 +1167,7 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
             catch(Exception e)
             {
                 JOptionPane.showMessageDialog(this, "ERROR : "+e, "ERROR", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
             }
             
             endm2=((startm2-1)+period12)%12;
@@ -1541,7 +1583,7 @@ public class SatSandeshNewSubscription extends JFrame implements ActionListener,
                     }
                     fillSeriesConnection.closeAll();
                 } catch (Exception exc) {
-                    //exc.printStackTrace();
+                    exc.printStackTrace();
                     //Except.except(exc, "ADD JOB CARD--Raw Material Thread Error");
                     fillSeriesConnection.closeAll();
                 }

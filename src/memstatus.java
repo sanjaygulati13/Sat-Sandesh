@@ -32,10 +32,11 @@ public class memstatus extends JFrame implements ActionListener
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         //setVisible(true);
         setTitle("Member Status");
-        setSize(300,300);
+        setSize(350,300);
         setResizable(false);
         setLocation(10,10);
         setLayout(null);
+        SamsUtilities.center(this);
         
         month=new JLabel("Month");
         year=new JLabel("Year");
